@@ -35,14 +35,14 @@ function validate(lint: boolean, resolve: boolean) {
 			return linter.run(doc)
 		})
 		.then(function (results: Array<IRuleResult> | void) {
-			dc.delete(editor.document.uri);
+			dc.delete(editor!.document.uri);
 			if (results && results.length) {
 				const diagnostics = [];
 				for (let warning of results) {
 					let range = new vscode.Range(warning.range.start.line,warning.range.start.character,warning.range.end.line,warning.range.end.character);
 					diagnostics.push(new vscode.Diagnostic(range, warning.message + ' ' + warning.code, ourSeverity(warning.severity)));
 				}
-				dc.set(editor.document.uri, diagnostics);
+				dc.set(editor!.document.uri, diagnostics);
 			}
 			else {
 				let message = 'Spectral: Your document is: ' + (lint ? 'compliant!' : 'valid.');
