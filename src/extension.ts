@@ -2,16 +2,20 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import * as Spectral from '@stoplight/spectral';
-import { parseWithPointers } from '@stoplight/yaml';
-import { oas3Functions } from '@stoplight/spectral/dist/rulesets/oas3';
-import { oas2Functions } from '@stoplight/spectral/dist/rulesets/oas2';
-import { IRuleResult } from '@stoplight/spectral';
-import { IDiagnostic } from '@stoplight/types';
+import { parseWithPointers, getLocationForJsonPath } from '@stoplight/yaml';
+import { ISpectralFullResult, isOpenApiv2, isOpenApiv3 } from '@stoplight/spectral';
+import { IDiagnostic, DiagnosticSeverity } from '@stoplight/types';
 
 const dc = vscode.languages.createDiagnosticCollection('spectral');
 
 function ourSeverity(spectralSeverity:IDiagnostic["severity"]) {
-	return vscode.DiagnosticSeverity.Warning; // TODO
+	if (spectralSeverity === DiagnosticSeverity.Error)
+		return vscode.DiagnosticSeverity.Error;
+	if (spectralSeverity === DiagnosticSeverity.Warning)
+		return vscode.DiagnosticSeverity.Warning;
+	if (spectralSeverity === DiagnosticSeverity.Information)
+		return vscode.DiagnosticSeverity.Information;
+	return vscode.DiagnosticSeverity.Hint;
 }
 
 function validate(lint: boolean, resolve: boolean) {
@@ -30,11 +34,18 @@ function validate(lint: boolean, resolve: boolean) {
 	try {
 		const doc = parseWithPointers(text);
 		const linter = new Spectral.Spectral();
-		linter.loadRuleset('spectral:oas3')
+		linter.registerFormat('oas2', isOpenApiv2);
+		linter.registerFormat('oas3', isOpenApiv3);
+		linter.loadRuleset('spectral:oas')
 		.then(function () {
-			return linter.run(doc)
+			const parsedResult = {
+				parsed: doc,
+				getLocationForJsonPath
+			};
+			return linter.runWithResolved(parsedResult)
 		})
-		.then(function (results: Array<IRuleResult> | void) {
+		.then(function (fullResults: ISpectralFullResult) {
+			const results = fullResults.results;
 			dc.delete(editor!.document.uri);
 			if (results && results.length) {
 				const diagnostics = [];
