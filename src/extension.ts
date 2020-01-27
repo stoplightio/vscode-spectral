@@ -18,19 +18,8 @@ function ourSeverity(spectralSeverity:IDiagnostic["severity"]) {
 	return vscode.DiagnosticSeverity.Hint;
 }
 
-function validate(lint: boolean, resolve: boolean) {
-	let editor = vscode.window.activeTextEditor;
-	if (!editor) {
-		vscode.window.showWarningMessage('Spectral: You must have an open editor window to lint your document.');
-		return; // No open text editor
-	}
-
-	if (resolve && editor.document.isUntitled) {
-		vscode.window.showWarningMessage('Spectral: Document must be saved in order to resolve correctly.');
-		return; // No open text editor
-	}
-
-	let text = editor.document.getText();
+function validateDocument(document: vscode.TextDocument, lint: boolean, resolve: boolean) {
+	let text = document.getText();
 	try {
 		const doc = parseWithPointers(text);
 		const linter = new Spectral.Spectral();
@@ -46,14 +35,14 @@ function validate(lint: boolean, resolve: boolean) {
 		})
 		.then(function (fullResults: ISpectralFullResult) {
 			const results = fullResults.results;
-			dc.delete(editor!.document.uri);
+			dc.delete(document.uri);
 			if (results && results.length) {
 				const diagnostics = [];
 				for (let warning of results) {
 					let range = new vscode.Range(warning.range.start.line,warning.range.start.character,warning.range.end.line,warning.range.end.character);
 					diagnostics.push(new vscode.Diagnostic(range, warning.message + ' ' + warning.code, ourSeverity(warning.severity)));
 				}
-				dc.set(editor!.document.uri, diagnostics);
+				dc.set(document.uri, diagnostics);
 			}
 			else {
 				let message = 'Spectral: Your document is: ' + (lint ? 'compliant!' : 'valid.');
@@ -61,7 +50,7 @@ function validate(lint: boolean, resolve: boolean) {
 			}
 		})
 		.catch(function (ex: Error) {
-			let message = 'Spctral: Encountered error linting document :( \n';
+			let message = 'Spectral: Encountered error linting document :( \n';
 			message += ex.message;
 			vscode.window.showErrorMessage(message);
 		});
@@ -72,8 +61,23 @@ function validate(lint: boolean, resolve: boolean) {
 	}
 }
 
+function validateCurrentDocument(lint: boolean, resolve: boolean) {
+	let editor = vscode.window.activeTextEditor;
+	if (!editor) {
+		vscode.window.showWarningMessage('Spectral: You must have an open editor window to lint your document.');
+		return; // No open text editor
+	}
+
+	if (resolve && editor.document.isUntitled) {
+		vscode.window.showWarningMessage('Spectral: Document must be saved in order to resolve correctly.');
+		return; // No open text editor
+	}
+
+	validateDocument(editor.document, lint, resolve);
+}
+
 // this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
+// your extension is activated at VsCode startup
 export function activate(context: vscode.ExtensionContext) {
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
@@ -85,10 +89,15 @@ export function activate(context: vscode.ExtensionContext) {
 	// The commandId parameter must match the command field in package.json
 	let disposable = vscode.commands.registerCommand('extension.spectral-lint', () => {
 		// The code you place here will be executed every time your command is executed
-		validate(true, false);
+		validateCurrentDocument(true, false);
 	});
 
 	context.subscriptions.push(disposable);
+
+  context.subscriptions.push(vscode.workspace.onDidSaveTextDocument(function(document){
+      return validateDocument(document, true, false);
+  }));
+  console.log('Spectral: Installed save handler');
 }
 
 // this method is called when your extension is deactivated

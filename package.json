@@ -10,7 +10,8 @@
 		"Linters"
 	],
 	"activationEvents": [
-		"onCommand:extension.spectral-lint"
+		"onCommand:extension.spectral-lint",
+    "*"
 	],
 	"license": "Apache-2.0",
 	"main": "./out/extension.js",
