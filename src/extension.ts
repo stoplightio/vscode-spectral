@@ -2,8 +2,12 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import * as Spectral from '@stoplight/spectral';
+import { httpAndFileResolver } from './resolver';
 import { parseWithPointers, getLocationForJsonPath } from '@stoplight/yaml';
-import { ISpectralFullResult, isOpenApiv2, isOpenApiv3 } from '@stoplight/spectral';
+import { ISpectralFullResult,
+	isOpenApiv2,
+	isOpenApiv3
+} from '@stoplight/spectral';
 import { IDiagnostic, DiagnosticSeverity } from '@stoplight/types';
 
 const dc = vscode.languages.createDiagnosticCollection('spectral');
@@ -22,7 +26,7 @@ function validateDocument(document: vscode.TextDocument, expectedOas: boolean, r
 	let text = document.getText();
 	try {
 		const doc = parseWithPointers(text);
-		const linter = new Spectral.Spectral();
+		const linter = new Spectral.Spectral({ resolver: httpAndFileResolver });
 		linter.registerFormat('oas2', isOpenApiv2);
 		linter.registerFormat('oas3', isOpenApiv3);
 		const isOas = isOpenApiv2(doc.data) || isOpenApiv3(doc.data);
@@ -41,6 +45,7 @@ function validateDocument(document: vscode.TextDocument, expectedOas: boolean, r
 			if (results && results.length) {
 				const diagnostics = [];
 				for (let warning of results) {
+					console.log(document.uri.toString(), warning);
 					let range = new vscode.Range(warning.range.start.line,warning.range.start.character,warning.range.end.line,warning.range.end.character);
 					diagnostics.push(new vscode.Diagnostic(range, warning.message + ' ' + warning.code, ourSeverity(warning.severity)));
 				}
