@@ -6,7 +6,8 @@ import { httpAndFileResolver } from './resolver';
 import { parseWithPointers, getLocationForJsonPath } from '@stoplight/yaml';
 import { ISpectralFullResult,
 	isOpenApiv2,
-	isOpenApiv3
+	isOpenApiv3,
+	IRunOpts
 } from '@stoplight/spectral';
 import { IDiagnostic, DiagnosticSeverity } from '@stoplight/types';
 
@@ -37,7 +38,8 @@ function validateDocument(document: vscode.TextDocument, expectedOas: boolean, r
 				parsed: doc,
 				getLocationForJsonPath
 			};
-			return linter.runWithResolved(parsedResult)
+			const linterOptions: IRunOpts = { resolve: { documentUri: document.uri.toString() } };
+			return linter.runWithResolved(parsedResult, linterOptions);
 		})
 		.then(function (fullResults: ISpectralFullResult) {
 			const results = fullResults.results;
