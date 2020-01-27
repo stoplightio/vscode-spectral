@@ -18,13 +18,15 @@ function ourSeverity(spectralSeverity:IDiagnostic["severity"]) {
 	return vscode.DiagnosticSeverity.Hint;
 }
 
-function validateDocument(document: vscode.TextDocument, lint: boolean, resolve: boolean) {
+function validateDocument(document: vscode.TextDocument, expectedOas: boolean, resolve: boolean) {
 	let text = document.getText();
 	try {
 		const doc = parseWithPointers(text);
 		const linter = new Spectral.Spectral();
 		linter.registerFormat('oas2', isOpenApiv2);
 		linter.registerFormat('oas3', isOpenApiv3);
+		const isOas = isOpenApiv2(doc.data) || isOpenApiv3(doc.data);
+		if (!expectedOas && !isOas) return true;
 		linter.loadRuleset('spectral:oas')
 		.then(function () {
 			const parsedResult = {
@@ -45,7 +47,7 @@ function validateDocument(document: vscode.TextDocument, lint: boolean, resolve:
 				dc.set(document.uri, diagnostics);
 			}
 			else {
-				let message = 'Spectral: Your document is: ' + (lint ? 'compliant!' : 'valid.');
+				let message = 'Spectral: Your document is fully compliant.';
 				vscode.window.showInformationMessage(message);
 			}
 		})
@@ -61,7 +63,7 @@ function validateDocument(document: vscode.TextDocument, lint: boolean, resolve:
 	}
 }
 
-function validateCurrentDocument(lint: boolean, resolve: boolean) {
+function validateCurrentDocument(resolve: boolean) {
 	let editor = vscode.window.activeTextEditor;
 	if (!editor) {
 		vscode.window.showWarningMessage('Spectral: You must have an open editor window to lint your document.');
@@ -73,7 +75,7 @@ function validateCurrentDocument(lint: boolean, resolve: boolean) {
 		return; // No open text editor
 	}
 
-	validateDocument(editor.document, lint, resolve);
+	validateDocument(editor.document, true, resolve);
 }
 
 // this method is called when your extension is activated
@@ -89,15 +91,15 @@ export function activate(context: vscode.ExtensionContext) {
 	// The commandId parameter must match the command field in package.json
 	let disposable = vscode.commands.registerCommand('extension.spectral-lint', () => {
 		// The code you place here will be executed every time your command is executed
-		validateCurrentDocument(true, false);
+		validateCurrentDocument(false);
 	});
 
 	context.subscriptions.push(disposable);
 
-  context.subscriptions.push(vscode.workspace.onDidSaveTextDocument(function(document){
-      return validateDocument(document, true, false);
-  }));
-  console.log('Spectral: Installed save handler');
+    context.subscriptions.push(vscode.workspace.onDidSaveTextDocument(function(document){
+      return validateDocument(document, false, false);
+    }));
+    console.log('Spectral: Installed save handler');
 }
 
 // this method is called when your extension is deactivated
