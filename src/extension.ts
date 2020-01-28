@@ -3,7 +3,7 @@
 import * as vscode from 'vscode';
 import * as Spectral from '@stoplight/spectral';
 import { httpAndFileResolver } from './resolver';
-import { parseWithPointers, getLocationForJsonPath } from '@stoplight/yaml';
+import { parseWithPointers } from '@stoplight/yaml';
 import { ISpectralFullResult,
 	isOpenApiv2,
 	isOpenApiv3,
@@ -26,20 +26,18 @@ function ourSeverity(spectralSeverity:IDiagnostic["severity"]) {
 function validateDocument(document: vscode.TextDocument, expectedOas: boolean, resolve: boolean) {
 	let text = document.getText();
 	try {
-		const doc = parseWithPointers(text);
 		const linter = new Spectral.Spectral({ resolver: httpAndFileResolver });
 		linter.registerFormat('oas2', isOpenApiv2);
 		linter.registerFormat('oas3', isOpenApiv3);
-		const isOas = isOpenApiv2(doc.data) || isOpenApiv3(doc.data);
-		if (!expectedOas && !isOas) return true;
+		if (!expectedOas) {
+			const doc = parseWithPointers(text);
+			const isOas = isOpenApiv2(doc.data) || isOpenApiv3(doc.data);
+			if (!isOas) return true;
+		}
 		linter.loadRuleset('spectral:oas')
 		.then(function () {
-			const parsedResult = {
-				parsed: doc,
-				getLocationForJsonPath
-			};
 			const linterOptions: IRunOpts = { resolve: { documentUri: document.uri.toString() } };
-			return linter.runWithResolved(parsedResult, linterOptions);
+			return linter.runWithResolved(text, linterOptions);
 		})
 		.then(function (fullResults: ISpectralFullResult) {
 			const results = fullResults.results;
@@ -47,7 +45,7 @@ function validateDocument(document: vscode.TextDocument, expectedOas: boolean, r
 			if (results && results.length) {
 				const diagnostics = [];
 				for (let warning of results) {
-					console.log(document.uri.toString(), warning);
+					console.log(document.uri.toString(), warning.source);
 					let range = new vscode.Range(warning.range.start.line,warning.range.start.character,warning.range.end.line,warning.range.end.character);
 					diagnostics.push(new vscode.Diagnostic(range, warning.message + ' ' + warning.code, ourSeverity(warning.severity)));
 				}
