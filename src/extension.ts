@@ -3,6 +3,7 @@
 import * as vscode from 'vscode';
 import * as Spectral from '@stoplight/spectral';
 import { httpAndFileResolver } from './resolver';
+import { groupWarningsBySource } from './utils';
 import { parseWithPointers } from '@stoplight/yaml';
 import { ISpectralFullResult,
 	isOpenApiv2,
@@ -10,6 +11,7 @@ import { ISpectralFullResult,
 	IRunOpts
 } from '@stoplight/spectral';
 import { IDiagnostic, DiagnosticSeverity } from '@stoplight/types';
+import { URL } from 'url';
 
 const dc = vscode.languages.createDiagnosticCollection('spectral');
 
@@ -41,20 +43,19 @@ function validateDocument(document: vscode.TextDocument, expectedOas: boolean, r
 		})
 		.then(function (fullResults: ISpectralFullResult) {
 			const results = fullResults.results;
-			dc.delete(document.uri);
-			if (results && results.length) {
-				const diagnostics = [];
-				for (let warning of results) {
-					console.log(document.uri.toString(), warning.source);
-					let range = new vscode.Range(warning.range.start.line,warning.range.start.character,warning.range.end.line,warning.range.end.character);
-					diagnostics.push(new vscode.Diagnostic(range, warning.message + ' ' + warning.code, ourSeverity(warning.severity)));
+			const resultBag = groupWarningsBySource(results, document.uri.toString());
+			resultBag.forEach(function(warnings, source){
+				const ourUri = vscode.Uri.parse(source);
+				dc.delete(ourUri);
+				if (warnings && warnings.length) {
+					const diagnostics = [];
+					for (let warning of warnings) {
+						let range = new vscode.Range(warning.range.start.line,warning.range.start.character,warning.range.end.line,warning.range.end.character);
+						diagnostics.push(new vscode.Diagnostic(range, warning.message + ' ' + warning.code, ourSeverity(warning.severity)));
+					}
+					dc.set(ourUri, diagnostics);
 				}
-				dc.set(document.uri, diagnostics);
-			}
-			else {
-				let message = 'Spectral: Your document is fully compliant.';
-				vscode.window.showInformationMessage(message);
-			}
+			});
 		})
 		.catch(function (ex: Error) {
 			let message = 'Spectral: Encountered error linting document :( \n';
