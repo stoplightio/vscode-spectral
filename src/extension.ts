@@ -6,12 +6,17 @@ import { httpAndFileResolver } from './resolver';
 import { groupWarningsBySource } from './utils';
 import { parseWithPointers } from '@stoplight/yaml';
 import { ISpectralFullResult,
+	IRunOpts,
 	isOpenApiv2,
 	isOpenApiv3,
-	IRunOpts
+	isJSONSchema,
+	isJSONSchemaLoose,
+	isJSONSchemaDraft4,
+	isJSONSchemaDraft6,
+	isJSONSchemaDraft7,
+	isJSONSchemaDraft2019_09
 } from '@stoplight/spectral';
 import { IDiagnostic, DiagnosticSeverity } from '@stoplight/types';
-import { URL } from 'url';
 
 const dc = vscode.languages.createDiagnosticCollection('spectral');
 
@@ -31,6 +36,12 @@ function validateDocument(document: vscode.TextDocument, expectedOas: boolean, r
 		const linter = new Spectral.Spectral({ resolver: httpAndFileResolver });
 		linter.registerFormat('oas2', isOpenApiv2);
 		linter.registerFormat('oas3', isOpenApiv3);
+		linter.registerFormat('json-schema', isJSONSchema);
+		linter.registerFormat('json-schema-loose', isJSONSchemaLoose);
+		linter.registerFormat('json-schema-draft4', isJSONSchemaDraft4);
+		linter.registerFormat('json-schema-draft6', isJSONSchemaDraft6);
+		linter.registerFormat('json-schema-draft7', isJSONSchemaDraft7);
+		linter.registerFormat('json-schema-2019-09', isJSONSchemaDraft2019_09);
 		if (!expectedOas) {
 			const doc = parseWithPointers(text);
 			const isOas = isOpenApiv2(doc.data) || isOpenApiv3(doc.data);
