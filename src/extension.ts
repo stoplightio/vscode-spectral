@@ -21,12 +21,15 @@ import { IDiagnostic, DiagnosticSeverity } from '@stoplight/types';
 const dc = vscode.languages.createDiagnosticCollection('spectral');
 
 function ourSeverity(spectralSeverity:IDiagnostic["severity"]) {
-	if (spectralSeverity === DiagnosticSeverity.Error)
+	if (spectralSeverity === DiagnosticSeverity.Error) {
 		return vscode.DiagnosticSeverity.Error;
-	if (spectralSeverity === DiagnosticSeverity.Warning)
+  }
+	if (spectralSeverity === DiagnosticSeverity.Warning) {
 		return vscode.DiagnosticSeverity.Warning;
-	if (spectralSeverity === DiagnosticSeverity.Information)
+  }
+	if (spectralSeverity === DiagnosticSeverity.Information) {
 		return vscode.DiagnosticSeverity.Information;
+  }
 	return vscode.DiagnosticSeverity.Hint;
 }
 
@@ -45,7 +48,9 @@ function validateDocument(document: vscode.TextDocument, expectedOas: boolean, r
 		if (!expectedOas) {
 			const doc = parseWithPointers(text);
 			const isOas = isOpenApiv2(doc.data) || isOpenApiv3(doc.data);
-			if (!isOas) return true;
+			if (!isOas) {
+        return true;
+      }
 		}
 		linter.loadRuleset('spectral:oas')
 		.then(function () {

@@ -5,7 +5,9 @@ export const groupWarningsBySource = function(warnings: IRuleResult[], defaultSo
     resultBag.set(defaultSource, []);
     warnings.forEach(function(warning){
         const source = warning.source || defaultSource;
-        if (!resultBag.has(source)) resultBag.set(source, []);
+        if (!resultBag.has(source)) {
+          resultBag.set(source, []);
+        }
         resultBag.get(source)!.push(warning);
     });
     return resultBag;
