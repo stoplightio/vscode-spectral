@@ -1,51 +1,100 @@
 {
-	"name": "spectral",
-	"displayName": "Spectral",
-	"description": "A flexible object linter with out of the box support for OpenAPI v2 and v3.",
-	"version": "0.0.1",
-	"publisher": "stoplight",
-	"engines": {
-		"vscode": "^1.37.0"
-	},
-	"categories": [
-		"Linters"
-	],
-	"activationEvents": [
-		"onCommand:extension.spectral-lint",
+  "name": "spectral",
+  "displayName": "Spectral",
+  "description": "A flexible object linter with out of the box support for OpenAPI v2 and v3.",
+  "version": "0.0.1",
+  "publisher": "stoplight",
+  "homepage": "https://github.com/stoplightio/vscode-spectral",
+  "bugs": "https://github.com/stoplightio/vscode-spectral/issues",
+  "author": "Stoplight <support@stoplight.io>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stoplightio/vscode-spectral"
+  },
+  "engines": {
+    "vscode": "^1.37.0"
+  },
+  "categories": [
+    "Linters"
+  ],
+  "activationEvents": [
+    "onCommand:extension.spectral-lint",
     "*"
-	],
-	"license": "Apache-2.0",
-	"main": "./out/extension.js",
-	"contributes": {
-		"commands": [
-			{
-				"command": "extension.spectral-lint",
-				"title": "Spectral: Lint"
-			}
-		]
-	},
-	"scripts": {
-		"vscode:prepublish": "yarn run compile",
-		"compile": "tsc -p ./",
-		"watch": "tsc -watch -p ./",
-		"pretest": "yarn run compile",
-		"test": "node ./out/test/runTest.js"
-	},
-	"devDependencies": {
-		"@types/glob": "^7.1.1",
-		"@types/mocha": "^5.2.6",
-		"@types/node": "^10.12.21",
-		"@types/node-fetch": "^2.5.3",
-		"@types/vscode": "^1.38.0",
-		"glob": "^7.1.4",
-		"mocha": "^6.1.4",
-		"tslint": "^5.12.1",
-		"typescript": "^3.3.1",
-		"vscode-test": "^1.2.0"
-	},
-	"dependencies": {
-		"@stoplight/spectral": "^5.0.0",
-		"@stoplight/yaml": "^3.5.0",
-		"@types/urijs": "^1.19.4"
-	}
+  ],
+  "license": "Apache-2.0",
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.spectral-lint",
+        "title": "Spectral: Lint"
+      }
+    ],
+    "yamlValidation": [
+      {
+        "fileMatch": ".spectral.yaml",
+        "url": "./schemas/ruleset.schema.json"
+      },
+      {
+        "fileMatch": ".spectral.yml",
+        "url": "./schemas/ruleset.schema.json"
+      },
+      {
+        "fileMatch": "spectral.yaml",
+        "url": "./schemas/ruleset.schema.json"
+      },
+      {
+        "fileMatch": "spectral.yml",
+        "url": "./schemas/ruleset.schema.json"
+      }
+    ],
+    "jsonValidation": [
+      {
+        "fileMatch": ".spectral.json",
+        "url": "./schemas/ruleset.schema.json"
+      },
+      {
+        "fileMatch": "spectral.json",
+        "url": "./schemas/ruleset.schema.json"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "yarn run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "yarn run compile",
+    "test": "node ./out/test/runTest.js",
+    "lint": "yarn run tslint src/**/*.ts"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.1.1",
+    "@types/mocha": "^5.2.6",
+    "@types/node": "^10.12.21",
+    "@types/node-fetch": "^2.5.3",
+    "@types/vscode": "^1.38.0",
+    "glob": "^7.1.4",
+    "mocha": "^6.1.4",
+    "tslint": "^5.12.1",
+    "typescript": "^3.3.1",
+    "vscode-test": "^1.2.0"
+  },
+  "dependencies": {
+    "@stoplight/spectral": "^5.0.0",
+    "@stoplight/yaml": "^3.5.0",
+    "@types/urijs": "^1.19.4"
+  },
+  "extensionDependencies": [
+    "redhat.vscode-yaml"
+  ],
+  "keywords": [
+    "json linter",
+    "linter",
+    "json validator",
+    "validator",
+    "OpenAPI",
+    "Swagger",
+    "schema",
+    "API"
+  ]
 }
