@@ -47,7 +47,7 @@ function validateDocument(document: vscode.TextDocument, expectedOas: boolean, r
 		linter.registerFormat('json-schema-2019-09', isJSONSchemaDraft2019_09);
 		if (!expectedOas) {
 			const doc = parseWithPointers(text);
-			const isOas = isOpenApiv2(doc.data) || isOpenApiv3(doc.data);
+			const isOas = isOpenApiv3(doc.data) || isOpenApiv2(doc.data);
 			if (!isOas) {
         return true;
       }
