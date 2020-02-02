@@ -4,8 +4,9 @@ import * as vscode from 'vscode';
 import * as Spectral from '@stoplight/spectral';
 import { httpAndFileResolver } from './resolver';
 import { groupWarningsBySource } from './utils';
-import { parseWithPointers } from '@stoplight/yaml';
-import { ISpectralFullResult,
+import { parse } from '@stoplight/yaml';
+import {
+	ISpectralFullResult,
 	IRunOpts,
 	isOpenApiv2,
 	isOpenApiv3,
@@ -20,16 +21,18 @@ import { IDiagnostic, DiagnosticSeverity } from '@stoplight/types';
 
 const dc = vscode.languages.createDiagnosticCollection('spectral');
 
-function ourSeverity(spectralSeverity:IDiagnostic["severity"]) {
+let changeTimeout: NodeJS.Timeout;
+
+function ourSeverity(spectralSeverity: IDiagnostic["severity"]) {
 	if (spectralSeverity === DiagnosticSeverity.Error) {
 		return vscode.DiagnosticSeverity.Error;
-  }
+	}
 	if (spectralSeverity === DiagnosticSeverity.Warning) {
 		return vscode.DiagnosticSeverity.Warning;
-  }
+	}
 	if (spectralSeverity === DiagnosticSeverity.Information) {
 		return vscode.DiagnosticSeverity.Information;
-  }
+	}
 	return vscode.DiagnosticSeverity.Hint;
 }
 
@@ -46,38 +49,38 @@ function validateDocument(document: vscode.TextDocument, expectedOas: boolean, r
 		linter.registerFormat('json-schema-draft7', isJSONSchemaDraft7);
 		linter.registerFormat('json-schema-2019-09', isJSONSchemaDraft2019_09);
 		if (!expectedOas) {
-			const doc = parseWithPointers(text);
-			const isOas = isOpenApiv3(doc.data) || isOpenApiv2(doc.data);
+			const doc = parse(text);
+			const isOas = isOpenApiv3(doc) || isOpenApiv2(doc);
 			if (!isOas) {
-        return true;
-      }
+				return true;
+			}
 		}
 		linter.loadRuleset('spectral:oas')
-		.then(function () {
-			const linterOptions: IRunOpts = { resolve: { documentUri: document.uri.toString() } };
-			return linter.runWithResolved(text, linterOptions);
-		})
-		.then(function (fullResults: ISpectralFullResult) {
-			const results = fullResults.results;
-			const resultBag = groupWarningsBySource(results, document.uri.toString());
-			resultBag.forEach(function(warnings, source){
-				const ourUri = vscode.Uri.parse(source);
-				dc.delete(ourUri);
-				if (warnings && warnings.length) {
-					const diagnostics = [];
-					for (let warning of warnings) {
-						let range = new vscode.Range(warning.range.start.line,warning.range.start.character,warning.range.end.line,warning.range.end.character);
-						diagnostics.push(new vscode.Diagnostic(range, warning.message + ' ' + warning.code, ourSeverity(warning.severity)));
+			.then(function () {
+				const linterOptions: IRunOpts = { resolve: { documentUri: document.uri.toString() } };
+				return linter.runWithResolved(text, linterOptions);
+			})
+			.then(function (fullResults: ISpectralFullResult) {
+				const results = fullResults.results;
+				const resultBag = groupWarningsBySource(results, document.uri.toString());
+				resultBag.forEach(function (warnings, source) {
+					const ourUri = vscode.Uri.parse(source);
+					dc.delete(ourUri);
+					if (warnings && warnings.length) {
+						const diagnostics = [];
+						for (let warning of warnings) {
+							let range = new vscode.Range(warning.range.start.line, warning.range.start.character, warning.range.end.line, warning.range.end.character);
+							diagnostics.push(new vscode.Diagnostic(range, warning.message + ' ' + warning.code, ourSeverity(warning.severity)));
+						}
+						dc.set(ourUri, diagnostics);
 					}
-					dc.set(ourUri, diagnostics);
-				}
+				});
+			})
+			.catch(function (ex: Error) {
+				let message = 'Spectral: Encountered error linting document :( \n';
+				message += ex.message;
+				vscode.window.showErrorMessage(message);
 			});
-		})
-		.catch(function (ex: Error) {
-			let message = 'Spectral: Encountered error linting document :( \n';
-			message += ex.message;
-			vscode.window.showErrorMessage(message);
-		});
 	}
 	catch (ex) {
 		vscode.window.showErrorMessage('Spectral: Could not parse document as JSON or YAML!');
@@ -100,6 +103,16 @@ function validateCurrentDocument(resolve: boolean) {
 	validateDocument(editor.document, true, resolve);
 }
 
+function queueValidateDocument(document: vscode.TextDocument, expectedOas: boolean, resolve: boolean) {
+    if (changeTimeout != null) {
+		clearTimeout(changeTimeout);
+	}
+    changeTimeout = setInterval(function () {
+		clearTimeout(changeTimeout);
+		validateDocument(document, expectedOas, resolve);
+    }, 2000);
+}
+
 // this method is called when your extension is activated
 // your extension is activated at VsCode startup
 export function activate(context: vscode.ExtensionContext) {
@@ -118,12 +131,18 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(disposable);
 
-    context.subscriptions.push(vscode.workspace.onDidSaveTextDocument(function(document){
-      return validateDocument(document, false, false);
-    }));
-    console.log('Spectral: Installed save handler');
-    // you can return an API from your extension for use in other extensions
-    // or tests etc
+	context.subscriptions.push(vscode.workspace.onDidSaveTextDocument(function (document) {
+		return validateDocument(document, false, false);
+	}));
+	console.log('Spectral: Installed save handler');
+
+	context.subscriptions.push(vscode.workspace.onDidChangeTextDocument(function (changeEvent) {
+		return queueValidateDocument(changeEvent.document, false, false);
+	}));
+	console.log('Spectral: Installed on-type handler');
+
+	// you can return an API from your extension for use in other extensions
+	// or tests etc
 }
 
 // this method is called when your extension is deactivated
