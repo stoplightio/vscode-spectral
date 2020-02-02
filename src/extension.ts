@@ -19,6 +19,7 @@ import {
 } from '@stoplight/spectral';
 import { IDiagnostic, DiagnosticSeverity } from '@stoplight/types';
 
+const LINT_ON_SAVE_TIMEOUT = 2000;
 const dc = vscode.languages.createDiagnosticCollection('spectral');
 
 let changeTimeout: NodeJS.Timeout;
@@ -110,7 +111,7 @@ function queueValidateDocument(document: vscode.TextDocument, expectedOas: boole
     changeTimeout = setInterval(function () {
 		clearTimeout(changeTimeout);
 		validateDocument(document, expectedOas, resolve);
-    }, 2000);
+    }, vscode.workspace.getConfiguration('spectral').get('lintOnSaveTimeout') || LINT_ON_SAVE_TIMEOUT);
 }
 
 // this method is called when your extension is activated

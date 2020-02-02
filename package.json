@@ -57,7 +57,17 @@
         "fileMatch": "spectral.json",
         "url": "./schemas/ruleset.schema.json"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Spectral",
+      "properties": {
+        "spectral.lintOnSaveTimeout": {
+          "type": "integer",
+          "default": 2000,
+          "description": "Delay in ms before lint on save event is fired."
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "yarn run compile",
