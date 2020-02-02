@@ -3,7 +3,7 @@
 import * as vscode from 'vscode';
 import * as Spectral from '@stoplight/spectral';
 import { httpAndFileResolver } from './resolver';
-import { groupWarningsBySource } from './utils';
+import { groupWarningsBySource, ourSeverity } from './utils';
 import { parse } from '@stoplight/yaml';
 import {
 	ISpectralFullResult,
@@ -17,25 +17,11 @@ import {
 	isJSONSchemaDraft7,
 	isJSONSchemaDraft2019_09
 } from '@stoplight/spectral';
-import { IDiagnostic, DiagnosticSeverity } from '@stoplight/types';
 
 const LINT_ON_SAVE_TIMEOUT = 2000;
 const dc = vscode.languages.createDiagnosticCollection('spectral');
 
 let changeTimeout: NodeJS.Timeout;
-
-function ourSeverity(spectralSeverity: IDiagnostic["severity"]) {
-	if (spectralSeverity === DiagnosticSeverity.Error) {
-		return vscode.DiagnosticSeverity.Error;
-	}
-	if (spectralSeverity === DiagnosticSeverity.Warning) {
-		return vscode.DiagnosticSeverity.Warning;
-	}
-	if (spectralSeverity === DiagnosticSeverity.Information) {
-		return vscode.DiagnosticSeverity.Information;
-	}
-	return vscode.DiagnosticSeverity.Hint;
-}
 
 function validateDocument(document: vscode.TextDocument, expectedOas: boolean, resolve: boolean) {
 	let text = document.getText();
