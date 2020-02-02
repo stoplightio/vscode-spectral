@@ -122,6 +122,8 @@ export function activate(context: vscode.ExtensionContext) {
       return validateDocument(document, false, false);
     }));
     console.log('Spectral: Installed save handler');
+    // you can return an API from your extension for use in other extensions
+    // or tests etc
 }
 
 // this method is called when your extension is deactivated
