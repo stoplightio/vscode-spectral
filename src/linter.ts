@@ -29,6 +29,6 @@ export const getLinter = function(document: vscode.TextDocument) {
         })
         .catch(ex => {
             reject(ex);
-        })
+        });
     });
 };

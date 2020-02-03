@@ -75,7 +75,7 @@
     "watch": "tsc -watch -p ./",
     "pretest": "yarn run compile",
     "test": "node ./out/test/runTest.js",
-    "lint": "yarn run tslint src/**/*.ts"
+    "lint": "yarn run tslint src/*.ts src/test/suite/*.ts"
   },
   "devDependencies": {
     "@types/glob": "^7.1.1",

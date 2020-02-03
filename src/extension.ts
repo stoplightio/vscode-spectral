@@ -12,7 +12,7 @@ import {
 	Spectral
 } from '@stoplight/spectral';
 
-const LINT_ON_SAVE_TIMEOUT = 2000;
+const LINT_ON_SAVE_TIMEOUT = 2000; // fallback. If changed, also update package.json
 const dc = vscode.languages.createDiagnosticCollection('spectral');
 
 let changeTimeout: NodeJS.Timeout;
@@ -71,7 +71,7 @@ function validateCurrentDocument() {
 }
 
 function queueValidateDocument(document: vscode.TextDocument, expectedOas: boolean) {
-    if (changeTimeout != null) {
+    if (changeTimeout !== null) {
 		clearTimeout(changeTimeout);
 	}
     changeTimeout = setInterval(function () {
