@@ -1,21 +1,15 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import * as Spectral from '@stoplight/spectral';
-import { httpAndFileResolver } from './resolver';
 import { groupWarningsBySource, ourSeverity } from './utils';
+import { getLinter } from './linter';
 import { parse } from '@stoplight/yaml';
 import {
 	ISpectralFullResult,
 	IRunOpts,
 	isOpenApiv2,
 	isOpenApiv3,
-	isJSONSchema,
-	isJSONSchemaLoose,
-	isJSONSchemaDraft4,
-	isJSONSchemaDraft6,
-	isJSONSchemaDraft7,
-	isJSONSchemaDraft2019_09
+	Spectral
 } from '@stoplight/spectral';
 
 const LINT_ON_SAVE_TIMEOUT = 2000;
@@ -23,7 +17,7 @@ const dc = vscode.languages.createDiagnosticCollection('spectral');
 
 let changeTimeout: NodeJS.Timeout;
 
-function validateDocument(document: vscode.TextDocument, expectedOas: boolean, resolve: boolean) {
+function validateDocument(document: vscode.TextDocument, expectedOas: boolean) {
 	let text = document.getText();
 	try {
 		if (!expectedOas) {
@@ -33,17 +27,8 @@ function validateDocument(document: vscode.TextDocument, expectedOas: boolean, r
 				return true;
 			}
 		}
-		const linter = new Spectral.Spectral({ resolver: httpAndFileResolver });
-		linter.registerFormat('oas2', isOpenApiv2);
-		linter.registerFormat('oas3', isOpenApiv3);
-		linter.registerFormat('json-schema', isJSONSchema);
-		linter.registerFormat('json-schema-loose', isJSONSchemaLoose);
-		linter.registerFormat('json-schema-draft4', isJSONSchemaDraft4);
-		linter.registerFormat('json-schema-draft6', isJSONSchemaDraft6);
-		linter.registerFormat('json-schema-draft7', isJSONSchemaDraft7);
-		linter.registerFormat('json-schema-2019-09', isJSONSchemaDraft2019_09);
-		linter.loadRuleset('spectral:oas')
-			.then(function () {
+		getLinter(document)
+			.then(function (linter: Spectral) {
 				const linterOptions: IRunOpts = { resolve: { documentUri: document.uri.toString() } };
 				return linter.runWithResolved(text, linterOptions);
 			})
@@ -75,28 +60,23 @@ function validateDocument(document: vscode.TextDocument, expectedOas: boolean, r
 	}
 }
 
-function validateCurrentDocument(resolve: boolean) {
+function validateCurrentDocument() {
 	let editor = vscode.window.activeTextEditor;
 	if (!editor) {
 		vscode.window.showWarningMessage('Spectral: You must have an open editor window to lint your document.');
 		return; // No open text editor
 	}
 
-	if (resolve && editor.document.isUntitled) {
-		vscode.window.showWarningMessage('Spectral: Document must be saved in order to resolve correctly.');
-		return; // No open text editor
-	}
-
-	validateDocument(editor.document, true, resolve);
+	validateDocument(editor.document, true);
 }
 
-function queueValidateDocument(document: vscode.TextDocument, expectedOas: boolean, resolve: boolean) {
+function queueValidateDocument(document: vscode.TextDocument, expectedOas: boolean) {
     if (changeTimeout != null) {
 		clearTimeout(changeTimeout);
 	}
     changeTimeout = setInterval(function () {
 		clearTimeout(changeTimeout);
-		validateDocument(document, expectedOas, resolve);
+		validateDocument(document, expectedOas);
     }, vscode.workspace.getConfiguration('spectral').get('lintOnSaveTimeout') || LINT_ON_SAVE_TIMEOUT);
 }
 
@@ -113,18 +93,18 @@ export function activate(context: vscode.ExtensionContext) {
 	// The commandId parameter must match the command field in package.json
 	let disposable = vscode.commands.registerCommand('extension.spectral-lint', () => {
 		// The code you place here will be executed every time your command is executed
-		validateCurrentDocument(false);
+		validateCurrentDocument();
 	});
 
 	context.subscriptions.push(disposable);
 
 	context.subscriptions.push(vscode.workspace.onDidSaveTextDocument(function (document) {
-		return validateDocument(document, false, false);
+		return validateDocument(document, false);
 	}));
 	console.log('Spectral: Installed save handler');
 
 	context.subscriptions.push(vscode.workspace.onDidChangeTextDocument(function (changeEvent) {
-		return queueValidateDocument(changeEvent.document, false, false);
+		return queueValidateDocument(changeEvent.document, false);
 	}));
 	console.log('Spectral: Installed on-type handler');
 
