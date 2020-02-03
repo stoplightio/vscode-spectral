@@ -26,6 +26,13 @@ let changeTimeout: NodeJS.Timeout;
 function validateDocument(document: vscode.TextDocument, expectedOas: boolean, resolve: boolean) {
 	let text = document.getText();
 	try {
+		if (!expectedOas) {
+			const doc = parse(text);
+			const isOas = isOpenApiv3(doc) || isOpenApiv2(doc);
+			if (!isOas) {
+				return true;
+			}
+		}
 		const linter = new Spectral.Spectral({ resolver: httpAndFileResolver });
 		linter.registerFormat('oas2', isOpenApiv2);
 		linter.registerFormat('oas3', isOpenApiv3);
@@ -35,13 +42,6 @@ function validateDocument(document: vscode.TextDocument, expectedOas: boolean, r
 		linter.registerFormat('json-schema-draft6', isJSONSchemaDraft6);
 		linter.registerFormat('json-schema-draft7', isJSONSchemaDraft7);
 		linter.registerFormat('json-schema-2019-09', isJSONSchemaDraft2019_09);
-		if (!expectedOas) {
-			const doc = parse(text);
-			const isOas = isOpenApiv3(doc) || isOpenApiv2(doc);
-			if (!isOas) {
-				return true;
-			}
-		}
 		linter.loadRuleset('spectral:oas')
 			.then(function () {
 				const linterOptions: IRunOpts = { resolve: { documentUri: document.uri.toString() } };
