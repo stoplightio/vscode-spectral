@@ -99,13 +99,11 @@
     "redhat.vscode-yaml"
   ],
   "keywords": [
-    "json linter",
     "linter",
-    "json validator",
     "validator",
     "OpenAPI",
     "Swagger",
-    "schema",
-    "API"
+    "API",
+    "multi-root ready"
   ]
 }

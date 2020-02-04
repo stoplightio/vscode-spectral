@@ -1,65 +1,54 @@
-# spectral README
+# Spectral README
 
-This is the README for your extension "spectral". After writing up a brief description, we recommend including the following sections.
+The Spectral VsCode Extension brings the power of [Spectral](https://github.com/stoplightio/spectral) to your favorite editor.
+
+Spectral is a flexible object linter with out of the box support for [OpenAPI](https://openapis.org/) v2 and v3.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+* Lint-on-save
+* Lint-on-type
+* Custom ruleset support (`spectral` or `.spectral` files with `.json`, `.yaml` or `.yml` extensions)
+* Intellisense for custom ruleset editing
+* Support for JSON and YAML input
 
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+![screenshot](docs/images/screenshot1.png)
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+Visual Studio Code version 1.37 or higher.
+
+## Installation
+
+* Install from the Visual Studio Code Marketplace within VsCode, or
+* `code --install-extension stoplightio/spectral`, or
+* Create a `.vsix` bundle with `vsce --package` and `code --install-extension {vsix filename}`
+
+## Development
+
+* Clone the [GitHub](https://github.com/stoplightio/vscode-spectral/) repository
+* Run `yarn`
+* Open the folder where you cloned the repository in VsCode
+* Start the included debugging configuration
+
+Please run `yarn run lint` and `yarn run test` before creating any pull-requests.
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
 This extension contributes the following settings:
 
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+* `spectral.lintOnSaveTimeout`: delay in ms before linting, default: `2000`
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+None.
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+### 0.0.1
 
-### 1.0.0
+Initial pre-release of VsCode extension. Spectral v5.0.0
 
-Initial release of ...
+## License
 
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+[Apache-2.0](./LICENSE)
