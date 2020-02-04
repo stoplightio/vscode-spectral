@@ -9,12 +9,60 @@ import {
   isOpenApiv2,
   isOpenApiv3,
 } from '@stoplight/spectral';
+import { dirname } from 'path';
 import * as vscode from 'vscode';
 import { httpAndFileResolver } from './resolver';
 
 export class Linter {
+  private configToLinterCache = new Map<string, Spectral.Spectral>();
+  private documentToConfigCache = new Map<vscode.Uri, vscode.Uri>();
+
+  private async findClosestConfig(document: vscode.TextDocument) {
+    let configs: vscode.Uri[] = [];
+    const root = vscode.workspace.getWorkspaceFolder(document.uri);
+    if (root && root.uri.scheme === 'file') {
+      const documentContainer = dirname(document.uri.fsPath);
+      configs = await vscode.workspace.findFiles(
+        new vscode.RelativePattern(root, '**/spectral.{json,yml,yaml}'),
+        '**/node_modules/**',
+      );
+      configs.concat(
+        await vscode.workspace.findFiles(
+          new vscode.RelativePattern(root, '**/.spectral.{json,yml,yaml}'),
+          '**/node_modules/**',
+        ),
+      );
+      // TODO sort configs by number of directory components
+      const parents = configs.filter(uri => {
+        const container = dirname(uri.fsPath);
+        return documentContainer.indexOf(container) >= 0;
+      });
+      if (parents.length) {
+        return parents.pop();
+      }
+    }
+    return vscode.Uri.parse('spectral:oas');
+  }
+  public purgeCaches() {
+    this.configToLinterCache.clear();
+    this.documentToConfigCache.clear();
+    return true;
+  }
+  public purgeDocumentUri(uri: vscode.Uri) {
+    this.documentToConfigCache.delete(uri);
+    return true;
+  }
   public getLinter = (document: vscode.TextDocument) => {
-    return new Promise<Spectral.Spectral>((resolve, reject) => {
+    return new Promise<Spectral.Spectral>(async (resolve, reject) => {
+      let config = this.documentToConfigCache.get(document.uri);
+      if (!config) {
+        config = await this.findClosestConfig(document);
+        this.documentToConfigCache.set(document.uri, config!);
+      }
+      const cached = this.configToLinterCache.get(config!.toString());
+      if (cached) {
+        return resolve(cached);
+      }
       const linter = new Spectral.Spectral({ resolver: httpAndFileResolver });
       linter.registerFormat('oas2', isOpenApiv2);
       linter.registerFormat('oas3', isOpenApiv3);
@@ -24,9 +72,11 @@ export class Linter {
       linter.registerFormat('json-schema-draft6', isJSONSchemaDraft6);
       linter.registerFormat('json-schema-draft7', isJSONSchemaDraft7);
       linter.registerFormat('json-schema-2019-09', isJSONSchemaDraft2019_09);
+      const ruleset = config!.scheme === 'file' ? config!.fsPath : config!.toString();
       linter
-        .loadRuleset('spectral:oas')
+        .loadRuleset(ruleset)
         .then(() => {
+          this.configToLinterCache.set(config!.toString(), linter);
           resolve(linter);
         })
         .catch(ex => {

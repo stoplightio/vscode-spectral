@@ -75,6 +75,10 @@ function validateCurrentDocument() {
 }
 
 function queueValidateDocument(document: vscode.TextDocument, expectedOas: boolean) {
+  const languageId = document.languageId;
+  if (languageId !== 'yaml' && languageId !== 'json') {
+    return false;
+  }
   if (changeTimeout !== null) {
     clearTimeout(changeTimeout);
   }
@@ -116,17 +120,16 @@ export function activate(context: vscode.ExtensionContext) {
   console.log('Spectral: Installed on-type handler');
 
   context.subscriptions.push(
-    vscode.workspace.onDidChangeWorkspaceFolders(() => {
-      // TODO recalculate Spectral instance cache
+    vscode.workspace.onDidCloseTextDocument(document => {
+      lintProvider.purgeDocumentUri(document.uri);
     }),
   );
 
-  const roots = vscode.workspace.workspaceFolders;
-  if (roots) {
-    roots.forEach(value => {
-      console.log(value.uri.toString());
-    });
-  }
+  context.subscriptions.push(
+    vscode.workspace.onDidChangeWorkspaceFolders(() => {
+      lintProvider.purgeCaches();
+    }),
+  );
 
   // you can return an API from your extension for use in other extensions
   // or tests etc
