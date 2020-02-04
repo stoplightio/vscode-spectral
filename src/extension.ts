@@ -3,11 +3,12 @@
 import { IRunOpts, isOpenApiv2, isOpenApiv3, ISpectralFullResult, Spectral } from '@stoplight/spectral';
 import { parse } from '@stoplight/yaml';
 import * as vscode from 'vscode';
-import { getLinter } from './linter';
+import { Linter } from './linter';
 import { groupWarningsBySource, ourSeverity } from './utils';
 
 const LINT_ON_SAVE_TIMEOUT = 2000; // fallback value. If changed, also update package.json
 const dc = vscode.languages.createDiagnosticCollection('spectral');
+const lintProvider = new Linter();
 
 let changeTimeout: NodeJS.Timeout;
 
@@ -21,7 +22,8 @@ function validateDocument(document: vscode.TextDocument, expectedOas: boolean) {
         return true;
       }
     }
-    getLinter(document)
+    lintProvider
+      .getLinter(document)
       .then((linter: Spectral) => {
         const linterOptions: IRunOpts = {
           resolve: { documentUri: document.uri.toString() },
