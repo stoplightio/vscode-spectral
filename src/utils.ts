@@ -2,7 +2,7 @@ import { IRuleResult } from '@stoplight/spectral';
 import { DiagnosticSeverity, IDiagnostic } from '@stoplight/types';
 import * as vscode from 'vscode';
 
-export const groupWarningsBySource = function (warnings: IRuleResult[], defaultSource: string) {
+export const groupWarningsBySource = (warnings: IRuleResult[], defaultSource: string) => {
   const resultBag = new Map<string, IRuleResult[]>();
   resultBag.set(defaultSource, []);
   warnings.forEach(warning => {
@@ -15,7 +15,7 @@ export const groupWarningsBySource = function (warnings: IRuleResult[], defaultS
   return resultBag;
 };
 
-export const ourSeverity = function (spectralSeverity: IDiagnostic['severity']) {
+export const ourSeverity = (spectralSeverity: IDiagnostic['severity']) => {
   if (spectralSeverity === DiagnosticSeverity.Error) {
     return vscode.DiagnosticSeverity.Error;
   }
