@@ -131,6 +131,34 @@ export function activate(context: vscode.ExtensionContext) {
     }),
   );
 
+  const configWatcher1 = vscode.workspace.createFileSystemWatcher('**/spectral{.yaml,.yml,.json}', false, false, false);
+  const configWatcher2 = vscode.workspace.createFileSystemWatcher(
+    '**/.spectral{.yaml,.yml,.json}',
+    false,
+    false,
+    false,
+  );
+
+  configWatcher1.onDidCreate(() => {
+    lintProvider.purgeCaches();
+  });
+  configWatcher1.onDidChange(() => {
+    lintProvider.purgeCaches();
+  });
+  configWatcher1.onDidDelete(() => {
+    lintProvider.purgeCaches();
+  });
+
+  configWatcher2.onDidCreate(() => {
+    lintProvider.purgeCaches();
+  });
+  configWatcher2.onDidChange(() => {
+    lintProvider.purgeCaches();
+  });
+  configWatcher2.onDidDelete(() => {
+    lintProvider.purgeCaches();
+  });
+
   // you can return an API from your extension for use in other extensions
   // or tests etc
 }
