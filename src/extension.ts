@@ -1,6 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import { IRunOpts, isOpenApiv2, isOpenApiv3, ISpectralFullResult, Spectral } from '@stoplight/spectral';
+import { IRuleResult, IRunOpts, isOpenApiv2, isOpenApiv3, ISpectralFullResult, Spectral } from '@stoplight/spectral';
 import { parse } from '@stoplight/yaml';
 import * as vscode from 'vscode';
 import { Linter } from './linter';
@@ -8,6 +8,7 @@ import { groupWarningsBySource, ourSeverity } from './utils';
 
 const LINT_ON_SAVE_TIMEOUT = 2000; // fallback value. If changed, also update package.json
 const dc = vscode.languages.createDiagnosticCollection('spectral');
+const notificationEmitter = new vscode.EventEmitter<Map<string, IRuleResult[]>>();
 const lintProvider = new Linter();
 
 let changeTimeout: NodeJS.Timeout;
@@ -33,6 +34,7 @@ function validateDocument(document: vscode.TextDocument, expectedOas: boolean) {
       .then((fullResults: ISpectralFullResult) => {
         const results = fullResults.results;
         const resultBag = groupWarningsBySource(results, document.uri.toString());
+        notificationEmitter.fire(resultBag);
         resultBag.forEach((warnings, source) => {
           const ourUri = vscode.Uri.parse(source);
           dc.delete(ourUri);
@@ -161,6 +163,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   // you can return an API from your extension for use in other extensions
   // or tests etc
+  return notificationEmitter;
 }
 
 // this method is called when your extension is deactivated

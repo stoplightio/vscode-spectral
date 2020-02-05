@@ -14,6 +14,7 @@ import * as vscode from 'vscode';
 import { httpAndFileResolver } from './resolver';
 
 export class Linter {
+  // configToLinterCache is keyed on a string to avoid needing object identity
   private configToLinterCache = new Map<string, Spectral.Spectral>();
   private documentToConfigCache = new Map<vscode.Uri, vscode.Uri>();
 
@@ -32,7 +33,14 @@ export class Linter {
           '**/node_modules/**',
         ),
       );
-      // TODO sort configs by number of directory components
+      // sort configs by number of directory components
+      configs.sort((a, b) => {
+        const componentsA = a.path.split('/').length;
+        const componentsB = b.path.split('/').length;
+        if (componentsA < componentsB) return -1;
+        if (componentsB > componentsA) return +1;
+        return 0;
+      });
       const parents = configs.filter(uri => {
         const container = dirname(uri.fsPath);
         return documentContainer.indexOf(container) >= 0;
