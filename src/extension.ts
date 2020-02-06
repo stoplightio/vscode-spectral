@@ -30,7 +30,7 @@ function validateDocument(document: vscode.TextDocument, expectedOas: boolean) {
         }
       }
       lintProvider
-        .getLinter(document)
+        .getLinter(document.uri)
         .then((linter: Spectral) => {
           const linterOptions: IRunOpts = {
             resolve: { documentUri: document.uri.toString() },

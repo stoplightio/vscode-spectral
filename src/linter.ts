@@ -18,11 +18,11 @@ export class Linter {
   private configToLinterCache = new Map<string, Spectral.Spectral>();
   private documentToConfigCache = new Map<vscode.Uri, vscode.Uri>();
 
-  private async findClosestConfig(document: vscode.TextDocument) {
+  private async findClosestConfig(uri: vscode.Uri) {
     let configs: vscode.Uri[] = [];
-    const root = vscode.workspace.getWorkspaceFolder(document.uri);
+    const root = vscode.workspace.getWorkspaceFolder(uri);
     if (root && root.uri.scheme === 'file') {
-      const documentContainer = dirname(document.uri.fsPath);
+      const documentContainer = dirname(uri.fsPath);
       configs = await vscode.workspace.findFiles(
         new vscode.RelativePattern(root, '**/spectral.{json,yml,yaml}'),
         '**/node_modules/**',
@@ -41,8 +41,8 @@ export class Linter {
         if (componentsB > componentsA) return +1;
         return 0;
       });
-      const parents = configs.filter(uri => {
-        const container = dirname(uri.fsPath);
+      const parents = configs.filter(parentUri => {
+        const container = dirname(parentUri.fsPath);
         return documentContainer.indexOf(container) >= 0;
       });
       if (parents.length) {
@@ -60,12 +60,12 @@ export class Linter {
     this.documentToConfigCache.delete(uri);
     return true;
   }
-  public getLinter = (document: vscode.TextDocument) => {
+  public getLinter = (uri: vscode.Uri) => {
     return new Promise<Spectral.Spectral>(async (resolve, reject) => {
-      let config = this.documentToConfigCache.get(document.uri);
+      let config = this.documentToConfigCache.get(uri);
       if (!config) {
-        config = await this.findClosestConfig(document);
-        this.documentToConfigCache.set(document.uri, config!);
+        config = await this.findClosestConfig(uri);
+        this.documentToConfigCache.set(uri, config!);
       }
       const cached = this.configToLinterCache.get(config!.toString());
       if (cached) {
