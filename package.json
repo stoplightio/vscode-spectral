@@ -65,6 +65,11 @@
           "type": "integer",
           "default": 2000,
           "description": "Delay in ms before lint on save event is fired."
+        },
+        "spectral.defaultRuleset": {
+          "type": "string",
+          "default": "spectral:oas",
+          "description": "Default ruleset URI."
         }
       }
     }

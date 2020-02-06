@@ -3,7 +3,7 @@
 import { IRuleResult, IRunOpts, isOpenApiv2, isOpenApiv3, ISpectralFullResult, Spectral } from '@stoplight/spectral';
 import { parse } from '@stoplight/yaml';
 import * as vscode from 'vscode';
-import { Linter } from './linter';
+import { LinterCache } from './linter';
 import { groupWarningsBySource, ourSeverity } from './utils';
 
 declare type IEventData = Map<string, IRuleResult[]> | Error;
@@ -14,9 +14,9 @@ export interface IExtensionAPI {
 const LINT_ON_SAVE_TIMEOUT = 2000; // fallback value. If changed, also update package.json
 const dc = vscode.languages.createDiagnosticCollection('spectral');
 const ourAPI: IExtensionAPI = { notificationEmitter: new vscode.EventEmitter<IEventData>() };
-const lintProvider = new Linter();
+const linterCache = new LinterCache();
 
-let changeTimeout: NodeJS.Timeout;
+let documentChangeTimeout: NodeJS.Timeout;
 
 function validateDocument(document: vscode.TextDocument, expectedOas: boolean) {
   const text = document.getText();
@@ -29,7 +29,7 @@ function validateDocument(document: vscode.TextDocument, expectedOas: boolean) {
           return resolve(true);
         }
       }
-      lintProvider
+      linterCache
         .getLinter(document.uri)
         .then((linter: Spectral) => {
           const linterOptions: IRunOpts = {
@@ -53,9 +53,10 @@ function validateDocument(document: vscode.TextDocument, expectedOas: boolean) {
                   warning.range.end.line,
                   warning.range.end.character,
                 );
-                diagnostics.push(
-                  new vscode.Diagnostic(range, warning.message + ' ' + warning.code, ourSeverity(warning.severity)),
-                );
+                const diagnostic = new vscode.Diagnostic(range, warning.message, ourSeverity(warning.severity));
+                diagnostic.code = warning.code; // constructor is a bit limited
+                diagnostic.source = 'spectral';
+                diagnostics.push(diagnostic);
               }
               dc.set(ourUri, diagnostics);
             }
@@ -93,11 +94,11 @@ function queueValidateDocument(document: vscode.TextDocument, expectedOas: boole
   if (languageId !== 'yaml' && languageId !== 'json') {
     return false;
   }
-  if (changeTimeout !== null) {
-    clearTimeout(changeTimeout);
+  if (documentChangeTimeout !== null) {
+    clearTimeout(documentChangeTimeout);
   }
-  changeTimeout = setInterval(() => {
-    clearTimeout(changeTimeout);
+  documentChangeTimeout = setInterval(() => {
+    clearTimeout(documentChangeTimeout);
     return validateDocument(document, expectedOas);
   }, vscode.workspace.getConfiguration('spectral').get('lintOnSaveTimeout') || LINT_ON_SAVE_TIMEOUT);
 }
@@ -135,13 +136,13 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.workspace.onDidCloseTextDocument(document => {
-      lintProvider.purgeDocumentUri(document.uri);
+      linterCache.purgeDocumentUri(document.uri);
     }),
   );
 
   context.subscriptions.push(
     vscode.workspace.onDidChangeWorkspaceFolders(() => {
-      lintProvider.purgeCaches();
+      linterCache.purgeCaches();
     }),
   );
 
@@ -154,23 +155,23 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   configWatcher1.onDidCreate(() => {
-    lintProvider.purgeCaches();
+    linterCache.purgeCaches();
   });
   configWatcher1.onDidChange(() => {
-    lintProvider.purgeCaches();
+    linterCache.purgeCaches();
   });
   configWatcher1.onDidDelete(() => {
-    lintProvider.purgeCaches();
+    linterCache.purgeCaches();
   });
 
   configWatcher2.onDidCreate(() => {
-    lintProvider.purgeCaches();
+    linterCache.purgeCaches();
   });
   configWatcher2.onDidChange(() => {
-    lintProvider.purgeCaches();
+    linterCache.purgeCaches();
   });
   configWatcher2.onDidDelete(() => {
-    lintProvider.purgeCaches();
+    linterCache.purgeCaches();
   });
 
   // you can return an API from your extension for use in other extensions

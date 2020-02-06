@@ -13,10 +13,12 @@ import { dirname } from 'path';
 import * as vscode from 'vscode';
 import { httpAndFileResolver } from './resolver';
 
-export class Linter {
+const DEFAULT_RULESET = 'spectral:oas'; // fallback value, if changed update package.json
+
+export class LinterCache {
   // configToLinterCache is keyed on a string to avoid needing object identity
-  private configToLinterCache = new Map<string, Spectral.Spectral>();
-  private documentToConfigCache = new Map<vscode.Uri, vscode.Uri>();
+  private configToLinterMap = new Map<string, Spectral.Spectral>();
+  private documentToConfigMap = new Map<vscode.Uri, vscode.Uri>();
 
   private async findClosestConfig(uri: vscode.Uri) {
     let configs: vscode.Uri[] = [];
@@ -49,25 +51,27 @@ export class Linter {
         return parents.pop();
       }
     }
-    return vscode.Uri.parse('spectral:oas');
+    return vscode.Uri.parse(vscode.workspace.getConfiguration('spectral').get('defaultRuleset') || DEFAULT_RULESET);
   }
   public purgeCaches() {
-    this.configToLinterCache.clear();
-    this.documentToConfigCache.clear();
+    this.configToLinterMap.clear();
+    this.documentToConfigMap.clear();
     return true;
   }
   public purgeDocumentUri(uri: vscode.Uri) {
-    this.documentToConfigCache.delete(uri);
+    this.documentToConfigMap.delete(uri);
+    // if no documents point to a config any more, we could purge the associated
+    // Spectral instance, at the cost of maybe needing to regenerate it later
     return true;
   }
   public getLinter = (uri: vscode.Uri) => {
     return new Promise<Spectral.Spectral>(async (resolve, reject) => {
-      let config = this.documentToConfigCache.get(uri);
+      let config = this.documentToConfigMap.get(uri);
       if (!config) {
         config = await this.findClosestConfig(uri);
-        this.documentToConfigCache.set(uri, config!);
+        this.documentToConfigMap.set(uri, config!);
       }
-      const cached = this.configToLinterCache.get(config!.toString());
+      const cached = this.configToLinterMap.get(config!.toString());
       if (cached) {
         return resolve(cached);
       }
@@ -84,7 +88,7 @@ export class Linter {
       linter
         .loadRuleset(ruleset)
         .then(() => {
-          this.configToLinterCache.set(config!.toString(), linter);
+          this.configToLinterMap.set(config!.toString(), linter);
           resolve(linter);
         })
         .catch(ex => {
