@@ -20,42 +20,46 @@ export class LinterCache {
   private configToLinterMap = new Map<string, Spectral.Spectral>();
   private documentToConfigMap = new Map<vscode.Uri, vscode.Uri>();
 
+  private configs: vscode.Uri[] = [];
+
   private async findClosestConfig(uri: vscode.Uri) {
-    let configs: vscode.Uri[] = [];
-    const root = vscode.workspace.getWorkspaceFolder(uri);
-    if (root && root.uri.scheme === 'file') {
-      const documentContainer = dirname(uri.fsPath);
-      configs = await vscode.workspace.findFiles(
-        new vscode.RelativePattern(root, '**/spectral.{json,yml,yaml}'),
-        '**/node_modules/**',
-      );
-      configs.concat(
-        await vscode.workspace.findFiles(
-          new vscode.RelativePattern(root, '**/.spectral.{json,yml,yaml}'),
+    if (this.configs.length === 0) {
+      const root = vscode.workspace.getWorkspaceFolder(uri);
+      if (root && root.uri.scheme === 'file') {
+        this.configs = await vscode.workspace.findFiles(
+          new vscode.RelativePattern(root, '**/spectral.{json,yml,yaml}'),
           '**/node_modules/**',
-        ),
-      );
-      // sort configs by number of directory components
-      configs.sort((a, b) => {
-        const componentsA = a.path.split('/').length;
-        const componentsB = b.path.split('/').length;
-        if (componentsA < componentsB) return -1;
-        if (componentsB > componentsA) return +1;
-        return 0;
-      });
-      const parents = configs.filter(parentUri => {
-        const container = dirname(parentUri.fsPath);
-        return documentContainer.indexOf(container) >= 0;
-      });
-      if (parents.length) {
-        return parents.pop();
+        );
+        this.configs.concat(
+          await vscode.workspace.findFiles(
+            new vscode.RelativePattern(root, '**/.spectral.{json,yml,yaml}'),
+            '**/node_modules/**',
+          ),
+        );
+        // sort configs by number of directory components
+        this.configs.sort((a, b) => {
+          const componentsA = a.path.split('/').length;
+          const componentsB = b.path.split('/').length;
+          if (componentsA < componentsB) return -1;
+          if (componentsB > componentsA) return +1;
+          return 0;
+        });
       }
+    }
+    const documentContainer = dirname(uri.fsPath);
+    const parents = this.configs.filter(parentUri => {
+      const container = dirname(parentUri.fsPath);
+      return documentContainer.indexOf(container) >= 0;
+    });
+    if (parents.length) {
+      return parents.pop();
     }
     return vscode.Uri.parse(vscode.workspace.getConfiguration('spectral').get('defaultRuleset') || DEFAULT_RULESET);
   }
   public purgeCaches() {
     this.configToLinterMap.clear();
     this.documentToConfigMap.clear();
+    this.configs = [];
     return true;
   }
   public purgeDocumentUri(uri: vscode.Uri) {
