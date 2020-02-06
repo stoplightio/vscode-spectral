@@ -6,64 +6,76 @@ import * as vscode from 'vscode';
 import { Linter } from './linter';
 import { groupWarningsBySource, ourSeverity } from './utils';
 
+declare type IEventData = Map<string, IRuleResult[]> | Error;
+export interface IExtensionAPI {
+  notificationEmitter: vscode.EventEmitter<IEventData>;
+}
+
 const LINT_ON_SAVE_TIMEOUT = 2000; // fallback value. If changed, also update package.json
 const dc = vscode.languages.createDiagnosticCollection('spectral');
-const notificationEmitter = new vscode.EventEmitter<Map<string, IRuleResult[]>>();
+const ourAPI: IExtensionAPI = { notificationEmitter: new vscode.EventEmitter<IEventData>() };
 const lintProvider = new Linter();
 
 let changeTimeout: NodeJS.Timeout;
 
 function validateDocument(document: vscode.TextDocument, expectedOas: boolean) {
   const text = document.getText();
-  try {
-    if (!expectedOas) {
-      const doc = parse(text);
-      const isOas = isOpenApiv3(doc) || isOpenApiv2(doc);
-      if (!isOas) {
-        return true;
+  return new Promise((resolve, reject) => {
+    try {
+      if (!expectedOas) {
+        const doc = parse(text);
+        const isOas = isOpenApiv3(doc) || isOpenApiv2(doc);
+        if (!isOas) {
+          return resolve(true);
+        }
       }
-    }
-    lintProvider
-      .getLinter(document)
-      .then((linter: Spectral) => {
-        const linterOptions: IRunOpts = {
-          resolve: { documentUri: document.uri.toString() },
-        };
-        return linter.runWithResolved(text, linterOptions);
-      })
-      .then((fullResults: ISpectralFullResult) => {
-        const results = fullResults.results;
-        const resultBag = groupWarningsBySource(results, document.uri.toString());
-        notificationEmitter.fire(resultBag);
-        resultBag.forEach((warnings, source) => {
-          const ourUri = vscode.Uri.parse(source);
-          dc.delete(ourUri);
-          if (warnings && warnings.length) {
-            const diagnostics = [];
-            for (const warning of warnings) {
-              const range = new vscode.Range(
-                warning.range.start.line,
-                warning.range.start.character,
-                warning.range.end.line,
-                warning.range.end.character,
-              );
-              diagnostics.push(
-                new vscode.Diagnostic(range, warning.message + ' ' + warning.code, ourSeverity(warning.severity)),
-              );
+      lintProvider
+        .getLinter(document)
+        .then((linter: Spectral) => {
+          const linterOptions: IRunOpts = {
+            resolve: { documentUri: document.uri.toString() },
+          };
+          return linter.runWithResolved(text, linterOptions);
+        })
+        .then((fullResults: ISpectralFullResult) => {
+          const results = fullResults.results;
+          const resultBag = groupWarningsBySource(results, document.uri.toString());
+          ourAPI.notificationEmitter.fire(resultBag);
+          resultBag.forEach((warnings, source) => {
+            const ourUri = vscode.Uri.parse(source);
+            dc.delete(ourUri);
+            if (warnings && warnings.length) {
+              const diagnostics = [];
+              for (const warning of warnings) {
+                const range = new vscode.Range(
+                  warning.range.start.line,
+                  warning.range.start.character,
+                  warning.range.end.line,
+                  warning.range.end.character,
+                );
+                diagnostics.push(
+                  new vscode.Diagnostic(range, warning.message + ' ' + warning.code, ourSeverity(warning.severity)),
+                );
+              }
+              dc.set(ourUri, diagnostics);
             }
-            dc.set(ourUri, diagnostics);
-          }
+          });
+          return resolve(resultBag);
+        })
+        .catch((ex: Error) => {
+          let message = 'Spectral: Encountered error linting document\n';
+          message += ex.message;
+          vscode.window.showErrorMessage(message);
+          ourAPI.notificationEmitter.fire(ex);
+          return reject(ex);
         });
-      })
-      .catch((ex: Error) => {
-        let message = 'Spectral: Encountered error linting document\n';
-        message += ex.message;
-        vscode.window.showErrorMessage(message);
-      });
-  } catch (ex) {
-    vscode.window.showErrorMessage('Spectral: Could not parse document as JSON or YAML');
-    console.warn(ex.message);
-  }
+    } catch (ex) {
+      vscode.window.showErrorMessage('Spectral: Could not parse document as JSON or YAML');
+      console.warn(ex.message);
+      ourAPI.notificationEmitter.fire(ex);
+      return reject(ex);
+    }
+  });
 }
 
 function validateCurrentDocument() {
@@ -73,7 +85,7 @@ function validateCurrentDocument() {
     return; // No open text editor
   }
 
-  validateDocument(editor.document, true);
+  return validateDocument(editor.document, true);
 }
 
 function queueValidateDocument(document: vscode.TextDocument, expectedOas: boolean) {
@@ -86,7 +98,7 @@ function queueValidateDocument(document: vscode.TextDocument, expectedOas: boole
   }
   changeTimeout = setInterval(() => {
     clearTimeout(changeTimeout);
-    validateDocument(document, expectedOas);
+    return validateDocument(document, expectedOas);
   }, vscode.workspace.getConfiguration('spectral').get('lintOnSaveTimeout') || LINT_ON_SAVE_TIMEOUT);
 }
 
@@ -102,7 +114,7 @@ export function activate(context: vscode.ExtensionContext) {
   // The commandId parameter must match the command field in package.json
   const disposable = vscode.commands.registerCommand('extension.spectral-lint', () => {
     // The code you place here will be executed every time your command is executed
-    validateCurrentDocument();
+    return validateCurrentDocument();
   });
 
   context.subscriptions.push(disposable);
@@ -163,7 +175,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   // you can return an API from your extension for use in other extensions
   // or tests etc
-  return notificationEmitter;
+  return ourAPI;
 }
 
 // this method is called when your extension is deactivated
