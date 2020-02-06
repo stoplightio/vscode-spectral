@@ -45,4 +45,25 @@ suite('Extension Test Suite', () => {
       }
     });
   }).timeout(SLOW_TIMEOUT_MS);
+
+  test('Linting a compliant yaml document', () => {
+    return new Promise(async (resolve, reject) => {
+      const compliantPath = path.resolve(__dirname, TEST_BASE, 'lintable.yaml');
+      const compliantUri = vscode.Uri.parse(compliantPath);
+      const compliantContents = fs.readFileSync(compliantPath, 'utf8');
+      try {
+        const spectral = await linterProvider.getLinter(compliantUri);
+        const linterOptions: IRunOpts = {
+          resolve: { documentUri: compliantUri.toString() },
+        };
+        const output = await spectral.runWithResolved(compliantContents, linterOptions);
+        assert.ok(output.hasOwnProperty('resolved'), 'Check for output.resolved');
+        assert.ok(output.hasOwnProperty('results'), 'Check for output.results');
+        assert.equal(output.results.length, 0, 'Should be zero results');
+        resolve(output);
+      } catch (ex) {
+        reject(ex);
+      }
+    });
+  }).timeout(SLOW_TIMEOUT_MS);
 });
