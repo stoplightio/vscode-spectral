@@ -26,6 +26,7 @@ commands:
       - checkout
       - cached-dependencies
       - run: yarn
+      - run: sudo apt install libsecret-1-0
       - run:
           name: Build the code
           command: yarn run compile
