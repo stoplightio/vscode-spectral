@@ -39,7 +39,7 @@ function validateDocument(document: vscode.TextDocument, expectedOas: boolean) {
         })
         .then((fullResults: ISpectralFullResult) => {
           const results = fullResults.results;
-          const resultBag = groupWarningsBySource(results, document.uri.toString());
+          const resultBag = groupWarningsBySource(results, document.uri);
           ourAPI.notificationEmitter.fire(resultBag);
           resultBag.forEach((warnings, source) => {
             const ourUri = vscode.Uri.parse(source);

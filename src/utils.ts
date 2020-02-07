@@ -2,8 +2,10 @@ import { IRuleResult } from '@stoplight/spectral';
 import { DiagnosticSeverity, IDiagnostic } from '@stoplight/types';
 import * as vscode from 'vscode';
 
-export const groupWarningsBySource = (warnings: IRuleResult[], defaultSource: string) => {
+export const groupWarningsBySource = (warnings: IRuleResult[], defaultUri: vscode.Uri) => {
   const resultBag = new Map<string, IRuleResult[]>();
+  // we have to match the format Spectral returns sources in
+  const defaultSource = defaultUri.scheme === 'file' ? defaultUri.fsPath : defaultUri.toString();
   resultBag.set(defaultSource, []);
   warnings.forEach(warning => {
     const source = warning.source || defaultSource;
