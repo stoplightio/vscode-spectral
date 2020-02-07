@@ -96,7 +96,10 @@
     "vscode-test": "^1.2.0"
   },
   "dependencies": {
+    "@stoplight/json-ref-readers": "^1.1.1",
+    "@stoplight/json-ref-resolver": "^3.0.6",
     "@stoplight/spectral": "^5.0.0",
+    "@stoplight/types": "^11.2.0",
     "@stoplight/yaml": "^3.5.0",
     "@types/urijs": "^1.19.4"
   },
