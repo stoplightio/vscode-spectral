@@ -1,4 +1,5 @@
 import * as assert from 'assert';
+import * as fs from 'fs';
 import * as path from 'path';
 
 // You can import and use all API from the 'vscode' module
@@ -10,6 +11,23 @@ const CMD_SPECTRAL_LINT = 'extension.spectral-lint';
 const CMD_CLOSE_EDITOR = 'workbench.action.closeActiveEditor';
 const SLOW_TIMEOUT_MS = 5000;
 const TEST_BASE = '../../../src/test/fixtures';
+
+/*function compare(filename: string, actual: object, expected: object | undefined, message: string) {
+  const outputFile = path.resolve(__dirname, TEST_BASE, filename) + '.exp.json';
+  const outputExists = fs.existsSync(outputFile);
+  if (!expected) {
+    if (outputExists) {
+      expected = require(outputFile);
+    } else {
+      fs.writeFileSync(outputFile, JSON.stringify(actual, null, 2), 'utf8');
+    }
+  }
+  assert.deepStrictEqual(actual, expected, message);
+}*/
+
+async function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 suite('Integration Test Suite', () => {
   let extensionApi: IExtensionAPI;
@@ -28,26 +46,26 @@ suite('Integration Test Suite', () => {
     extensionApi = ext!.exports;
   });
 
-  test('extensionApi should have notificationEmitter property', () => {
+  /*test('extensionApi should have notificationEmitter property', () => {
     assert.ok(extensionApi);
     assert.ok(extensionApi.hasOwnProperty('notificationEmitter'));
     assert.ok(extensionApi.notificationEmitter instanceof vscode.EventEmitter);
-  });
+  });*/
 
   test('extension should contribute Spectral commands', async () => {
-    await vscode.commands.getCommands(true).then(commands => {
-      const lint = commands.find(command => {
-        return command === CMD_SPECTRAL_LINT;
-      });
-      assert.equal(lint, CMD_SPECTRAL_LINT, 'check for lint command');
+    await sleep(1000); // allow some settle time
+    const commands = await vscode.commands.getCommands(true);
+    const lint = commands.find(command => {
+      return command === CMD_SPECTRAL_LINT;
     });
+    assert.equal(lint, CMD_SPECTRAL_LINT, 'check for lint command');
   });
 
   test('lint a plaintext file', async () => {
     return new Promise(async (resolve, reject) => {
-      const minimalPath = path.resolve(__dirname, TEST_BASE, 'plaintext.txt');
-      const minimalUri = vscode.Uri.parse(minimalPath);
-      await vscode.workspace.openTextDocument(minimalUri).then(
+      const plaintextPath = path.resolve(__dirname, TEST_BASE, 'plaintext.txt');
+      const plaintextUri = vscode.Uri.parse(plaintextPath);
+      await vscode.workspace.openTextDocument(plaintextUri).then(
         async (doc: vscode.TextDocument) => {
           assert.equal(doc.languageId, 'plaintext', 'Expected languageId: plaintext');
           await vscode.window.showTextDocument(doc, vscode.ViewColumn.One, false).then(async e => {
@@ -59,6 +77,7 @@ suite('Integration Test Suite', () => {
               // if the document is not json or yaml, or if it fails all the registered
               // is... functions
               assert.ok(result instanceof Map, 'Check type of lint result');
+              // compare('plaintext.txt', result as object, undefined, 'Compare results');
               resolve(result);
             });
           });
@@ -82,6 +101,7 @@ suite('Integration Test Suite', () => {
             await vscode.commands.executeCommand(CMD_SPECTRAL_LINT).then(result => {
               assert.ok(result, 'Expected a lint result');
               assert.ok(result instanceof Map, 'Check type of lint result');
+              // compare('openapi.yaml', result as object, undefined, 'Compare results');
               resolve(result);
             });
           });
@@ -105,6 +125,7 @@ suite('Integration Test Suite', () => {
             await vscode.commands.executeCommand(CMD_SPECTRAL_LINT).then(result => {
               assert.ok(result, 'Expected a lint result');
               assert.ok(result instanceof Map, 'Check type of lint result');
+              // compare('swagger.yaml', result as object, undefined, 'Compare results');
               resolve(result);
             });
           });
