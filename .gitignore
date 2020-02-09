@@ -1,6 +1,5 @@
 out/
 dev/
-src/test/fixtures/**/*.exp.json
 node_modules/
 .vscode-test/
 *.vsix

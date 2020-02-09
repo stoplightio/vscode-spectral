@@ -6,6 +6,7 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import * as linter from '../../linter';
 import * as utils from '../../utils';
+import { compare } from '../testUtils';
 
 import { IRunOpts, ISpectralFullResult } from '@stoplight/spectral';
 import { DiagnosticSeverity } from '@stoplight/types';
@@ -37,8 +38,9 @@ suite('Extension Test Suite', () => {
         const output = await spectral.runWithResolved(plaintextContents, linterOptions);
         assert.ok(output.hasOwnProperty('resolved'), 'Check for output.resolved');
         assert.ok(output.hasOwnProperty('results'), 'Check for output.results');
-        assert.equal(output.results.length, 1, 'Should be one result');
-        assert.equal(output.results[0].code, 'unrecognized-format', 'Check result code');
+        // assert.equal(output.results.length, 1, 'Should be one result');
+        // assert.equal(output.results[0].code, 'unrecognized-format', 'Check result code');
+        compare('plaintext.txt', output.results, 'ext', 'Compare results');
         resolve(output);
       } catch (ex) {
         reject(ex);
@@ -59,7 +61,8 @@ suite('Extension Test Suite', () => {
         const output = await spectral.runWithResolved(compliantContents, linterOptions);
         assert.ok(output.hasOwnProperty('resolved'), 'Check for output.resolved');
         assert.ok(output.hasOwnProperty('results'), 'Check for output.results');
-        assert.equal(output.results.length, 0, 'Should be zero results');
+        // assert.equal(output.results.length, 0, 'Should be zero results');
+        compare('lintable.yaml', output.results, 'ext', 'Compare results');
         resolve(output);
       } catch (ex) {
         reject(ex);

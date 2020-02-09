@@ -1,33 +1,17 @@
 import * as assert from 'assert';
-import * as fs from 'fs';
 import * as path from 'path';
 
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
+import { IRuleResult } from '@stoplight/spectral';
 import * as vscode from 'vscode';
 import { IExtensionAPI } from '../../extension';
+import { compare } from '../testUtils';
 
 const CMD_SPECTRAL_LINT = 'extension.spectral-lint';
 const CMD_CLOSE_EDITOR = 'workbench.action.closeActiveEditor';
 const SLOW_TIMEOUT_MS = 5000;
 const TEST_BASE = '../../../src/test/fixtures';
-
-/*function compare(filename: string, actual: object, expected: object | undefined, message: string) {
-  const outputFile = path.resolve(__dirname, TEST_BASE, filename) + '.exp.json';
-  const outputExists = fs.existsSync(outputFile);
-  if (!expected) {
-    if (outputExists) {
-      expected = require(outputFile);
-    } else {
-      fs.writeFileSync(outputFile, JSON.stringify(actual, null, 2), 'utf8');
-    }
-  }
-  assert.deepStrictEqual(actual, expected, message);
-}*/
-
-async function sleep(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
 
 suite('Integration Test Suite', () => {
   let extensionApi: IExtensionAPI;
@@ -53,7 +37,6 @@ suite('Integration Test Suite', () => {
   });*/
 
   test('extension should contribute Spectral commands', async () => {
-    await sleep(1000); // allow some settle time
     const commands = await vscode.commands.getCommands(true);
     const lint = commands.find(command => {
       return command === CMD_SPECTRAL_LINT;
@@ -69,7 +52,8 @@ suite('Integration Test Suite', () => {
         async (doc: vscode.TextDocument) => {
           assert.equal(doc.languageId, 'plaintext', 'Expected languageId: plaintext');
           await vscode.window.showTextDocument(doc, vscode.ViewColumn.One, false).then(async e => {
-            await vscode.commands.executeCommand(CMD_SPECTRAL_LINT).then(result => {
+            const result = await vscode.commands.executeCommand(CMD_SPECTRAL_LINT);
+            try {
               assert.ok(result, 'Expected a lint result');
               // because we are invoking the manual command, the extension assumes the
               // document needs linting (regardless of languageId) and will return
@@ -77,9 +61,12 @@ suite('Integration Test Suite', () => {
               // if the document is not json or yaml, or if it fails all the registered
               // is... functions
               assert.ok(result instanceof Map, 'Check type of lint result');
-              // compare('plaintext.txt', result as object, undefined, 'Compare results');
+              const resultBag = result as Map<string, IRuleResult[]>;
+              compare('plaintext.txt', resultBag, 'int', 'Compare result');
               resolve(result);
-            });
+            } catch (ex) {
+              reject(ex);
+            }
           });
           vscode.commands.executeCommand(CMD_CLOSE_EDITOR);
         },
@@ -101,7 +88,8 @@ suite('Integration Test Suite', () => {
             await vscode.commands.executeCommand(CMD_SPECTRAL_LINT).then(result => {
               assert.ok(result, 'Expected a lint result');
               assert.ok(result instanceof Map, 'Check type of lint result');
-              // compare('openapi.yaml', result as object, undefined, 'Compare results');
+              const resultBag = result as Map<string, IRuleResult[]>;
+              compare('openapi.yaml', resultBag, 'int', 'Compare results');
               resolve(result);
             });
           });
@@ -125,7 +113,8 @@ suite('Integration Test Suite', () => {
             await vscode.commands.executeCommand(CMD_SPECTRAL_LINT).then(result => {
               assert.ok(result, 'Expected a lint result');
               assert.ok(result instanceof Map, 'Check type of lint result');
-              // compare('swagger.yaml', result as object, undefined, 'Compare results');
+              const resultBag = result as Map<string, IRuleResult[]>;
+              compare('swagger.yaml', resultBag, 'int', 'Compare results');
               resolve(result);
             });
           });
