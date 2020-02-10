@@ -1,0 +1,10 @@
+language: node_js
+node_js:
+  - "node"
+  - "lts/*"
+  - "10"
+script:
+  - yarn
+  - yarn run compile
+  - yarn run lint
+  - yarn run test
