@@ -1,0 +1,15 @@
+openapi: 3.0.2
+info:
+  title: API
+  version: 1.0.0
+  description: B when viewed directly as the “active file” is valid. A refs B into a place it should not be, meaning B now “has a problem” but only due to where it ended up being reffed. When A is the active file, you should see the error with B. When opening B this is still a valid file, so no problems should exist
+paths:
+  /:
+    get:
+      responses:
+        '200':
+           description: OK
+components:
+  schemas:
+    invalid:
+      $ref: ./includes/parameterComplete.yaml#/components/parameters/id

@@ -126,4 +126,44 @@ suite('Extension Test Suite', () => {
       }
     });
   }).timeout(SLOW_TIMEOUT_MS);
+
+  test('Spec scenario 4a', () => {
+    return new Promise(async (resolve, reject) => {
+      const testPath = path.resolve(__dirname, TEST_BASE, 'scenario4.yaml');
+      const testUri = vscode.Uri.parse(testPath);
+      const testContents = fs.readFileSync(testPath, 'utf8');
+      try {
+        const spectral = await linterProvider.getLinter(testUri);
+        const linterOptions: IRunOpts = {
+          resolve: { documentUri: testUri.toString() },
+        };
+        const output = await spectral.runWithResolved(testContents, linterOptions);
+        assert.ok(output.hasOwnProperty('results'), 'Check for output.results');
+        compare('scenario4.yaml', output.results, 'ext', 'Compare results');
+        resolve(output);
+      } catch (ex) {
+        reject(ex);
+      }
+    });
+  }).timeout(SLOW_TIMEOUT_MS);
+
+  test('Spec scenario 4b', () => {
+    return new Promise(async (resolve, reject) => {
+      const testPath = path.resolve(__dirname, TEST_BASE, 'includes', 'parameterComplete.yaml');
+      const testUri = vscode.Uri.parse(testPath);
+      const testContents = fs.readFileSync(testPath, 'utf8');
+      try {
+        const spectral = await linterProvider.getLinter(testUri);
+        const linterOptions: IRunOpts = {
+          resolve: { documentUri: testUri.toString() },
+        };
+        const output = await spectral.runWithResolved(testContents, linterOptions);
+        assert.ok(output.hasOwnProperty('results'), 'Check for output.results');
+        compare('includes/parameterComplete.yaml', output.results, 'ext', 'Compare results');
+        resolve(output);
+      } catch (ex) {
+        reject(ex);
+      }
+    });
+  }).timeout(SLOW_TIMEOUT_MS);
 });

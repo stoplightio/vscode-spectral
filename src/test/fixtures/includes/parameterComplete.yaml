@@ -1,0 +1,20 @@
+openapi: 3.0.2
+info:
+  title: API
+  version: 1.0.0
+  description: What an included document must look like in order to pass Spectral linting
+  contact: {}
+tags:
+  - name: tag
+    description: Tag
+servers:
+  - url: https://example.com
+paths: {}
+components:
+  parameters:
+    id:
+      name: id
+      in: query
+      description: Valid parameter
+      schema:
+        type: string
