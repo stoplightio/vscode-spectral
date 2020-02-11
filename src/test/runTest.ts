@@ -15,6 +15,7 @@ async function main() {
 
     const vscodeExecutablePath = await downloadAndUnzipVSCode('1.40.1');
     const cliPath = resolveCliPathFromVSCodeExecutablePath(vscodeExecutablePath);
+    const testWorkspace = path.resolve(__dirname, '../../src/test/fixtures');
 
     // Use cp.spawn / cp.exec for custom setup
     cp.spawnSync(cliPath, ['--install-extension', 'redhat.vscode-yaml'], {
@@ -23,7 +24,7 @@ async function main() {
     });
 
     // Download VS Code, unzip it and run the integration test
-    await runTests({ vscodeExecutablePath, extensionDevelopmentPath, extensionTestsPath });
+    await runTests({ vscodeExecutablePath, extensionDevelopmentPath, extensionTestsPath, launchArgs: [testWorkspace] });
   } catch (err) {
     console.error('Failed to run tests', err.message);
     process.exit(1);
