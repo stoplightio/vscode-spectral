@@ -77,6 +77,31 @@ suite('Integration Test Suite', () => {
     });
   }).timeout(SLOW_TIMEOUT_MS);
 
+  test('lint a compliant JSON example', async () => {
+    return new Promise(async (resolve, reject) => {
+      const testPath = path.resolve(__dirname, TEST_BASE, 'lintable.json');
+      const testUri = vscode.Uri.parse(testPath);
+      await vscode.workspace.openTextDocument(testUri).then(
+        async (doc: vscode.TextDocument) => {
+          assert.equal(doc.languageId, 'json', 'Expected languageId: json');
+          await vscode.window.showTextDocument(doc, vscode.ViewColumn.One, false).then(async e => {
+            await vscode.commands.executeCommand(CMD_SPECTRAL_LINT).then(result => {
+              assert.ok(result, 'Expected a lint result');
+              assert.ok(result instanceof Map, 'Check type of lint result');
+              const resultBag = result as Map<string, IRuleResult[]>;
+              compare('lintable.json', resultBag, 'int', 'Compare results');
+              resolve(result);
+            });
+          });
+          vscode.commands.executeCommand(CMD_CLOSE_EDITOR);
+        },
+        (error: any) => {
+          reject(error);
+        },
+      );
+    });
+  }).timeout(SLOW_TIMEOUT_MS);
+
   test('lint a minimal OAS3 example', async () => {
     return new Promise(async (resolve, reject) => {
       const minimalPath = path.resolve(__dirname, TEST_BASE, 'openapi.yaml');
@@ -115,6 +140,102 @@ suite('Integration Test Suite', () => {
               assert.ok(result instanceof Map, 'Check type of lint result');
               const resultBag = result as Map<string, IRuleResult[]>;
               compare('swagger.yaml', resultBag, 'int', 'Compare results');
+              resolve(result);
+            });
+          });
+          vscode.commands.executeCommand(CMD_CLOSE_EDITOR);
+        },
+        (error: any) => {
+          reject(error);
+        },
+      );
+    });
+  }).timeout(SLOW_TIMEOUT_MS);
+
+  test('Test rules loading 1 (foo)', async () => {
+    return new Promise(async (resolve, reject) => {
+      const testPath = path.resolve(__dirname, TEST_BASE, 'rules', 'foo', 'openapi.yaml');
+      const testUri = vscode.Uri.parse(testPath);
+      await vscode.workspace.openTextDocument(testUri).then(
+        async (doc: vscode.TextDocument) => {
+          await vscode.window.showTextDocument(doc, vscode.ViewColumn.One, false).then(async e => {
+            await vscode.commands.executeCommand(CMD_SPECTRAL_LINT).then(result => {
+              assert.ok(result, 'Expected a lint result');
+              assert.ok(result instanceof Map, 'Check type of lint result');
+              const resultBag = result as Map<string, IRuleResult[]>;
+              compare('rules/foo/openapi.yaml', resultBag, 'int', 'Compare results');
+              resolve(result);
+            });
+          });
+          vscode.commands.executeCommand(CMD_CLOSE_EDITOR);
+        },
+        (error: any) => {
+          reject(error);
+        },
+      );
+    });
+  }).timeout(SLOW_TIMEOUT_MS);
+
+  test('Test rules loading 2 (foo/bar)', async () => {
+    return new Promise(async (resolve, reject) => {
+      const testPath = path.resolve(__dirname, TEST_BASE, 'rules', 'foo', 'bar', 'openapi.yaml');
+      const testUri = vscode.Uri.parse(testPath);
+      await vscode.workspace.openTextDocument(testUri).then(
+        async (doc: vscode.TextDocument) => {
+          await vscode.window.showTextDocument(doc, vscode.ViewColumn.One, false).then(async e => {
+            await vscode.commands.executeCommand(CMD_SPECTRAL_LINT).then(result => {
+              assert.ok(result, 'Expected a lint result');
+              assert.ok(result instanceof Map, 'Check type of lint result');
+              const resultBag = result as Map<string, IRuleResult[]>;
+              compare('rules/foo/bar/openapi.yaml', resultBag, 'int', 'Compare results');
+              resolve(result);
+            });
+          });
+          vscode.commands.executeCommand(CMD_CLOSE_EDITOR);
+        },
+        (error: any) => {
+          reject(error);
+        },
+      );
+    });
+  }).timeout(SLOW_TIMEOUT_MS);
+
+  test('Test rules loading 3 (bar)', async () => {
+    return new Promise(async (resolve, reject) => {
+      const testPath = path.resolve(__dirname, TEST_BASE, 'rules', 'bar', 'openapi.yaml');
+      const testUri = vscode.Uri.parse(testPath);
+      await vscode.workspace.openTextDocument(testUri).then(
+        async (doc: vscode.TextDocument) => {
+          await vscode.window.showTextDocument(doc, vscode.ViewColumn.One, false).then(async e => {
+            await vscode.commands.executeCommand(CMD_SPECTRAL_LINT).then(result => {
+              assert.ok(result, 'Expected a lint result');
+              assert.ok(result instanceof Map, 'Check type of lint result');
+              const resultBag = result as Map<string, IRuleResult[]>;
+              compare('rules/bar/openapi.yaml', resultBag, 'int', 'Compare results');
+              resolve(result);
+            });
+          });
+          vscode.commands.executeCommand(CMD_CLOSE_EDITOR);
+        },
+        (error: any) => {
+          reject(error);
+        },
+      );
+    });
+  }).timeout(SLOW_TIMEOUT_MS);
+
+  test('Test rules loading 4 (baz)', async () => {
+    return new Promise(async (resolve, reject) => {
+      const testPath = path.resolve(__dirname, TEST_BASE, 'rules', 'baz', 'openapi.yaml');
+      const testUri = vscode.Uri.parse(testPath);
+      await vscode.workspace.openTextDocument(testUri).then(
+        async (doc: vscode.TextDocument) => {
+          await vscode.window.showTextDocument(doc, vscode.ViewColumn.One, false).then(async e => {
+            await vscode.commands.executeCommand(CMD_SPECTRAL_LINT).then(result => {
+              assert.ok(result, 'Expected a lint result');
+              assert.ok(result instanceof Map, 'Check type of lint result');
+              const resultBag = result as Map<string, IRuleResult[]>;
+              compare('rules/baz/openapi.yaml', resultBag, 'int', 'Compare results');
               resolve(result);
             });
           });

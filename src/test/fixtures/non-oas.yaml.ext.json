@@ -1,0 +1,19 @@
+[
+  {
+    "range": {
+      "start": {
+        "line": 0,
+        "character": 0
+      },
+      "end": {
+        "line": 0,
+        "character": 13
+      }
+    },
+    "message": "The provided document does not match any of the registered formats [oas2, oas3, json-schema, json-schema-loose, json-schema-draft4, json-schema-draft6, json-schema-draft7, json-schema-2019-09]",
+    "code": "unrecognized-format",
+    "severity": 1,
+    "source": "fixtures/non-oas.yaml",
+    "path": []
+  }
+]

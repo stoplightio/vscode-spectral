@@ -1,0 +1,18 @@
+formats:
+  - oas2
+  - oas3
+rules:
+  our-custom-rule-bar:
+    description: Contact object should have `name`, `url` and `email`.
+    recommended: true
+    type: style
+    given: $.info.contact
+    then:
+      - field: name
+        function: truthy
+      - field: url
+        function: truthy
+      - field: email
+        function: truthy
+    tags:
+      - api

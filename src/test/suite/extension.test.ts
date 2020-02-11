@@ -46,6 +46,46 @@ suite('Extension Test Suite', () => {
     });
   }).timeout(SLOW_TIMEOUT_MS);
 
+  test('Lint non-oas YAML document', () => {
+    return new Promise(async (resolve, reject) => {
+      const testPath = path.resolve(__dirname, TEST_BASE, 'non-oas.yaml');
+      const testUri = vscode.Uri.parse(testPath);
+      const testContents = fs.readFileSync(testPath, 'utf8');
+      try {
+        const spectral = await linterProvider.getLinter(testUri);
+        const linterOptions: IRunOpts = {
+          resolve: { documentUri: testUri.toString() },
+        };
+        const output = await spectral.runWithResolved(testContents, linterOptions);
+        assert.ok(output.hasOwnProperty('results'), 'Check for output.results');
+        compare('non-oas.yaml', output.results, 'ext', 'Compare results');
+        resolve(output);
+      } catch (ex) {
+        reject(ex);
+      }
+    });
+  }).timeout(SLOW_TIMEOUT_MS);
+
+  test('Lint non-oas JSON document', () => {
+    return new Promise(async (resolve, reject) => {
+      const testPath = path.resolve(__dirname, TEST_BASE, 'non-oas.json');
+      const testUri = vscode.Uri.parse(testPath);
+      const testContents = fs.readFileSync(testPath, 'utf8');
+      try {
+        const spectral = await linterProvider.getLinter(testUri);
+        const linterOptions: IRunOpts = {
+          resolve: { documentUri: testUri.toString() },
+        };
+        const output = await spectral.runWithResolved(testContents, linterOptions);
+        assert.ok(output.hasOwnProperty('results'), 'Check for output.results');
+        compare('non-oas.json', output.results, 'ext', 'Compare results');
+        resolve(output);
+      } catch (ex) {
+        reject(ex);
+      }
+    });
+  }).timeout(SLOW_TIMEOUT_MS);
+
   test('Linting a compliant yaml document', () => {
     return new Promise(async (resolve, reject) => {
       const compliantPath = path.resolve(__dirname, TEST_BASE, 'lintable.yaml');
@@ -60,6 +100,27 @@ suite('Extension Test Suite', () => {
         assert.ok(output.hasOwnProperty('resolved'), 'Check for output.resolved');
         assert.ok(output.hasOwnProperty('results'), 'Check for output.results');
         compare('lintable.yaml', output.results, 'ext', 'Compare results');
+        resolve(output);
+      } catch (ex) {
+        reject(ex);
+      }
+    });
+  }).timeout(SLOW_TIMEOUT_MS);
+
+  test('Linting a compliant json document', () => {
+    return new Promise(async (resolve, reject) => {
+      const compliantPath = path.resolve(__dirname, TEST_BASE, 'lintable.yaml');
+      const compliantUri = vscode.Uri.parse(compliantPath);
+      const compliantContents = fs.readFileSync(compliantPath, 'utf8');
+      try {
+        const spectral = await linterProvider.getLinter(compliantUri);
+        const linterOptions: IRunOpts = {
+          resolve: { documentUri: compliantUri.toString() },
+        };
+        const output = await spectral.runWithResolved(compliantContents, linterOptions);
+        assert.ok(output.hasOwnProperty('resolved'), 'Check for output.resolved');
+        assert.ok(output.hasOwnProperty('results'), 'Check for output.results');
+        compare('lintable.json', output.results, 'ext', 'Compare results');
         resolve(output);
       } catch (ex) {
         reject(ex);
