@@ -30,11 +30,11 @@ suite('Integration Test Suite', () => {
     extensionApi = ext!.exports;
   });
 
-  /*test('extensionApi should have notificationEmitter property', () => {
+  test('extensionApi should have notificationEmitter property', () => {
     assert.ok(extensionApi);
     assert.ok(extensionApi.hasOwnProperty('notificationEmitter'));
     assert.ok(extensionApi.notificationEmitter instanceof vscode.EventEmitter);
-  });*/
+  });
 
   test('extension should contribute Spectral commands', async () => {
     const commands = await vscode.commands.getCommands(true);
