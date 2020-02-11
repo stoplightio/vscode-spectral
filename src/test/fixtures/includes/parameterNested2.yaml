@@ -1,0 +1,5 @@
+name: page
+in: query
+description: Parameter referencing invalid schema
+schema:
+  $ref: ./schemaInvalid.yaml

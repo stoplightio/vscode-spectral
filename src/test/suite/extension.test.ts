@@ -106,4 +106,24 @@ suite('Extension Test Suite', () => {
       }
     });
   }).timeout(SLOW_TIMEOUT_MS);
+
+  test('Spec scenario 3', () => {
+    return new Promise(async (resolve, reject) => {
+      const testPath = path.resolve(__dirname, TEST_BASE, 'scenario3.yaml');
+      const testUri = vscode.Uri.parse(testPath);
+      const testContents = fs.readFileSync(testPath, 'utf8');
+      try {
+        const spectral = await linterProvider.getLinter(testUri);
+        const linterOptions: IRunOpts = {
+          resolve: { documentUri: testUri.toString() },
+        };
+        const output = await spectral.runWithResolved(testContents, linterOptions);
+        assert.ok(output.hasOwnProperty('results'), 'Check for output.results');
+        compare('scenario3.yaml', output.results, 'ext', 'Compare results');
+        resolve(output);
+      } catch (ex) {
+        reject(ex);
+      }
+    });
+  }).timeout(SLOW_TIMEOUT_MS);
 });
