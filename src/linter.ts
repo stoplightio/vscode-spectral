@@ -30,7 +30,7 @@ export class LinterCache {
           new vscode.RelativePattern(root, '**/spectral.{json,yml,yaml}'),
           '**/node_modules/**',
         );
-        this.configs.concat(
+        this.configs = this.configs.concat(
           await vscode.workspace.findFiles(
             new vscode.RelativePattern(root, '**/.spectral.{json,yml,yaml}'),
             '**/node_modules/**',
