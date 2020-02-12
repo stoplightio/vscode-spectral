@@ -5,8 +5,8 @@ import * as path from 'path';
 // as well as import your extension to test it
 import { IRuleResult } from '@stoplight/spectral';
 import * as vscode from 'vscode';
-import { IExtensionAPI } from '../../extension';
-import { compare } from '../testUtils';
+import { IEventData, IExtensionAPI } from '../../extension';
+import { compare, sleep } from '../testUtils';
 
 const CMD_SPECTRAL_LINT = 'extension.spectral-lint';
 const CMD_CLOSE_EDITOR = 'workbench.action.closeActiveEditor';
@@ -30,10 +30,9 @@ suite('Integration Test Suite', () => {
     extensionApi = ext!.exports;
   });
 
-  test('extensionApi should have notificationEmitter property', () => {
+  test('extensionApi should have spectralNotification property', () => {
     assert.ok(extensionApi);
-    assert.ok(extensionApi.hasOwnProperty('notificationEmitter'));
-    assert.ok(extensionApi.notificationEmitter instanceof vscode.EventEmitter);
+    assert.ok(extensionApi.spectralNotification);
   });
 
   test('extension should contribute Spectral commands', async () => {
@@ -200,7 +199,31 @@ suite('Integration Test Suite', () => {
     });
   }).timeout(SLOW_TIMEOUT_MS);
 
-  test('Test rules loading 3 (bar)', async () => {
+  test('Test rules loading 3 (foo/bar/baz)', async () => {
+    return new Promise(async (resolve, reject) => {
+      const testPath = path.resolve(__dirname, TEST_BASE, 'rules', 'foo', 'bar', 'baz', 'openapi.yaml');
+      const testUri = vscode.Uri.parse(testPath);
+      await vscode.workspace.openTextDocument(testUri).then(
+        async (doc: vscode.TextDocument) => {
+          await vscode.window.showTextDocument(doc, vscode.ViewColumn.One, false).then(async e => {
+            await vscode.commands.executeCommand(CMD_SPECTRAL_LINT).then(result => {
+              assert.ok(result, 'Expected a lint result');
+              assert.ok(result instanceof Map, 'Check type of lint result');
+              const resultBag = result as Map<string, IRuleResult[]>;
+              compare('rules/foo/bar/baz/openapi.yaml', resultBag, 'int', 'Compare results');
+              resolve(result);
+            });
+          });
+          vscode.commands.executeCommand(CMD_CLOSE_EDITOR);
+        },
+        (error: any) => {
+          reject(error);
+        },
+      );
+    });
+  }).timeout(SLOW_TIMEOUT_MS);
+
+  test('Test rules loading 4 (bar)', async () => {
     return new Promise(async (resolve, reject) => {
       const testPath = path.resolve(__dirname, TEST_BASE, 'rules', 'bar', 'openapi.yaml');
       const testUri = vscode.Uri.parse(testPath);
@@ -224,7 +247,7 @@ suite('Integration Test Suite', () => {
     });
   }).timeout(SLOW_TIMEOUT_MS);
 
-  test('Test rules loading 4 (baz)', async () => {
+  test('Test rules loading 5 (baz)', async () => {
     return new Promise(async (resolve, reject) => {
       const testPath = path.resolve(__dirname, TEST_BASE, 'rules', 'baz', 'openapi.yaml');
       const testUri = vscode.Uri.parse(testPath);
@@ -238,6 +261,37 @@ suite('Integration Test Suite', () => {
               compare('rules/baz/openapi.yaml', resultBag, 'int', 'Compare results');
               resolve(result);
             });
+          });
+          vscode.commands.executeCommand(CMD_CLOSE_EDITOR);
+        },
+        (error: any) => {
+          reject(error);
+        },
+      );
+    });
+  }).timeout(SLOW_TIMEOUT_MS);
+
+  test('test lint-on-type event', async () => {
+    return new Promise(async (resolve, reject) => {
+      const testPath = path.resolve(__dirname, TEST_BASE, 'lintable.yaml');
+      const testUri = vscode.Uri.parse(testPath);
+      await vscode.workspace.openTextDocument(testUri).then(
+        async (doc: vscode.TextDocument) => {
+          await vscode.window.showTextDocument(doc, vscode.ViewColumn.One, false).then(async e => {
+            // set up listener
+            const disposable = extensionApi.spectralNotification((result: IEventData) => {
+              assert.ok(result, 'Expected a lint result');
+              assert.ok(result instanceof Map, 'Check type of lint result');
+              const resultBag = result as Map<string, IRuleResult[]>;
+              compare('lintable.yaml', resultBag, 'int', 'Compare results');
+              disposable.dispose();
+              resolve(result);
+            });
+            // edit the document
+            e.edit(editBuilder => {
+              editBuilder.insert(new vscode.Position(0, 13), '.');
+            });
+            await sleep(SLOW_TIMEOUT_MS);
           });
           vscode.commands.executeCommand(CMD_CLOSE_EDITOR);
         },

@@ -4,7 +4,7 @@ import * as path from 'path';
 
 const TEST_BASE = '../../src/test/fixtures';
 
-async function sleep(ms: number) {
+export async function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 

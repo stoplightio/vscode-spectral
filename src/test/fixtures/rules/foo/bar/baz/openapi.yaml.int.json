@@ -1,0 +1,29 @@
+{
+  "dataType": "Map",
+  "value": [
+    [
+      "fixtures/rules/foo/bar/baz/openapi.yaml",
+      [
+        {
+          "code": "our-custom-rule-bar",
+          "message": "Info object should have `description` property.",
+          "path": [
+            "info"
+          ],
+          "severity": 1,
+          "source": "fixtures/rules/foo/bar/baz/openapi.yaml",
+          "range": {
+            "start": {
+              "line": 2,
+              "character": 5
+            },
+            "end": {
+              "line": 4,
+              "character": 39
+            }
+          }
+        }
+      ]
+    ]
+  ]
+}

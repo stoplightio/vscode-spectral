@@ -1,0 +1,29 @@
+{
+  "dataType": "Map",
+  "value": [
+    [
+      "fixtures/lintable.yaml",
+      [
+        {
+          "code": "oas3-schema",
+          "message": "`openapi` property pattern should match pattern `^3\\.0\\.\\d(-.+)?$`",
+          "path": [
+            "openapi"
+          ],
+          "severity": 0,
+          "source": "fixtures/lintable.yaml",
+          "range": {
+            "start": {
+              "line": 0,
+              "character": 9
+            },
+            "end": {
+              "line": 0,
+              "character": 15
+            }
+          }
+        }
+      ]
+    ]
+  ]
+}
