@@ -21,7 +21,7 @@ Visual Studio Code version 1.37 or higher.
 ## Installation
 
 * Install from the Visual Studio Code Marketplace within VsCode, or
-* `code --install-extension stoplightio/spectral`, or
+* `code --install-extension stoplight.spectral`, or
 * Create a `.vsix` bundle with `vsce --package` and `code --install-extension {vsix filename}`
 
 ## Development
@@ -37,7 +37,8 @@ Please run `yarn run lint` and `yarn run test` before creating any pull-requests
 
 This extension contributes the following settings:
 
-* `spectral.lintOnSaveTimeout`: delay in ms before linting, default: `2000`
+* `spectral.lintOnSaveTimeout`: Delay in ms before linting, default: `2000`
+* `spectral.defaultRuleset`: Default ruleset URI, default: `spectral:oas`
 
 ## Known Issues
 
