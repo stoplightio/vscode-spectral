@@ -6,14 +6,15 @@ import * as vscode from 'vscode';
 import { LinterCache } from './linter';
 import { groupWarningsBySource, ourSeverity } from './utils';
 
-declare type IEventData = Map<string, IRuleResult[]> | Error;
+export declare type IEventData = Map<string, IRuleResult[]> | Error;
 export interface IExtensionAPI {
-  notificationEmitter: vscode.EventEmitter<IEventData>;
+  spectralNotification: vscode.Event<IEventData>;
 }
 
 const LINT_ON_SAVE_TIMEOUT = 2000; // fallback value. If changed, also update package.json
 const dc = vscode.languages.createDiagnosticCollection('spectral');
-const ourAPI: IExtensionAPI = { notificationEmitter: new vscode.EventEmitter<IEventData>() };
+const eventEmitter = new vscode.EventEmitter<IEventData>();
+const ourAPI: IExtensionAPI = { spectralNotification: eventEmitter.event };
 const linterCache = new LinterCache();
 
 let documentChangeTimeout: NodeJS.Timeout;
@@ -40,7 +41,7 @@ function validateDocument(document: vscode.TextDocument, expectedOas: boolean) {
         .then((fullResults: ISpectralFullResult) => {
           const results = fullResults.results;
           const resultBag = groupWarningsBySource(results, document.uri);
-          ourAPI.notificationEmitter.fire(resultBag);
+          eventEmitter.fire(resultBag);
           resultBag.forEach((warnings, source) => {
             const ourUri = vscode.Uri.parse(source);
             dc.delete(ourUri);
@@ -67,13 +68,13 @@ function validateDocument(document: vscode.TextDocument, expectedOas: boolean) {
           let message = 'Spectral: Encountered error linting document\n';
           message += ex.message;
           vscode.window.showErrorMessage(message);
-          ourAPI.notificationEmitter.fire(ex);
+          eventEmitter.fire(ex);
           return reject(ex);
         });
     } catch (ex) {
       vscode.window.showErrorMessage('Spectral: Could not parse document as JSON or YAML');
       console.warn(ex.message);
-      ourAPI.notificationEmitter.fire(ex);
+      eventEmitter.fire(ex);
       return reject(ex);
     }
   });
