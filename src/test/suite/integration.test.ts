@@ -301,4 +301,37 @@ suite('Integration Test Suite', () => {
       );
     });
   }).timeout(SLOW_TIMEOUT_MS);
+
+  test('test lint-on-save event', async () => {
+    return new Promise(async (resolve, reject) => {
+      const testPath = path.resolve(__dirname, TEST_BASE, 'volatile.yaml');
+      const testUri = vscode.Uri.parse(testPath);
+      await vscode.workspace.openTextDocument(testUri).then(
+        async (doc: vscode.TextDocument) => {
+          await vscode.window.showTextDocument(doc, vscode.ViewColumn.One, false).then(async e => {
+            // set up listener
+            const disposable = extensionApi.spectralNotification((result: IEventData) => {
+              assert.ok(result, 'Expected a lint result');
+              assert.ok(result instanceof Map, 'Check type of lint result');
+              const resultBag = result as Map<string, IRuleResult[]>;
+              compare('volatile.yaml', resultBag, 'int', 'Compare results');
+              disposable.dispose();
+              resolve(result);
+            });
+            // edit the document to mark it dirty
+            e.edit(editBuilder => {
+              editBuilder.insert(new vscode.Position(0, 0), '\n');
+              // save the document
+              doc.save();
+            });
+            await sleep(SLOW_TIMEOUT_MS);
+          });
+          vscode.commands.executeCommand(CMD_CLOSE_EDITOR);
+        },
+        (error: any) => {
+          reject(error);
+        },
+      );
+    });
+  }).timeout(SLOW_TIMEOUT_MS);
 });
