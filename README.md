@@ -22,7 +22,7 @@ Visual Studio Code version 1.37 or higher.
 
 * Install from the Visual Studio Code Marketplace within VsCode, or
 * `code --install-extension stoplight.spectral`, or
-* Create a `.vsix` bundle with `vsce --package` and `code --install-extension {vsix filename}`
+* Create a `.vsix` bundle using vsce (`npm install -g vsce`)  with `vsce package` and `code --install-extension {vsix filename}`
 
 ## Development
 
