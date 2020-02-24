@@ -40,9 +40,13 @@ This extension contributes the following settings:
 * `spectral.lintOnSaveTimeout`: Delay in ms before linting, default: `2000`
 * `spectral.defaultRuleset`: Default ruleset URI, default: `spectral:oas`
 
-## Known Issues
+## Known Issues / Limitations
 
-None.
+If you open a single file in VsCode (as opposed to opening a folder or
+workspace), then Spectral configs (.?spectral.{yml|yaml|json} files) will
+not be found, even if they are in the same directory. This is due to the use
+of the recommended/performant VsCode APIs for finding and watching files,
+which are exclusively workspace-based.
 
 ## Release Notes
 
