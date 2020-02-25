@@ -16,6 +16,7 @@ const dc = vscode.languages.createDiagnosticCollection('spectral');
 const eventEmitter = new vscode.EventEmitter<IEventData>();
 const ourAPI: IExtensionAPI = { spectralNotification: eventEmitter.event };
 const linterCache = new LinterCache();
+const clampRanges = vscode.workspace.getConfiguration('spectral').get('clampRanges');
 
 let documentChangeTimeout: NodeJS.Timeout;
 
@@ -48,12 +49,22 @@ function validateDocument(document: vscode.TextDocument, expectedOas: boolean) {
             if (warnings && warnings.length) {
               const diagnostics = [];
               for (const warning of warnings) {
-                const range = new vscode.Range(
-                  warning.range.start.line,
-                  warning.range.start.character,
-                  warning.range.end.line,
-                  warning.range.end.character,
-                );
+                let range;
+                if (!warning.path || clampRanges) {
+                  range = new vscode.Range(
+                    warning.range.start.line,
+                    warning.range.start.character,
+                    warning.range.start.line,
+                    256,
+                  );
+                } else {
+                  range = new vscode.Range(
+                    warning.range.start.line,
+                    warning.range.start.character,
+                    warning.range.end.line,
+                    warning.range.end.character,
+                  );
+                }
                 const diagnostic = new vscode.Diagnostic(range, warning.message, ourSeverity(warning.severity));
                 diagnostic.code = warning.code; // constructor is a bit limited
                 diagnostic.source = 'spectral';

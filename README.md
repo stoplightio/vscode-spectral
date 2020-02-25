@@ -39,6 +39,7 @@ This extension contributes the following settings:
 
 * `spectral.lintOnSaveTimeout`: Delay in ms before linting, default: `2000`
 * `spectral.defaultRuleset`: Default ruleset URI, default: `spectral:oas`
+* `spectral.clampRanges`: Minimize range highlighted by errors and warnings, default: `true`
 
 ## Known Issues / Limitations
 
