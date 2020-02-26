@@ -34,6 +34,7 @@ function validateDocument(document: vscode.TextDocument, expectedStructured: boo
         .then((linter: Spectral) => {
           const linterOptions: IRunOpts = {
             resolve: { documentUri: document.uri.toString() },
+            ignoreUnknownFormat: true,
           };
           return linter.runWithResolved(text, linterOptions);
         })
