@@ -1,7 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import { IRuleResult, IRunOpts, isOpenApiv2, isOpenApiv3, ISpectralFullResult, Spectral } from '@stoplight/spectral';
-import { parse } from '@stoplight/yaml';
+import { IRuleResult, IRunOpts, ISpectralFullResult, Spectral } from '@stoplight/spectral';
 import * as vscode from 'vscode';
 import { LinterCache } from './linter';
 import { groupWarningsBySource, ourSeverity } from './utils';
@@ -20,17 +19,16 @@ const clampRanges = vscode.workspace.getConfiguration('spectral').get('clampRang
 
 let documentChangeTimeout: NodeJS.Timeout;
 
-function validateDocument(document: vscode.TextDocument, expectedOas: boolean) {
-  const text = document.getText();
+function validateDocument(document: vscode.TextDocument, expectedStructured: boolean) {
   return new Promise((resolve, reject) => {
-    try {
-      if (!expectedOas) {
-        const doc = parse(text);
-        const isOas = isOpenApiv3(doc) || isOpenApiv2(doc);
-        if (!isOas) {
-          return resolve(true);
-        }
+    if (!expectedStructured) {
+      const lang = document.languageId;
+      if (lang !== 'json' && lang !== 'yaml') {
+        return resolve(true);
       }
+    }
+    const text = document.getText();
+    try {
       linterCache
         .getLinter(document.uri)
         .then((linter: Spectral) => {
