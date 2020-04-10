@@ -19,7 +19,10 @@ jobs:
         run: |
           yarn
           yarn run compile
-      - run: yarn run test
+      - name: Run headless tests
+        uses: GabrielBB/xvfb-action@v1.0
+        with:
+          run: yarn run test
 
   release:
     name: Release
@@ -32,12 +35,6 @@ jobs:
           node-version: 10
       - run: yarn
       - run: yarn run compile
-      - run: yarn run lint
-      - name: Run headless tests
-        uses: GabrielBB/xvfb-action@v1.0
-        with:
-          run: yarn run test
-
       - name: Release
         run: yarn run semantic-release
         env:
