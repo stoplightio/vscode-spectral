@@ -15,9 +15,17 @@ export function jsonReplacer(this: any, key: string, value: any) {
       dataType: 'Map',
       value: Array.from(originalObject.entries()),
     };
-  } else if (typeof value === 'string' && value.indexOf('/src/test/fixtures/') > -1) {
-    // we need to sanitise paths as they differ between environments
-    return value.split('/src/test/')[1];
+  } else if (typeof value === 'string') {
+    if (value.indexOf('/src/test/fixtures/') > -1) {
+      // we need to sanitise paths as they differ between environments
+      return value.split('/src/test/')[1];
+    } else if (value.indexOf('%5Csrc%5Ctest%5Cfixtures%5C') > -1) {
+      // Windows hack :-(
+      const normalized = value.replace('%5C', '/');
+      return normalized.split('/src/test/')[1];
+    } else {
+      return value;
+    }
   } else {
     return value;
   }
