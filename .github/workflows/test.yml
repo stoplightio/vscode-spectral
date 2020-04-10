@@ -1,0 +1,16 @@
+on: push
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 10
+      - name: yarn - setup & compile
+        run: |
+          yarn
+          yarn run compile
+      - run: yarn run test

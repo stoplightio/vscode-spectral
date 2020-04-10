@@ -20,8 +20,8 @@ Visual Studio Code version 1.37 or higher.
 
 ## Installation
 
-* Install from the Visual Studio Code Marketplace within VsCode, or
-* `code --install-extension stoplight.spectral`, or
+* Install from the [Visual Studio Code Marketplace](https://marketplace.visualstudio.com/items?itemName=stoplight.spectral) 
+* Install via the CLI: `code --install-extension stoplight.spectral`
 * Create a `.vsix` bundle using vsce (`npm install -g vsce`)  with `vsce package` and `code --install-extension {vsix filename}`
 
 ## Development
@@ -48,12 +48,6 @@ workspace), then Spectral configs (.?spectral.{yml|yaml|json} files) will
 not be found, even if they are in the same directory. This is due to the use
 of the recommended/performant VsCode APIs for finding and watching files,
 which are exclusively workspace-based.
-
-## Release Notes
-
-### 0.0.1
-
-Initial pre-release of VsCode extension. Spectral v5.0.0
 
 ## License
 
