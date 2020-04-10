@@ -1,8 +1,8 @@
 {
   "name": "spectral",
   "displayName": "Spectral",
-  "description": "A flexible object linter with out of the box support for OpenAPI v2 and v3.",
-  "version": "0.0.1",
+  "description": "JSON/YAML linter, with OpenAPI v2 & v3 support, and custom rulesets.",
+  "version": "0.0.0-development",
   "publisher": "stoplight",
   "homepage": "https://github.com/stoplightio/vscode-spectral",
   "bugs": "https://github.com/stoplightio/vscode-spectral/issues",
@@ -88,6 +88,7 @@
     "lint": "yarn run tslint src/*.ts src/test/suite/*.ts"
   },
   "devDependencies": {
+    "@semantic-release/github": "^7.0.5",
     "@types/glob": "^7.1.1",
     "@types/mocha": "^5.2.6",
     "@types/node": "^10.12.21",
@@ -95,6 +96,7 @@
     "@types/vscode": "^1.37.0",
     "glob": "^7.1.4",
     "mocha": "^6.1.4",
+    "semantic-release-vsce": "^3.0.1",
     "tslint": "^5.12.1",
     "tslint-config-stoplight": "~1.4",
     "typescript": "^3.3.1",
@@ -106,7 +108,8 @@
     "@stoplight/spectral": "^5.0.0",
     "@stoplight/types": "^11.2.0",
     "@stoplight/yaml": "^3.5.0",
-    "@types/urijs": "^1.19.4"
+    "@types/urijs": "^1.19.4",
+    "semantic-release": "^17.0.4"
   },
   "extensionDependencies": [
     "redhat.vscode-yaml"
@@ -117,6 +120,29 @@
     "OpenAPI",
     "Swagger",
     "API",
-    "multi-root ready"
-  ]
+    "style guide",
+    "API description",
+    "API specification",
+    "OAS",
+    "OAS2",
+    "OAS3"
+  ],
+  "release": {
+    "branches": "master",
+    "verifyConditions": [
+      "semantic-release-vsce",
+      "@semantic-release/github"
+    ],
+    "prepare": {
+      "path": "semantic-release-vsce",
+      "packageVsix": "stoplight-spectral.vsix"
+    },
+    "publish": [
+      "semantic-release-vsce",
+      {
+        "path": "@semantic-release/github",
+        "assets": "stoplight-spectral.vsix"
+      }
+    ]
+  }
 }
