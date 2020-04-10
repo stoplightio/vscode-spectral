@@ -33,7 +33,10 @@ jobs:
       - run: yarn
       - run: yarn run compile
       - run: yarn run lint
-      - run: yarn run test
+      - name: Run headless tests
+        uses: GabrielBB/xvfb-action@v1.0
+        with:
+          run: yarn run test
 
       - name: Release
         run: yarn run semantic-release
