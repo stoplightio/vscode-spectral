@@ -2,7 +2,7 @@
   "name": "spectral",
   "displayName": "Spectral",
   "description": "JSON/YAML linter, with OpenAPI v2 & v3 support, and custom rulesets.",
-  "version": "0.1.1",
+  "version": "0.0.0-development",
   "publisher": "stoplight",
   "homepage": "https://github.com/stoplightio/vscode-spectral",
   "bugs": "https://github.com/stoplightio/vscode-spectral/issues",

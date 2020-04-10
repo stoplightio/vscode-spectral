@@ -25,7 +25,8 @@ If applicable, add screenshots to help explain your problem.
 
 **Environment:**
  - Extension version: [e.g. 1.0.1]
- - OS: [e.g. Windows 7]
+ - VS Code version: [e.g. 1.40.0]
+ - Operating System: [e.g. Windows 7]
 
 **Additional context**
 Add any other context about the problem here.
