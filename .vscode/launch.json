@@ -1,37 +1,54 @@
-// A launch configuration that compiles the extension and then opens it inside a new window
-// Use IntelliSense to learn about possible attributes.
-// Hover to view descriptions of existing attributes.
-// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
 {
-	"version": "0.2.0",
-	"configurations": [
-		{
-			"name": "Run Extension",
-			"type": "extensionHost",
-			"request": "launch",
-			"runtimeExecutable": "${execPath}",
-			"args": [
-				"--extensionDevelopmentPath=${workspaceFolder}"
-			],
-			"outFiles": [
-				"${workspaceFolder}/out/**/*.js"
-			],
-			"preLaunchTask": "npm: watch"
-		},
-		{
-			"name": "Extension Tests",
-			"type": "extensionHost",
-			"request": "launch",
-			"runtimeExecutable": "${execPath}",
-			"args": [
-				"--extensionDevelopmentPath=${workspaceFolder}",
-        "--extensionTestsPath=${workspaceFolder}/out/test/suite/index",
-        "${workspaceFolder}/src/test/fixtures"
-			],
-			"outFiles": [
-				"${workspaceFolder}/out/test/**/*.js"
-			],
-			"preLaunchTask": "npm: watch"
-		}
-	]
+  "compounds": [
+    {
+      "configurations": [
+        "Launch Client",
+        "Attach to Server"
+      ],
+      "name": "Client + Server"
+    }
+  ],
+  "configurations": [
+    {
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}"
+      ],
+      "name": "Launch Client",
+      "outFiles": [
+        "${workspaceFolder}/client/**/*.js"
+      ],
+      //"preLaunchTask": "npm: watch",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "sourceMaps": true,
+      "stopOnEntry": false,
+      "type": "extensionHost"
+    },
+    {
+      "address": "localhost",
+      "name": "Attach to Server",
+      "outFiles": [
+        "${workspaceFolder}/server/**/*.js"
+      ],
+      "port": 6262,
+      "protocol": "inspector",
+      "request": "attach",
+      "sourceMaps": true,
+      "type": "node"
+    },
+    {
+      "args": [
+        "--timeout",
+        "999999",
+        "--colors"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "name": "Mocha Tests",
+      "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+      "protocol": "inspector",
+      "request": "launch",
+      "type": "node"
+    }
+  ],
+  "version": "0.2.0"
 }

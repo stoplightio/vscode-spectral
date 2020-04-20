@@ -12,11 +12,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 10
-      - name: yarn - setup & compile
+      - name: make.js - build, test, and package
         run: |
-          yarn
-          yarn run compile
-      - name: Run headless tests
-        uses: GabrielBB/xvfb-action@v1.0
-        with:
-          run: yarn run test
+          npm install
+          node make.js all

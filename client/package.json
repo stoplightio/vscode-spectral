@@ -1,0 +1,19 @@
+{
+  "author": "Stoplight <support@stoplight.io>",
+  "dependencies": {
+    "vscode-languageclient": "^6.1.3"
+  },
+  "description": "JSON/YAML linter with OpenAPI and custom ruleset support.",
+  "displayName": "Spectral",
+  "engines": {
+    "vscode": "^1.42.0"
+  },
+  "license": "Apache-2.0",
+  "name": "client",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stoplightio/vscode-spectral"
+  },
+  "version": "0.0.1"
+}

@@ -1,0 +1,30 @@
+{
+  "author": "Stoplight <support@stoplight.io>",
+  "dependencies": {
+    "@stoplight/spectral": "^5.3.0",
+    "@types/urijs": "1.19.5",
+    "minimatch": "^3.0.4",
+    "vscode-languageserver": "^6.1.1",
+    "vscode-languageserver-textdocument": "^1.0.1",
+    "vscode-uri": "^2.1.1"
+  },
+  "devDependencies": {
+    "@types/minimatch": "^3.0.3",
+    "@types/node-fetch": "^2.5.5"
+  },
+  "engines": {
+    "node": "*"
+  },
+  "license": "Apache-2.0",
+  "name": "server",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stoplightio/vscode-spectral"
+  },
+  "scripts": {
+    "_comment": "Post-install deletes the .mjs file from decimal.js because because Webpack messes up the VSIX when it's present. Deleting it fixes the issue; this seems related: https://github.com/MikeMcl/decimal.js/issues/59",
+    "postinstall": "rm -f node_modules/decimal.js/decimal.mjs"
+  },
+  "version": "0.0.1"
+}

@@ -1,0 +1,6 @@
+node_modules
+out
+*.js
+*.packed.js
+*.d.ts
+!make.js
