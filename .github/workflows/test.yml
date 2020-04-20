@@ -14,5 +14,5 @@ jobs:
           node-version: 10
       - name: make.js - build, test, and package
         run: |
-          npm install
+          npm install --only=dev
           node make.js all
