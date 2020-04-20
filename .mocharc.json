@@ -4,7 +4,6 @@
     "ts-node/register"
   ],
   "spec": [
-    "client/test/**/*.test.ts",
     "server/test/**/*.test.ts"
   ]
 }
