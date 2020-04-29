@@ -1,5 +1,3 @@
-'use strict';
-
 // Configuration has the same definitions/interfaces in both client and server
 // with two exceptions:
 // - The server has some configuration it only uses internally, so they don't

@@ -1,5 +1,3 @@
-'use strict';
-
 // Notifications have the same definitions/interfaces in both client and server
 // with two exceptions:
 // - The server has some notifications it only uses internally, so they don't
