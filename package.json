@@ -45,7 +45,7 @@
           "type": "string"
         },
         "spectral.validateFiles": {
-          "description": "An array of file globs which should be validated by Spectral. If language identifiers are also specified, the file must match both in order to be validated.",
+          "description": "An array of file globs (e.g., `**/*.yaml`) in minimatch glob format which should be validated by Spectral. If language identifiers are also specified, the file must match both in order to be validated.",
           "items": {
             "type": "string"
           },
