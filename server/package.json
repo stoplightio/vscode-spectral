@@ -25,7 +25,7 @@
   },
   "scripts": {
     "_comment": "Post-install deletes the .mjs file from decimal.js because because Webpack messes up the VSIX when it's present. Deleting it fixes the issue; this seems related: https://github.com/MikeMcl/decimal.js/issues/59",
-    "postinstall": "node node_modules/.bin/rimraf node_modules/decimal.js/decimal.mjs"
+    "postinstall": "rimraf node_modules/decimal.js/decimal.mjs"
   },
   "version": "0.0.1"
 }

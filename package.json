@@ -112,12 +112,12 @@
   },
   "scripts": {
     "clean": "git clean -dfX",
-    "compile": "node node_modules/.bin/tsc -b",
-    "lint": "node node_modules/.bin/eslint --ext .ts .",
+    "compile": "tsc -b",
+    "lint": "eslint --ext .ts .",
     "postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
     "prepare:vsce": "npm prune --production && cd client && npm prune --production && cd ../server && npm prune --production && cd ..",
-    "test": "node node_modules/.bin/_mocha",
-    "watch": "node node_modules/.bin/tsc -b -w"
+    "test": "mocha",
+    "watch": "tsc -b -w"
   },
   "version": "0.0.0-development"
 }
