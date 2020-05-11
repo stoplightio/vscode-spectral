@@ -63,6 +63,7 @@
         ]
       }
     ],
+    "linebreak-style": "off",
     "max-len": "off",
     "object-curly-spacing": [
       "error",

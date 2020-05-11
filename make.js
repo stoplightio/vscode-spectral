@@ -43,7 +43,7 @@ target.package = async () => {
 
   rm('-rf', 'client/*.packed.js');
   rm('-rf', 'server/*.packed.js');
-  run(`node_modules/.bin/webpack-cli --config ./client/webpack.config.js`);
+  run(`node node_modules/webpack-cli/bin/cli.js --config ./client/webpack.config.js`);
   await generateServerPackagingReports();
 
   run(`vsce package -o ${outputPath.artifacts}`);
@@ -114,7 +114,7 @@ function run(cl, capture = false) {
  * Generates reports to help 'manually webpack' the server plugin.
  */
 async function generateServerPackagingReports() {
-  run(`node_modules/.bin/webpack-cli --config ./server/webpack.config.js --profile --json > ${outputPath.artifacts}/server-modules.json`);
+  run(`node node_modules/webpack-cli/bin/cli.js --config ./server/webpack.config.js --profile --json > ${outputPath.artifacts}/server-modules.json`);
   console.log('Generating the list of modules used by the server.');
   const serverModules = require(`${outputPath.artifacts}/server-modules.json`);
   const names = jsonpath
