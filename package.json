@@ -74,6 +74,7 @@
     "@types/glob": "^7.1.1",
     "@types/mocha": "^7.0.2",
     "@types/node": "^12.12.29",
+    "@types/urijs": "1.19.5",
     "@types/vscode": "^1.42.0",
     "@typescript-eslint/eslint-plugin": "^2.27.0",
     "@typescript-eslint/parser": "^2.27.0",
@@ -114,8 +115,7 @@
     "clean": "git clean -dfX",
     "compile": "tsc -b",
     "lint": "eslint --ext .ts .",
-    "postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
-    "prepare:vsce": "npm prune --production && cd client && npm prune --production && cd ../server && npm prune --production && cd ..",
+    "postinstall": "cd client && yarn && cd ../server && yarn && cd ..",
     "test": "mocha",
     "watch": "tsc -b -w"
   },

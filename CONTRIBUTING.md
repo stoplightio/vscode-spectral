@@ -14,12 +14,12 @@ The top-level build script `make.js` uses [the `shelljs/make` utility](https://g
 
 ```powershell
 # Just checked out, restore packages!
-npm install
+yarn
 
 # Do a full clean, compile, test cycle.
 node make.js all
 
-# Clean - you'll need to npm install after this.
+# Clean - you'll need to run `yarn` after this.
 node make.js clean
 
 # Prune packages for production and generate the VSIX in the artifacts folder.

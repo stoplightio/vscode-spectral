@@ -23,14 +23,14 @@ target.all = () => {
 
 target.clean = () => {
   banner('Target: Clean');
-  run('npm run clean');
+  run('yarn clean');
 };
 
 target.compile = () => {
   banner('Target: Compile');
-  run('npm install');
-  run('npm run lint');
-  run('npm run compile');
+  run('yarn');
+  run('yarn lint');
+  run('yarn compile');
 };
 
 target.package = async () => {
@@ -70,7 +70,7 @@ target.publish = async (args) => {
 
 target.test = () => {
   banner('Target: Test');
-  run('npm test');
+  run('yarn test');
 };
 
 /**

@@ -2,8 +2,6 @@
   "recommendations": [
     "dbaeumer.vscode-eslint",
     "davidanson.vscode-markdownlint",
-    "eg2.vscode-npm-script",
-    "christian-kohler.npm-intellisense",
     "ms-vscode.vscode-typescript-tslint-plugin"
   ]
 }
