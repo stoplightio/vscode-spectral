@@ -1,9 +1,0 @@
-{
-  "recursive": true,
-  "require": [
-    "ts-node/register"
-  ],
-  "spec": [
-    "server/test/**/*.test.ts"
-  ]
-}

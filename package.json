@@ -71,6 +71,7 @@
   },
   "description": "JSON/YAML linter with OpenAPI and custom ruleset support.",
   "devDependencies": {
+    "@types/chai": "^4.2.11",
     "@types/glob": "^7.1.1",
     "@types/mocha": "^7.0.2",
     "@types/node": "^12.12.29",
@@ -78,6 +79,7 @@
     "@types/vscode": "^1.42.0",
     "@typescript-eslint/eslint-plugin": "^2.27.0",
     "@typescript-eslint/parser": "^2.27.0",
+    "chai": "^4.2.0",
     "eslint": "^6.8.0",
     "eslint-config-google": "^0.14.0",
     "glob": "^7.1.6",
@@ -116,7 +118,7 @@
     "compile": "tsc -b",
     "lint": "eslint --ext .ts .",
     "postinstall": "cd client && yarn && cd ../server && yarn && cd ..",
-    "test": "mocha",
+    "test": "mocha -r ts-node/register \"./+(client|server)/test/unit/**/*.test.ts\"",
     "watch": "tsc -b -w"
   },
   "version": "0.0.0-development"
