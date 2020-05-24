@@ -2,13 +2,11 @@ import { TextDocument } from 'vscode-languageserver-textdocument';
 import {
   IRuleResult,
   Spectral,
+  Parsers, Document as SpectralDocument,
 } from '@stoplight/spectral';
-import { parseYaml } from '@stoplight/spectral/dist/parsers';
-import { IParsedResult } from '@stoplight/spectral/dist/document';
+import { httpAndFileResolver } from '@stoplight/spectral/dist/resolvers/http-and-file';
 import { IRuleset } from '@stoplight/spectral/dist/types/ruleset';
-import { getLocationForJsonPath } from '@stoplight/yaml';
 import { URI } from 'vscode-uri';
-import { refResolver } from './resolver';
 import { registerFormats } from './formats';
 
 /**
@@ -16,7 +14,7 @@ import { registerFormats } from './formats';
  * content in a manner similar to the Spectral CLI.
  */
 export class Linter {
-  private spectral = new Spectral({ resolver: refResolver });
+  private spectral = new Spectral({ resolver: httpAndFileResolver });
 
   /**
    * Initializes a new instance of the linter.
@@ -48,7 +46,6 @@ export class Linter {
 
     // It's unclear why JSON and YAML both get parsed as YAML, but that's how Spectral does it, sooooooo...
     const text = document.getText();
-    const spec = parseYaml(text);
 
     // There's a bug in how `json-ref-resolver` handles file:// URLs - it fails
     // to decode any URL-encoded items because it treats a file://path/to/file
@@ -60,12 +57,13 @@ export class Linter {
     // reasonable as anything else for in-memory validation. This only really
     // matters when parsing the relative links in references anyway.
     const file = URI.parse(document.uri).fsPath;
-    const parsedResult: IParsedResult = {
-      source: file,
-      parsed: spec,
-      getLocationForJsonPath,
-    };
 
-    return this.spectral.run(parsedResult, { ignoreUnknownFormat: true, resolve: { documentUri: file } });
+    const doc = new SpectralDocument(
+      text,
+      Parsers.Yaml,
+      file,
+    );
+
+    return this.spectral.run(doc, { ignoreUnknownFormat: true, resolve: { documentUri: file } });
   }
 }

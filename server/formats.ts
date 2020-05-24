@@ -11,6 +11,8 @@ import {
   isOpenApiv3,
 } from '@stoplight/spectral';
 
+// TODO: Leverage https://github.com/stoplightio/spectral/pull/1156/files#diff-b91c6e8fe452fcee80f15d196282d253
+
 /**
  * Mapping of format ID to detector function that can determine if a given
  * document is of that type.
