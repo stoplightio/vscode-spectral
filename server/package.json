@@ -14,7 +14,7 @@
     "rimraf": "^3.0.2"
   },
   "engines": {
-    "node": "*"
+    "node": "^12.13"
   },
   "license": "Apache-2.0",
   "name": "server",

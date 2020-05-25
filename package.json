@@ -99,7 +99,8 @@
   },
   "displayName": "Spectral",
   "engines": {
-    "vscode": "^1.42.0"
+    "vscode": "^1.42.0",
+    "node": "^12.13"
   },
   "homepage": "https://github.com/stoplightio/vscode-spectral",
   "icon": "icon.png",
