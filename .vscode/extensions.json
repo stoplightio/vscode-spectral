@@ -1,7 +1,6 @@
 {
   "recommendations": [
     "dbaeumer.vscode-eslint",
-    "davidanson.vscode-markdownlint",
-    "ms-vscode.vscode-typescript-tslint-plugin"
+    "davidanson.vscode-markdownlint"
   ]
 }
