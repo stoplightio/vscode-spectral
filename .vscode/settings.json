@@ -9,5 +9,15 @@
   "typescript.tsc.autoDetect": "off",
   "typescript.tsdk": "./node_modules/typescript/lib",
   "typescript.tsserver.log": "off",
-  "typescript.tsserver.trace": "off"
+  "typescript.tsserver.trace": "off",
+  "eslint.probe": [
+    "typescript"
+  ],
+  "eslint.validate": [
+    "typescript"
+  ],
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
 }

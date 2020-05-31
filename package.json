@@ -118,7 +118,7 @@
   "scripts": {
     "clean": "git clean -dfX",
     "compile": "tsc -b",
-    "lint": "eslint --ext .ts .",
+    "lint": "eslint --ext .ts,.js .",
     "postinstall": "cd client && yarn && cd ../server && yarn && cd ..",
     "test": "mocha -r ts-node/register \"./+(client|server)/test/unit/**/*.test.ts\"",
     "watch": "tsc -b -w"
