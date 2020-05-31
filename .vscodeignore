@@ -50,8 +50,8 @@ server/node_modules/@nodelib
 server/node_modules/@types
 server/node_modules/agent-base
 server/node_modules/ansi-regex
-server/node_modules/asynckit
 server/node_modules/ast-types
+server/node_modules/asynckit
 server/node_modules/braces
 server/node_modules/bytes
 server/node_modules/camelcase
@@ -143,6 +143,7 @@ server/node_modules/socks
 server/node_modules/socks-proxy-agent
 server/node_modules/source-map
 server/node_modules/statuses
+server/node_modules/strict-event-emitter-types
 server/node_modules/string-width
 server/node_modules/string_decoder
 server/node_modules/strip-ansi
