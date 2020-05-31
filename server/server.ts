@@ -166,6 +166,16 @@ function resolveSettings(document: TextDocument): Thenable<TextDocumentSettings>
         }
 
         let rulesetFile: string | null;
+
+        // Probing logic:
+        //  Workspace mode:
+        //    If rulesetFile => Probe for it. Non existent => log the full path. Otherwise use it
+        //    Try find a default at the root. Non existent => log a message. Otherwise use it.
+        //  Standalone mode:
+        //    Try find a default next to the opened file. Non existent => log a message. Otherwise use it.
+        //  Open topics:
+        //    Should we default to oas when nothing is found?
+
         if (configuration.rulesetFile) {
           // A ruleset was specified, use that if it exists (relative to workspace).
           if (configuration.workspaceFolder) {
