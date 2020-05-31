@@ -2,26 +2,31 @@ import { TextDocument } from 'vscode-languageserver-textdocument';
 import {
   IRuleResult,
   Spectral,
-  Parsers, Document as SpectralDocument,
+  Parsers,
+  Document as SpectralDocument,
+  KNOWN_FORMATS,
 } from '@stoplight/spectral';
 import { httpAndFileResolver } from '@stoplight/spectral/dist/resolvers/http-and-file';
 import { IRuleset } from '@stoplight/spectral/dist/types/ruleset';
 import { URI } from 'vscode-uri';
-import { registerFormats } from './formats';
+
+const buildSpectralInstance = (): Spectral => {
+  const spectral = new Spectral({ resolver: httpAndFileResolver });
+
+  for (const [format, lookup] of KNOWN_FORMATS) {
+    // Each document type that Spectral can lint gets registered with detectors.
+    spectral.registerFormat(format, (document) => lookup(document));
+  }
+
+  return spectral;
+};
 
 /**
  * Wrapper for the Spectral linter that runs linting against VS Code document
  * content in a manner similar to the Spectral CLI.
  */
 export class Linter {
-  private spectral = new Spectral({ resolver: httpAndFileResolver });
-
-  /**
-   * Initializes a new instance of the linter.
-   */
-  constructor() {
-    registerFormats(this.spectral);
-  }
+  private spectral = buildSpectralInstance();
 
   /**
    * Executes Spectral linting against a VS Code document.
