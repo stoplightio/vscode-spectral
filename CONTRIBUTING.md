@@ -15,8 +15,11 @@ The top-level build script `make.js` uses [the `shelljs/make` utility](https://g
 # Just checked out, restore packages!
 yarn
 
-# Do a full clean, compile, test cycle.
+# Do a full clean, compile, test and package cycle.
 node make.js all
+
+# Do a full clean, compile, test and package cycle (for local testing only).
+node make.js allDev
 
 # Clean - you'll need to run `yarn` after this.
 node make.js clean

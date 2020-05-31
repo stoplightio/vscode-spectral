@@ -1,4 +1,4 @@
-/* global mkdir, rm, target */
+/* global mkdir, rm, target, cp */
 'use strict';
 
 require('shelljs/make');
@@ -6,6 +6,9 @@ const fs = require('fs').promises;
 const path = require('path');
 const ncp = require('child_process');
 const jsonpath = require('jsonpath');
+const semver = require('semver');
+
+const packageJsonPath = path.join(__dirname, 'package.json');
 
 /** Build output paths. */
 const outputPath = {
@@ -13,12 +16,19 @@ const outputPath = {
   log: path.join(__dirname, 'artifacts', 'log'),
 };
 
-target.all = () => {
+target.allDev = async () => {
+  banner('Target: AllDev');
+  const backupPath = await patchPackageJsonVersion();
+  await target.all();
+  await revertToOriginalPackageJson(backupPath);
+};
+
+target.all = async () => {
   banner('Target: All');
   target.clean();
   target.compile();
   target.test();
-  target.package();
+  await target.package();
 };
 
 target.clean = () => {
@@ -137,4 +147,44 @@ async function generateServerPackagingReports() {
     });
 
   await fs.writeFile(path.join(outputPath.artifacts, 'server-vscodeignore.txt'), potentialIgnores.join('\n'));
+}
+
+/**
+ * Temporarily patches the package.json version
+ * in order to make local integration testing easier
+ */
+async function patchPackageJsonVersion() {
+  const now = Math.floor(Date.now()/1000);
+
+  const backupPath = `${packageJsonPath}.${now}`;
+
+  console.log(`Backing up "package.json" to "${backupPath}"`);
+  cp(packageJsonPath, backupPath);
+
+  const packageJsonContent = await fs.readFile(packageJsonPath, { encoding: 'utf8' });
+  const jsonPackage = JSON.parse(packageJsonContent);
+  const current = jsonPackage.version;
+  const version = semver.parse(current);
+  version.patch = now;
+  version.inc('prerelease', 'dev');
+  const next = version.toString();
+
+  console.log(`Temporarily patching "package.json" version from "${current}" to "${next}"`);
+  jsonPackage.version = next;
+
+  await fs.writeFile(packageJsonPath, JSON.stringify(jsonPackage, undefined, 2));
+
+  return backupPath;
+}
+
+/**
+ * Reverts patched package.json file
+ * @param {string} backupPath - The path to the original "package.json" file.
+ */
+async function revertToOriginalPackageJson(backupPath) {
+  console.log('Restoring original "package.json" file');
+  cp(backupPath, packageJsonPath);
+
+  console.log(`Removing temporary backup "${backupPath}" file`);
+  rm(backupPath);
 }

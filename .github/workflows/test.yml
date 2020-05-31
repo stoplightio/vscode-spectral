@@ -19,4 +19,4 @@ jobs:
       - name: make.js - build, test, and package
         run: |
           yarn install
-          node make.js all
+          node make.js allDev
