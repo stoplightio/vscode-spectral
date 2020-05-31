@@ -50,7 +50,7 @@ namespace Is {
  * language server occurs.
  */
 const connection = createConnection(ProposedFeatures.all);
-connection.console.info(`Spectral server running in node ${process.version}`);
+connection.console.info(`Spectral v${Linter.version} server running (Node.js ${process.version})`);
 
 /**
  * Cache of lint-related settings per document.

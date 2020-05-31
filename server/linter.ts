@@ -9,6 +9,9 @@ import {
 import { httpAndFileResolver } from '@stoplight/spectral/dist/resolvers/http-and-file';
 import { IRuleset } from '@stoplight/spectral/dist/types/ruleset';
 import { URI } from 'vscode-uri';
+import * as spectralPackage from '@stoplight/spectral/package.json';
+
+const spectralVersion = spectralPackage.version;
 
 const buildSpectralInstance = (): Spectral => {
   const spectral = new Spectral({ resolver: httpAndFileResolver });
@@ -27,6 +30,7 @@ const buildSpectralInstance = (): Spectral => {
  */
 export class Linter {
   private spectral = buildSpectralInstance();
+  static version = spectralVersion;
 
   /**
    * Executes Spectral linting against a VS Code document.
