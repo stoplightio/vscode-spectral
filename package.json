@@ -124,5 +124,5 @@
     "test": "mocha -r ts-node/register \"./+(client|server)/test/unit/**/*.test.ts\"",
     "watch": "tsc -b -w"
   },
-  "version": "0.0.0-development"
+  "version": "0.1.0"
 }
