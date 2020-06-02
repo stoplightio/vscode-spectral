@@ -207,9 +207,8 @@ function resolveSettings(document: TextDocument): Thenable<TextDocumentSettings>
             showErrorMessage(docPath, `Unable to read ruleset at ${rulesetFile}.`);
           }
         } else {
-          // If there's no ruleset available, default to OAS rules.
-          // https://github.com/stoplightio/spectral/blob/4928b6155659cec225d0cfab6d77d849d691cc24/src/cli/services/linter/utils/getRuleset.ts#L22
-          settings.ruleset = await readRuleset('spectral:oas');
+          // If there's no ruleset available, default to built-in rulesets.
+          settings.ruleset = await readRuleset(Linter.builtInRulesets);
         }
       }
 

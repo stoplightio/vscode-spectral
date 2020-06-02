@@ -5,16 +5,18 @@ import {
   Parsers,
   Document as SpectralDocument,
   KNOWN_FORMATS,
+  KNOWN_RULESETS,
+  SPECTRAL_PKG_VERSION,
 } from '@stoplight/spectral';
 import { httpAndFileResolver } from '@stoplight/spectral/dist/resolvers/http-and-file';
 import { IRuleset } from '@stoplight/spectral/dist/types/ruleset';
 import { URI } from 'vscode-uri';
-import * as spectralPackage from '@stoplight/spectral/package.json';
-
-const spectralVersion = spectralPackage.version;
 
 const buildSpectralInstance = (): Spectral => {
-  const spectral = new Spectral({ resolver: httpAndFileResolver });
+  const spectral = new Spectral({
+    resolver: httpAndFileResolver,
+    useNimma: false,
+  });
 
   for (const [format, lookup] of KNOWN_FORMATS) {
     // Each document type that Spectral can lint gets registered with detectors.
@@ -30,7 +32,8 @@ const buildSpectralInstance = (): Spectral => {
  */
 export class Linter {
   private spectral = buildSpectralInstance();
-  static version = spectralVersion;
+  static version = SPECTRAL_PKG_VERSION;
+  static builtInRulesets = KNOWN_RULESETS;
 
   /**
    * Executes Spectral linting against a VS Code document.
