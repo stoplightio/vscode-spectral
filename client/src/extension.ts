@@ -1,5 +1,6 @@
 import * as path from 'path';
 import {
+  commands as Commands,
   ExtensionContext,
   window as Window,
   workspace as Workspace,
@@ -14,11 +15,13 @@ import {
   ServerOptions,
   TransportKind,
   FileChangeType,
+  Disposable,
 } from 'vscode-languageclient';
 import { ExtensionSettings } from './configuration';
 import { StartWatcherNotification, StartWatcherParams } from './notifications';
 
 let client: LanguageClient;
+let commands: Disposable[] | undefined = undefined;
 
 /**
  * The set of FileSystemWatcher objects that monitor Spectral configuration
@@ -185,6 +188,10 @@ export function activate(context: ExtensionContext): void {
   });
 
   client.start();
+
+  commands = [Commands.registerCommand('spectral.showOutputChannel', () => {
+    client.outputChannel.show();
+  })];
 }
 
 /**
@@ -193,6 +200,11 @@ export function activate(context: ExtensionContext): void {
  * @return {Thenable<void>|undefined} A promise to await deactivation.
  */
 export function deactivate(): Thenable<void> | undefined {
+  if (commands !== undefined) {
+    commands.forEach((d) => d.dispose());
+    commands = undefined;
+  }
+
   if (!client) {
     return undefined;
   }

@@ -4,3 +4,4 @@ out/
 wbpkd/
 .dist/
 .idea/
+.vscode-test/

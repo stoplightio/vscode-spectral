@@ -61,6 +61,9 @@ target.package = async () => {
   pushd(outputPath.dist);
   run(`yarn vsce package -o ${outputPath.artifacts}`);
   popd();
+
+  console.log('Running e2e tests...');
+  run(`yarn test:e2e`);
 };
 
 target.publish = async (args) => {

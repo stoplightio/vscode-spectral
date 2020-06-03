@@ -69,9 +69,17 @@
       "type": "object"
     }
   },
+  "commands": [
+    {
+      "title": "Show Output Channel",
+      "category": "Spectral",
+      "command": "spectral.showOutputChannel"
+    }
+  ],
   "description": "JSON/YAML linter with OpenAPI and custom ruleset support.",
   "devDependencies": {
     "@types/chai": "^4.2.11",
+    "@types/chai-jest-snapshot": "^1.3.6",
     "@types/glob": "^7.1.3",
     "@types/mocha": "^8.0.0",
     "@types/node": "^12.12.50",
@@ -79,6 +87,9 @@
     "@typescript-eslint/eslint-plugin": "^3.6.0",
     "@typescript-eslint/parser": "^3.6.0",
     "chai": "^4.2.0",
+    "chai-jest-snapshot": "^2.0.0",
+    "copyfiles": "^2.3.0",
+    "cross-env": "^7.0.2",
     "eslint": "^7.4.0",
     "eslint-config-google": "^0.14.0",
     "glob": "^7.1.6",
@@ -115,10 +126,11 @@
   },
   "scripts": {
     "clean": "rimraf .dist && rimraf \"client/*(out|wbpkd)\" && rimraf \"server/*(out|wbpkd)\"",
-    "compile": "tsc -p client && tsc -p server",
+    "compile": "tsc -p client && tsc -p server && yarn copyfiles -u 2 \"./client/src/**/*.{json,yaml,snap}\" ./client/out/",
     "lint": "eslint --ext .ts,.js .",
     "postinstall": "cd client && yarn && cd ../server && yarn && cd ..",
     "test": "mocha -r ts-node/register \"./+(client|server)/test/unit/**/*.test.ts\"",
+    "test:e2e": "cross-env CI=true CHAI_JEST_SNAPSHOT_UPDATE_ALL=false node ./client/out/test/e2e/index.js",
     "watch": "tsc -b -w"
   },
   "version": "0.1.0"
