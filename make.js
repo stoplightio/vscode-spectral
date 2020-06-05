@@ -46,7 +46,7 @@ target.package = async () => {
   run(`node node_modules/webpack-cli/bin/cli.js --config ./client/webpack.config.js`);
   await generateServerPackagingReports();
 
-  run(`vsce package -o ${outputPath.artifacts}`);
+  run(`yarn vsce package -o ${outputPath.artifacts}`);
 };
 
 target.publish = async (args) => {
@@ -65,7 +65,7 @@ target.publish = async (args) => {
   }
 
   // https://code.visualstudio.com/api/working-with-extensions/publishing-extension
-  run(`vsce publish --packagePath ${path.join(outputPath.artifacts, vsixFiles[0].name)} -p ${token}`);
+  run(`yarn vsce publish --packagePath ${path.join(outputPath.artifacts, vsixFiles[0].name)} -p ${token}`);
 };
 
 target.test = () => {
