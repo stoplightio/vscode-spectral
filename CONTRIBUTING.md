@@ -40,4 +40,4 @@ The server portion is not because of the dynamic way Spectral loads its rulesets
 
 I couldn't figure out how to get the rulesets to properly load but webpack "everything else." I'd love a PR if someone is better at webpack than I am.
 
-In the meantime, we use webpack to do some tree-shaking and analyze what actually gets used. The results get processed into some files dumped in the artifacts folder at package time, and we can use those to modify the `.vscodeignore` file.
+In the meantime, we use webpack to do some tree-shaking and analyze what actually gets used. The results get processed into some files dumped in the artifacts folder at package time, and those are used to dynamically generate the proper `.vscodeignore` file.

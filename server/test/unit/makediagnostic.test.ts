@@ -2,7 +2,7 @@ import { expect } from 'chai';
 
 import { IRuleResult } from '@stoplight/spectral';
 import { DiagnosticSeverity as SpectralDiagnosticSeverity } from '@stoplight/types/dist/diagnostics';
-import { makeDiagnostic } from '../../util';
+import { makeDiagnostic } from '../../src/util';
 import { DiagnosticSeverity as VSCodeDiagnosticSeverity } from 'vscode-languageserver';
 
 /**

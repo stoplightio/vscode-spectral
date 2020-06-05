@@ -1,7 +1,4 @@
 {
-  "exclude": [
-    "node_modules"
-  ],
   "extends": "./tsconfig.base.json",
   "references": [
     {

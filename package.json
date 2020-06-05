@@ -89,14 +89,12 @@
     "rimraf": "^3.0.2",
     "semver": "^7.3.2",
     "shelljs": "^0.8.4",
-    "ts-loader": "^7.0.5",
     "ts-node": "^8.10.2",
     "typescript": "^3.8.3",
     "vsce": "^1.75.0",
     "vscode-test": "^1.4.0",
     "webpack": "^4.42.1",
-    "webpack-cli": "^3.3.11",
-    "webpack-node-externals": "^1.7.2"
+    "webpack-cli": "^3.3.11"
   },
   "displayName": "Spectral",
   "engines": {
@@ -109,7 +107,7 @@
     "multi-root ready"
   ],
   "license": "Apache-2.0",
-  "main": "./client/extension",
+  "main": "./client/index.js",
   "name": "spectral",
   "publisher": "stoplight",
   "repository": {
@@ -117,8 +115,8 @@
     "url": "https://github.com/stoplightio/vscode-spectral"
   },
   "scripts": {
-    "clean": "git clean -dfX",
-    "compile": "tsc -b",
+    "clean": "rimraf .dist && rimraf \"client/*(out|wbpkd)\" && rimraf \"server/*(out|wbpkd)\"",
+    "compile": "tsc -p client && tsc -p server",
     "lint": "eslint --ext .ts,.js .",
     "postinstall": "cd client && yarn && cd ../server && yarn && cd ..",
     "test": "mocha -r ts-node/register \"./+(client|server)/test/unit/**/*.test.ts\"",

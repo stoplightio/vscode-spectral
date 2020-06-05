@@ -40,4 +40,4 @@ This extension contributes the following settings:
 
 ## License
 
-[Apache-2.0](./LICENSE)
+[Apache-2.0](LICENSE.txt)

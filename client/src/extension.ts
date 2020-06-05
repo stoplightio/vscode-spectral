@@ -16,7 +16,7 @@ import {
   FileChangeType,
 } from 'vscode-languageclient';
 import { ExtensionSettings } from './configuration';
-import { StartWatcherNotification } from './notifications';
+import { StartWatcherNotification, StartWatcherParams } from './notifications';
 
 let client: LanguageClient;
 
@@ -171,7 +171,7 @@ export function activate(context: ExtensionContext): void {
   }
 
   client.onReady().then(() => {
-    client.onNotification(StartWatcherNotification.type, (params) => {
+    client.onNotification(StartWatcherNotification.type, (params: StartWatcherParams) => {
       // The language server lets us know which ruleset files to watch since
       // it's configurable and depends on the file/location being validated. We
       // don't use the built-in synchronization setup because the set of

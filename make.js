@@ -1,4 +1,4 @@
-/* global mkdir, rm, target, cp */
+/* global mkdir, pushd, popd, rm, target, cp */
 'use strict';
 
 require('shelljs/make');
@@ -13,6 +13,7 @@ const packageJsonPath = path.join(__dirname, 'package.json');
 /** Build output paths. */
 const outputPath = {
   artifacts: path.join(__dirname, 'artifacts'),
+  dist: path.join(__dirname, '.dist'),
   log: path.join(__dirname, 'artifacts', 'log'),
 };
 
@@ -51,12 +52,15 @@ target.package = async () => {
     mkdir(outputPath.artifacts);
   }
 
-  rm('-rf', 'client/*.packed.js');
-  rm('-rf', 'server/*.packed.js');
-  run(`node node_modules/webpack-cli/bin/cli.js --config ./client/webpack.config.js`);
+  run(`node node_modules/webpack-cli/bin/cli.js --mode production --config ./client/webpack.config.js`);
+
+  preparePackageStructure();
+
   await generateServerPackagingReports();
 
+  pushd(outputPath.dist);
   run(`yarn vsce package -o ${outputPath.artifacts}`);
+  popd();
 };
 
 target.publish = async (args) => {
@@ -124,6 +128,10 @@ function run(cl, capture = false) {
  * Generates reports to help 'manually webpack' the server plugin.
  */
 async function generateServerPackagingReports() {
+  // Deletes the .mjs file from decimal.js because because Webpack messes up the VSIX when it's present. Deleting it fixes the issue
+  // This seems related: https://github.com/MikeMcl/decimal.js/issues/59"
+  run('yarn rimraf server/node_modules/decimal.js/decimal.mjs');
+
   run(`node node_modules/webpack-cli/bin/cli.js --config ./server/webpack.config.js --profile --json > ${outputPath.artifacts}/server-modules.json`);
   console.log('Generating the list of modules used by the server.');
   const serverModules = require(`${outputPath.artifacts}/server-modules.json`);
@@ -143,10 +151,11 @@ async function generateServerPackagingReports() {
     .map((v) => v.name)
     .filter((v) => names.indexOf(v) === -1)
     .forEach((v) => {
-      potentialIgnores.push(`server/node_modules/${v}`);
+      potentialIgnores.push(`server/node_modules/${v}/`);
     });
 
   await fs.writeFile(path.join(outputPath.artifacts, 'server-vscodeignore.txt'), potentialIgnores.join('\n'));
+  await fs.appendFile(path.join(outputPath.dist, '.vscodeignore'), potentialIgnores.join('\n'));
 }
 
 /**
@@ -154,7 +163,7 @@ async function generateServerPackagingReports() {
  * in order to make local integration testing easier
  */
 async function patchPackageJsonVersion() {
-  const now = Math.floor(Date.now()/1000);
+  const now = Math.floor(Date.now() / 1000);
 
   const backupPath = `${packageJsonPath}.${now}`;
 
@@ -187,4 +196,44 @@ async function revertToOriginalPackageJson(backupPath) {
 
   console.log(`Removing temporary backup "${backupPath}" file`);
   rm(backupPath);
+}
+
+/**
+ * Prepare package structure
+ */
+function preparePackageStructure() {
+  console.log(`Generating package tree structure in "${outputPath.dist}"`);
+
+  mkdir(outputPath.dist);
+
+  cp(path.join(__dirname, 'tools', '.vscodeignore'), outputPath.dist);
+
+  cp(path.join(__dirname, 'package.json'), outputPath.dist);
+
+  pushd(outputPath.dist);
+  run('yarn install --no-lockfile --ignore-scripts');
+  popd();
+
+  const distClient = path.join(outputPath.dist, 'client');
+  mkdir(distClient);
+  const distServer = path.join(outputPath.dist, 'server');
+  mkdir(distServer);
+
+  cp(path.join(__dirname, 'README.md'), outputPath.dist);
+  cp(path.join(__dirname, 'LICENSE.txt'), outputPath.dist);
+  cp(path.join(__dirname, 'icon.png'), outputPath.dist);
+
+  cp(path.join(__dirname, 'client', 'wbpkd', 'index.js'), distClient);
+  cp(path.join(__dirname, 'server', 'out', '*.js'), distServer);
+  cp(path.join(__dirname, 'server', 'package.json'), distServer);
+  cp(path.join(__dirname, 'server', 'yarn.lock'), distServer);
+
+  // Install the server node_modules, filtering as much as possible all the useless cruft
+  cp(path.join(__dirname, 'tools', '.yarnclean'), distServer);
+  pushd(distServer);
+  run('yarn --frozen-lockfile --offline --production');
+  rm(path.join(distServer, '.yarnclean'));
+  rm(path.join(distServer, 'node_modules', '.yarn-integrity'));
+  rm(path.join(distServer, 'yarn.lock'));
+  popd();
 }
