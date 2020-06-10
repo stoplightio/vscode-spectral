@@ -1,3 +1,4 @@
+/* eslint-disable require-jsdoc */
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import {
   IRuleResult,
@@ -8,14 +9,58 @@ import {
   KNOWN_RULESETS,
   SPECTRAL_PKG_VERSION,
 } from '@stoplight/spectral';
-import { httpAndFileResolver } from '@stoplight/spectral/dist/resolvers/http-and-file';
+import { DEFAULT_REQUEST_OPTIONS } from '@stoplight/spectral/dist/request';
 import { IRuleset } from '@stoplight/spectral/dist/types/ruleset';
 import { URI } from 'vscode-uri';
+import { Resolver } from '@stoplight/json-ref-resolver';
+import { createResolveHttp, resolveFile } from '@stoplight/json-ref-readers';
+import { ICache } from '@stoplight/json-ref-resolver/types';
+import { RemoteConsole } from 'vscode-languageserver';
 
-const buildSpectralInstance = (): Spectral => {
+class NoCache implements ICache {
+  constructor(private readonly console: RemoteConsole) { }
+
+  private _stats: {
+    hits: number;
+    misses: number;
+  } = { hits: 0, misses: 0 };
+
+  public get stats() {
+    return this._stats;
+  }
+
+  public get(_key: string) {
+    this.console.log(`[DBG] Cache.get => ${_key}`);
+    this._stats.misses += 1;
+  }
+
+  public set(_key: string, _val: any): void {
+    return;
+  }
+
+  public has(_key: string): boolean {
+    this.console.log(`[DBG] Cache.has => ${_key}`);
+    return false;
+  }
+}
+
+export function createHttpAndFileResolver(uriCache: ICache): Resolver {
+  const resolveHttp = createResolveHttp({ ...DEFAULT_REQUEST_OPTIONS });
+
+  return new Resolver({
+    resolvers: {
+      https: { resolve: resolveHttp },
+      http: { resolve: resolveHttp },
+      file: { resolve: resolveFile },
+    },
+    uriCache,
+  });
+}
+
+const buildSpectralInstance = (uriCache: ICache): Spectral => {
   const spectral = new Spectral({
-    resolver: httpAndFileResolver,
-    useNimma: false,
+    resolver: createHttpAndFileResolver(uriCache),
+    useNimma: true,
   });
 
   for (const [format, lookup] of KNOWN_FORMATS) {
@@ -31,9 +76,16 @@ const buildSpectralInstance = (): Spectral => {
  * content in a manner similar to the Spectral CLI.
  */
 export class Linter {
-  private spectral = buildSpectralInstance();
   static version = SPECTRAL_PKG_VERSION;
   static builtInRulesets = KNOWN_RULESETS;
+
+  private readonly spectral: Spectral;
+  private readonly cache: NoCache;
+
+  constructor(console: RemoteConsole) {
+    this.cache = new NoCache(console);
+    this.spectral = buildSpectralInstance(this.cache);
+  }
 
   /**
    * Executes Spectral linting against a VS Code document.

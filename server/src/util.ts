@@ -1,7 +1,11 @@
+/* eslint-disable require-jsdoc */
+
 import {
   Diagnostic,
   DiagnosticSeverity,
+  PublishDiagnosticsParams,
 } from 'vscode-languageserver';
+import { URI } from 'vscode-uri';
 import { IRuleResult } from '@stoplight/spectral';
 import { DiagnosticSeverity as SpectralDiagnosticSeverity } from '@stoplight/types/dist/diagnostics';
 
@@ -47,4 +51,32 @@ export function makeDiagnostic(problem: IRuleResult): Diagnostic {
     source: 'spectral',
     message: problem.message,
   };
+}
+
+export function makePublishDiagnosticsParams(uriBeingLinted: string, problems: IRuleResult[]): PublishDiagnosticsParams[] {
+  const grouped = problems.reduce<Record<string, IRuleResult[]>>((grouped, problem) => {
+    if (problem.source === undefined) {
+      return grouped;
+    }
+
+    const uri = URI.file(problem.source).toString();
+    if (!(uri in grouped)) {
+      grouped[uri] = [];
+    }
+
+    grouped[uri].push(problem);
+
+    return grouped;
+  }, {});
+
+  if (!(uriBeingLinted in grouped)) {
+    grouped[uriBeingLinted] = [];
+  }
+
+  return Object.entries(grouped).map(([source, problems]) => {
+    return {
+      uri: source,
+      diagnostics: problems.map((p) => makeDiagnostic(p)),
+    };
+  });
 }

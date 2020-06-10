@@ -1,8 +1,8 @@
+/* eslint-disable require-jsdoc */
 import * as fs from 'fs';
 import * as path from 'path';
 import { Minimatch } from 'minimatch';
 import {
-  Diagnostic,
   DidChangeConfigurationNotification,
   DidChangeWatchedFilesNotification,
   DidChangeWorkspaceFoldersNotification,
@@ -11,6 +11,7 @@ import {
   TextDocumentSyncKind,
   TextDocuments,
   createConnection,
+  PublishDiagnosticsParams,
 } from 'vscode-languageserver';
 import { string as isString } from 'vscode-languageserver/lib/utils/is';
 import { WorkDoneProgress } from 'vscode-languageserver/lib/progress';
@@ -28,7 +29,8 @@ import {
   ValidateNotification,
 } from './notifications';
 import { BufferedMessageQueue } from './queue';
-import { makeDiagnostic } from './util';
+import { makePublishDiagnosticsParams } from './util';
+import { IRuleset } from '@stoplight/spectral/dist/types/ruleset';
 
 /**
  * The connection on which communication between the extension (client) and the
@@ -42,6 +44,8 @@ connection.console.info(`Spectral v${Linter.version} server running (Node.js ${p
  */
 const documentSettings: Map<string, Thenable<TextDocumentSettings>> = new Map<string, Thenable<TextDocumentSettings>>();
 
+const seenDependencies: Map<string, string> = new Map<string, string>();
+
 /**
  * Message queue that ensures validation doesn't occur on stale content.
  */
@@ -50,7 +54,7 @@ const messageQueue: BufferedMessageQueue = new BufferedMessageQueue(connection);
 /**
  * Spectral linter.
  */
-const linter = new Linter();
+const linter = new Linter(connection.console);
 
 /**
  * Document listener used to raise document-related events.
@@ -64,6 +68,7 @@ let documents: TextDocuments<TextDocument>;
 function environmentChanged(): void {
   connection.console.info('Environment changed; refreshing validation results.');
   documentSettings.clear();
+  seenDependencies.clear();
   for (const document of documents.all()) {
     // Clear our diagnostics for all documents in prep for re-validation. This
     // allows a change like 'stop validating .json files' to avoid leaving
@@ -242,6 +247,7 @@ function setupDocumentListener(): void {
     resolveSettings(event.document).then((settings) => {
       const uri = event.document.uri;
       documentSettings.delete(uri);
+      seenDependencies.delete(uri);
       if (settings.validate) {
         // Clear any diagnostics associated with the document that closed.
         connection.sendDiagnostics({ uri: uri, diagnostics: [] });
@@ -260,6 +266,48 @@ function showErrorMessage(uri: string, err: any): void {
   connection.console.error(`An error occurred while validating document ${uri}: ${err}`);
 }
 
+const findRoot = (document: TextDocument): TextDocument => {
+  connection.console.log(`Scan triggered file ${document.uri}.`);
+
+  const rootUri = seenDependencies.get(document.uri);
+
+  if (rootUri === undefined) {
+    connection.console.log(`Linting root file ${document.uri}.`);
+    return document;
+  }
+
+  connection.console.log(`Found root file ${rootUri}.`);
+
+  const rootDocument = documents.get(rootUri);
+
+  if (rootDocument === undefined) {
+    // May happen when the root document has been dropped or renamed
+    throw new Error(`Unable to build a document from root '${rootUri}'`);
+  }
+
+  connection.console.log(`Linting inferred root file ${rootDocument.uri}.`);
+
+  return rootDocument;
+};
+
+async function lintDocumentOrRoot(document: TextDocument, ruleset: IRuleset | undefined): Promise<[PublishDiagnosticsParams[], [string, string][]]> {
+  const rootDocument = findRoot(document);
+
+  const results = await linter.lint(rootDocument, ruleset);
+
+  const pdps = makePublishDiagnosticsParams(rootDocument.uri, results);
+  const deps = pdps.filter((e) => e.uri !== rootDocument.uri).map<[string, string]>((e) => [e.uri, rootDocument.uri]);
+
+  return [pdps, deps];
+}
+
+const dump = (input: Map<string, string>): void => {
+  for (const [key, value] of input.entries()) {
+    connection.console.log(key + ' $reffed by ' + value);
+  }
+  connection.console.log('-----');
+};
+
 /**
  * Validates a single document with Spectral and presents the results to VS Code as diagnostics.
  * @param {TextDocument} document - The document to validate.
@@ -271,18 +319,25 @@ function validate(document: TextDocument): Thenable<void> {
       return;
     }
     try {
-      const results = await linter.lint(document, settings.ruleset);
+      connection.console.log(`seenDependencies (before): ${seenDependencies.size}.`);
+      dump(seenDependencies);
+
+      const [pdps, deps] = await lintDocumentOrRoot(document, settings.ruleset);
+
+      connection.console.log(`pdps: ${JSON.stringify(pdps, null, 2)}.`);
+      connection.console.log(`deps: ${JSON.stringify(deps, null, 2)}.`);
+
+      for (const [dep, root] of deps) {
+        seenDependencies.set(dep, root);
+      }
+
+      connection.console.log(`seenDependencies (after): ${seenDependencies.size}.`);
+      dump(seenDependencies);
+
       // Send diagnostics with the results to the client. If there aren't any
       // results, it means the document was ignored or is valid - send an empty
       // array of results to ensure any existing issues are cleared.
-      const diagnostics: Diagnostic[] = [];
-      if (results.length > 0) {
-        results.forEach((result) => {
-          const diagnostic = makeDiagnostic(result);
-          diagnostics.push(diagnostic);
-        });
-      }
-      connection.sendDiagnostics({ uri: document.uri, diagnostics });
+      pdps.forEach((pdp) => connection.sendDiagnostics(pdp));
     } catch (err) {
       showErrorMessage(document.uri, err);
     }
@@ -363,3 +418,4 @@ connection.onInitialized(() => {
 });
 
 connection.listen();
+

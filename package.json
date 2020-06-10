@@ -24,7 +24,7 @@
           "type": "string"
         },
         "spectral.run": {
-          "default": "onType",
+          "default": "onSave",
           "description": "Run the linter on save (onSave) or as you type (onType).",
           "enum": [
             "onSave",
