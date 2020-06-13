@@ -220,6 +220,7 @@ function preparePackageStructure() {
   mkdir(distServer);
 
   cp(path.join(__dirname, 'README.md'), outputPath.dist);
+  cp(path.join(__dirname, 'CHANGELOG.md'), outputPath.dist);
   cp(path.join(__dirname, 'LICENSE.txt'), outputPath.dist);
   cp(path.join(__dirname, 'icon.png'), outputPath.dist);
 
