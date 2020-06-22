@@ -12,6 +12,7 @@ import {
   TextDocuments,
   createConnection,
 } from 'vscode-languageserver';
+import { string as isString } from 'vscode-languageserver/lib/utils/is';
 import { WorkDoneProgress } from 'vscode-languageserver/lib/progress';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { URI } from 'vscode-uri';
@@ -28,22 +29,6 @@ import {
 } from './notifications';
 import { BufferedMessageQueue } from './queue';
 import { makeDiagnostic } from './util';
-
-// eslint-disable-next-line
-namespace Is {
-  const toString = Object.prototype.toString;
-
-  /**
-   * User-defined type guard to check/convert a value to string.
-   * {@link https://github.com/Microsoft/TypeScript/issues/1007 Spec}
-   * @param {any} value - The value to check/convert to string.
-   * @return {string} The value cast to a string.
-   */
-  // eslint-disable-next-line
-  export function string(value: any): value is string {
-    return toString.call(value) === '[object String]';
-  }
-}
 
 /**
  * The connection on which communication between the extension (client) and the
@@ -99,7 +84,7 @@ function getDocumentPath(documentOrUri: string | TextDocument | URI | undefined)
     return undefined;
   }
   let uri: URI;
-  if (Is.string(documentOrUri)) {
+  if (isString(documentOrUri)) {
     uri = URI.parse(documentOrUri);
   } else if (documentOrUri instanceof URI) {
     uri = documentOrUri;
@@ -154,7 +139,7 @@ function resolveSettings(document: TextDocument): Thenable<TextDocumentSettings>
       // Some settings can only be configured for documents that actually have a
       // filesystem path.
       const docPath = getDocumentPath(document.uri);
-      if (Is.string(docPath)) {
+      if (isString(docPath)) {
         // If the document does not match one of the configured file globs, set validate=false and done.
         const stringPath = docPath;
         if (configuration.validateFiles &&
