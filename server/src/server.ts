@@ -139,62 +139,63 @@ function resolveSettings(document: TextDocument): Thenable<TextDocumentSettings>
       // Some settings can only be configured for documents that actually have a
       // filesystem path.
       const docPath = getDocumentPath(document.uri);
-      if (isString(docPath)) {
-        // If the document does not match one of the configured file globs, set validate=false and done.
-        const stringPath = docPath;
-        if (configuration.validateFiles &&
-          configuration.validateFiles.length > 0 &&
-          !configuration.validateFiles.some((value: string) => new Minimatch(value, { matchBase: true }).match(stringPath))) {
-          connection.console.log(`File ${document.uri} doesn't match any of the specified file globs; skipping.`);
+      if (!isString(docPath)) {
+        return settings;
+      }
+
+      // If the document does not match one of the configured file globs, set validate=false and done.
+      if (configuration.validateFiles &&
+        configuration.validateFiles.length > 0 &&
+        !configuration.validateFiles.some((value: string) => new Minimatch(value, { matchBase: true }).match(docPath))) {
+        connection.console.log(`File ${document.uri} doesn't match any of the specified file globs; skipping.`);
+        settings.validate = false;
+        return settings;
+      }
+
+      let rulesetFile: string | null;
+
+      // Probing logic:
+      //  Workspace mode:
+      //    If rulesetFile => Probe for it. Non existent => log the full path. Otherwise use it
+      //    Try find a default at the root. Non existent => log a message. Otherwise use it.
+      //  Standalone mode:
+      //    Try find a default next to the opened file. Non existent => log a message. Otherwise use it.
+      //  Open topics:
+      //    Should we default to oas when nothing is found?
+
+      if (configuration.rulesetFile) {
+        // A ruleset was specified, use that if it exists (relative to workspace).
+        if (configuration.workspaceFolder) {
+          // Calculate the absolute path to the ruleset.
+          rulesetFile = path.resolve(getDocumentPath(configuration.workspaceFolder.uri) ?? '', configuration.rulesetFile);
+        } else {
+          // Somehow(?) there's no workspace path (maybe it's just an open file?) so... do our best.
+          rulesetFile = configuration.rulesetFile;
+        }
+      } else {
+        // Nothing configured, load the default (.spectral.yml in the same folder as the doc).
+        rulesetFile = await getDefaultRulesetFile(path.dirname(docPath));
+      }
+
+      if (rulesetFile && fs.existsSync(rulesetFile)) {
+        // Only use the ruleset if we can find it. If we can't, it's not an
+        // error - it could just be that the person doesn't have their default
+        // rules in place or is working on setting things up.
+        if (docPath === rulesetFile) {
+          // Don't validate the ruleset with itself.
           settings.validate = false;
           return settings;
         }
 
-        let rulesetFile: string | null;
-
-        // Probing logic:
-        //  Workspace mode:
-        //    If rulesetFile => Probe for it. Non existent => log the full path. Otherwise use it
-        //    Try find a default at the root. Non existent => log a message. Otherwise use it.
-        //  Standalone mode:
-        //    Try find a default next to the opened file. Non existent => log a message. Otherwise use it.
-        //  Open topics:
-        //    Should we default to oas when nothing is found?
-
-        if (configuration.rulesetFile) {
-          // A ruleset was specified, use that if it exists (relative to workspace).
-          if (configuration.workspaceFolder) {
-            // Calculate the absolute path to the ruleset.
-            rulesetFile = path.resolve(getDocumentPath(configuration.workspaceFolder.uri) ?? '', configuration.rulesetFile);
-          } else {
-            // Somehow(?) there's no workspace path (maybe it's just an open file?) so... do our best.
-            rulesetFile = configuration.rulesetFile;
-          }
-        } else {
-          // Nothing configured, load the default (.spectral.yml in the same folder as the doc).
-          rulesetFile = await getDefaultRulesetFile(path.dirname(stringPath));
+        connection.sendNotification(StartWatcherNotification.type, { path: rulesetFile });
+        try {
+          settings.ruleset = await readRuleset(rulesetFile);
+        } catch (err) {
+          showErrorMessage(docPath, `Unable to read ruleset at ${rulesetFile}.`);
         }
-
-        if (rulesetFile && fs.existsSync(rulesetFile)) {
-          // Only use the ruleset if we can find it. If we can't, it's not an
-          // error - it could just be that the person doesn't have their default
-          // rules in place or is working on setting things up.
-          if (docPath === rulesetFile) {
-            // Don't validate the ruleset with itself.
-            settings.validate = false;
-            return settings;
-          }
-
-          connection.sendNotification(StartWatcherNotification.type, { path: rulesetFile });
-          try {
-            settings.ruleset = await readRuleset(rulesetFile);
-          } catch (err) {
-            showErrorMessage(docPath, `Unable to read ruleset at ${rulesetFile}.`);
-          }
-        } else {
-          // If there's no ruleset available, default to built-in rulesets.
-          settings.ruleset = await readRuleset(Linter.builtInRulesets);
-        }
+      } else {
+        // If there's no ruleset available, default to built-in rulesets.
+        settings.ruleset = await readRuleset(Linter.builtInRulesets);
       }
 
       return settings;
