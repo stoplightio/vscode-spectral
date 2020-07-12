@@ -54,7 +54,7 @@ const messageQueue: BufferedMessageQueue = new BufferedMessageQueue(connection);
 /**
  * Spectral linter.
  */
-const linter = new Linter(connection.console);
+let linter: Linter;
 
 /**
  * Document listener used to raise document-related events.
@@ -290,12 +290,28 @@ const findRoot = (document: TextDocument): TextDocument => {
   return rootDocument;
 };
 
-async function lintDocumentOrRoot(document: TextDocument, ruleset: IRuleset | undefined): Promise<[PublishDiagnosticsParams[], [string, string][]]> {
+async function lintDocumentOrRoot(document: TextDocument, ruleset: IRuleset | undefined, currentDependencies: Map<string, string>): Promise<[PublishDiagnosticsParams[], [string, string][]]> {
   const rootDocument = findRoot(document);
 
   const results = await linter.lint(rootDocument, ruleset);
 
-  const pdps = makePublishDiagnosticsParams(rootDocument.uri, results);
+  const knownDeps = new Set<string>();
+
+  if (document.uri !== rootDocument.uri) {
+    knownDeps.add(document.uri);
+  }
+
+  for (const dep of currentDependencies) {
+    if (dep[1] !== rootDocument.uri) {
+      continue;
+    }
+
+    knownDeps.add(dep[0]);
+  }
+
+  connection.console.log(`[DBG] lintDocumentOrRoot. knownDeps=${JSON.stringify([...knownDeps])}`);
+
+  const pdps = makePublishDiagnosticsParams(rootDocument.uri, [...knownDeps], results);
   const deps = pdps.filter((e) => e.uri !== rootDocument.uri).map<[string, string]>((e) => [e.uri, rootDocument.uri]);
 
   return [pdps, deps];
@@ -322,7 +338,7 @@ function validate(document: TextDocument): Thenable<void> {
       connection.console.log(`seenDependencies (before): ${seenDependencies.size}.`);
       dump(seenDependencies);
 
-      const [pdps, deps] = await lintDocumentOrRoot(document, settings.ruleset);
+      const [pdps, deps] = await lintDocumentOrRoot(document, settings.ruleset, seenDependencies);
 
       connection.console.log(`pdps: ${JSON.stringify(pdps, null, 2)}.`);
       connection.console.log(`deps: ${JSON.stringify(deps, null, 2)}.`);
@@ -396,6 +412,8 @@ messageQueue.registerNotification(DidChangeWatchedFilesNotification.type, (_para
 connection.onInitialize((_params: InitializeParams, _cancel, progress: WorkDoneProgress) => {
   progress.begin('Initializing Spectral Server');
   documents = new TextDocuments(TextDocument);
+  linter = new Linter(documents, connection.console);
+
   setupDocumentListener();
   progress.done();
   return {

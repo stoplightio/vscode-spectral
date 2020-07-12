@@ -53,7 +53,7 @@ export function makeDiagnostic(problem: IRuleResult): Diagnostic {
   };
 }
 
-export function makePublishDiagnosticsParams(uriBeingLinted: string, problems: IRuleResult[]): PublishDiagnosticsParams[] {
+export function makePublishDiagnosticsParams(rootDocumentUri: string, knownDependencieUris: string[], problems: IRuleResult[]): PublishDiagnosticsParams[] {
   const grouped = problems.reduce<Record<string, IRuleResult[]>>((grouped, problem) => {
     if (problem.source === undefined) {
       return grouped;
@@ -69,8 +69,12 @@ export function makePublishDiagnosticsParams(uriBeingLinted: string, problems: I
     return grouped;
   }, {});
 
-  if (!(uriBeingLinted in grouped)) {
-    grouped[uriBeingLinted] = [];
+  for (const uri of [...knownDependencieUris, rootDocumentUri]) {
+    if ((uri in grouped)) {
+      continue;
+    }
+
+    grouped[uri] = [];
   }
 
   return Object.entries(grouped).map(([source, problems]) => {

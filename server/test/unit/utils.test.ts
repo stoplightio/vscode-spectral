@@ -60,14 +60,41 @@ describe('makePublishDiagnosticsParams', () => {
     'file:///home/folder/test.txt',
   ];
 
-  describe('returns an empty array of diagnostics if the file being analyzed has no issues', () => {
+  describe('returns an empty array of diagnostics for the root file being analyzed even when it has no issues', () => {
     sources.forEach((sourceUri) => {
       it(sourceUri, () => {
-        const actual = makePublishDiagnosticsParams(sourceUri, []);
+        const actual = makePublishDiagnosticsParams(sourceUri, [], []);
 
         expect(actual).to.have.length(1);
         expect(actual[0].uri).to.eql(sourceUri);
         expect(actual[0].diagnostics).to.have.length(0);
+      });
+    });
+  });
+
+  describe('returns an empty array of diagnostics for the file being analyzed and its root even when they have no issues', () => {
+    sources.forEach((sourceUri) => {
+      it(sourceUri, () => {
+        const fakeRoot = 'file:///different/root';
+        const actual = makePublishDiagnosticsParams(fakeRoot, [sourceUri], []);
+
+        expect(actual).to.have.length(2);
+
+        const red = actual.reduce<Record<string, number>>((g, p) => {
+          if (!(p.uri in g)) {
+            g[p.uri] = 0;
+          }
+
+          g[p.uri] += p.diagnostics.length;
+
+          return g;
+        }, {});
+
+        expect(Object.keys(red)).to.have.length(2);
+        expect(Object.keys(red)).to.contain(sourceUri);
+        expect(red[sourceUri]).to.eql(0);
+        expect(Object.keys(red)).to.contain(fakeRoot);
+        expect(red[fakeRoot]).to.eql(0);
       });
     });
   });
@@ -91,7 +118,7 @@ describe('makePublishDiagnosticsParams', () => {
       createResult('four'),
     ];
 
-    const actual = makePublishDiagnosticsParams('file:///one', problems);
+    const actual = makePublishDiagnosticsParams('file:///one', [], problems);
 
     expect(actual).to.have.length(5);
 

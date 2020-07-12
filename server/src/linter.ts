@@ -15,7 +15,8 @@ import { URI } from 'vscode-uri';
 import { Resolver } from '@stoplight/json-ref-resolver';
 import { createResolveHttp, resolveFile } from '@stoplight/json-ref-readers';
 import { ICache } from '@stoplight/json-ref-resolver/types';
-import { RemoteConsole } from 'vscode-languageserver';
+import { RemoteConsole, TextDocuments } from 'vscode-languageserver';
+import * as URIjs from 'urijs';
 
 class NoCache implements ICache {
   constructor(private readonly console: RemoteConsole) { }
@@ -29,37 +30,73 @@ class NoCache implements ICache {
     return this._stats;
   }
 
-  public get(_key: string) {
-    this.console.log(`[DBG] Cache.get => ${_key}`);
+  private _data: {
+    [key: string]: {
+      ts: number;
+      val: any;
+    };
+  } = {};
+
+  public get(key: string) {
+    this.console.log(`[DBG] Cache.get => ${key}`);
+    const d = this._data[key];
+
+    if (d) {
+      this._stats.hits += 1;
+      return d.val;
+    }
+
     this._stats.misses += 1;
   }
 
-  public set(_key: string, _val: any): void {
-    return;
+  public set(key: string, val: any): void {
+    this.console.log(`[DBG] Cache.set => ${key}`);
+
+    this._data[key] = {
+      ts: new Date().getTime(),
+      val,
+    };
   }
 
-  public has(_key: string): boolean {
-    this.console.log(`[DBG] Cache.has => ${_key}`);
-    return false;
+  public has(key: string): boolean {
+    this.console.log(`[DBG] Cache.has => ${key}`);
+    return key in this._data;
+  }
+
+  public purge(): void {
+    this.console.log(`[DBG] Cache.purge`);
+    this._data = {};
   }
 }
 
-export function createHttpAndFileResolver(uriCache: ICache): Resolver {
+const buildFileResolver = (documents: TextDocuments<TextDocument>, console: RemoteConsole) => {
+  return (ref: URIjs): Promise<unknown> => {
+    console.log(`[DBG] documents.keys => ${JSON.stringify(documents.keys())}`);
+    console.log(`[DBG] fileResolver.resolve => ${ref.href()}`);
+    return resolveFile(ref);
+  };
+};
+
+export function createHttpAndFileResolver(
+  documents: TextDocuments<TextDocument>,
+  uriCache: ICache,
+  console: RemoteConsole
+): Resolver {
   const resolveHttp = createResolveHttp({ ...DEFAULT_REQUEST_OPTIONS });
 
   return new Resolver({
     resolvers: {
       https: { resolve: resolveHttp },
       http: { resolve: resolveHttp },
-      file: { resolve: resolveFile },
+      file: { resolve: buildFileResolver(documents, console) },
     },
     uriCache,
   });
 }
 
-const buildSpectralInstance = (uriCache: ICache): Spectral => {
+const buildSpectralInstance = (documents: TextDocuments<TextDocument>, uriCache: ICache, console: RemoteConsole): Spectral => {
   const spectral = new Spectral({
-    resolver: createHttpAndFileResolver(uriCache),
+    resolver: createHttpAndFileResolver(documents, uriCache, console),
     useNimma: true,
   });
 
@@ -82,9 +119,9 @@ export class Linter {
   private readonly spectral: Spectral;
   private readonly cache: NoCache;
 
-  constructor(console: RemoteConsole) {
+  constructor(documents: TextDocuments<TextDocument>, console: RemoteConsole) {
     this.cache = new NoCache(console);
-    this.spectral = buildSpectralInstance(this.cache);
+    this.spectral = buildSpectralInstance(documents, this.cache, console);
   }
 
   /**
@@ -128,6 +165,7 @@ export class Linter {
       file,
     );
 
+    this.cache.purge();
     return this.spectral.run(doc, { ignoreUnknownFormat: true, resolve: { documentUri: file } });
   }
 }
