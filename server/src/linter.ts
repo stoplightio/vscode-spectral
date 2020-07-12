@@ -72,7 +72,26 @@ class NoCache implements ICache {
 const buildFileResolver = (documents: TextDocuments<TextDocument>, console: RemoteConsole) => {
   return (ref: URIjs): Promise<unknown> => {
     console.log(`[DBG] documents.keys => ${JSON.stringify(documents.keys())}`);
-    console.log(`[DBG] fileResolver.resolve => ${ref.href()}`);
+    console.log(`[DBG] fileResolver.resolve => ${ref.toString()}`);
+    const lookedUpUri = URI.file(ref.toString());
+    console.log(`[DBG] lookedUpUri => ${lookedUpUri}`);
+    const lookedUpUriStr = lookedUpUri.toString();
+
+    for (const key of documents.keys()) {
+      console.log(`[DBG] uri => ${key}`);
+      console.log(`[DBG] key ==? lookedUpUri => ${key === lookedUpUriStr}`);
+
+      if (key === lookedUpUriStr) {
+        const doc = documents.get(lookedUpUriStr);
+
+        if (doc === undefined) {
+          throw new Error(`Unexpected undefined doc '${lookedUpUriStr}'`);
+        }
+
+        return Promise.resolve(doc.getText());
+      }
+    }
+
     return resolveFile(ref);
   };
 };
