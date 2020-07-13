@@ -113,10 +113,12 @@ export function createHttpAndFileResolver(
   });
 }
 
+const useNimma = true;
+
 const buildSpectralInstance = (documents: TextDocuments<TextDocument>, uriCache: ICache, console: RemoteConsole): Spectral => {
   const spectral = new Spectral({
     resolver: createHttpAndFileResolver(documents, uriCache, console),
-    useNimma: true,
+    useNimma,
   });
 
   for (const [format, lookup] of KNOWN_FORMATS) {
@@ -132,7 +134,7 @@ const buildSpectralInstance = (documents: TextDocuments<TextDocument>, uriCache:
  * content in a manner similar to the Spectral CLI.
  */
 export class Linter {
-  static version = SPECTRAL_PKG_VERSION;
+  static version = `${SPECTRAL_PKG_VERSION}[useNimma=${useNimma}]`;
   static builtInRulesets = KNOWN_RULESETS;
 
   private readonly spectral: Spectral;
