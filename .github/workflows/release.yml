@@ -13,14 +13,19 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@master
+
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: make.js - build and test
-        run: |
-          yarn install
-          node make.js compile
-          node make.js test
+
+      - name: Yarn install
+        run: yarn install
+
+      - name: Build, lint, test and package
+        # Stuck on v1.0  because of https://github.com/GabrielBB/xvfb-action/issues/10
+        uses: GabrielBB/xvfb-action@v1.0
+        with:
+          run: node make.js allDev
 
   release:
     name: Release and Publish
@@ -30,7 +35,7 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-node@v1
         with:
-          node-version: 10
+          node-version: ^12.13
       - name: make.js - build, test, and package
         run: |
           yarn install
