@@ -1,5 +1,0 @@
-name: id
-out: query
-description: Invalid parameter
-schema:
-  type: string

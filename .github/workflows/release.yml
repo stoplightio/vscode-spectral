@@ -8,23 +8,19 @@ jobs:
     name: Test
     strategy:
       matrix:
-        # windows was failing so ive turned it off while we investigate
-        # os: [macos-latest, ubuntu-latest, windows-latest]
-        os: [macos-latest, ubuntu-latest]
+        os: [macos-latest, ubuntu-latest, windows-latest]
+        node-version: [^12.13]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@master
       - uses: actions/setup-node@v1
         with:
-          node-version: 10
-      - name: yarn - setup & compile
+          node-version: ${{ matrix.node-version }}
+      - name: make.js - build and test
         run: |
-          yarn
-          yarn run compile
-      - name: Run headless tests
-        uses: GabrielBB/xvfb-action@v1.0
-        with:
-          run: yarn run test
+          yarn install
+          node make.js compile
+          node make.js test
 
   release:
     name: Release and Publish
@@ -35,10 +31,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 10
-      - run: yarn
-      - run: yarn run compile
-      - name: Semantic Release
-        run: yarn run semantic-release
-        env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
-          VSCE_TOKEN: ${{ secrets.VSCE_TOKEN }}
+      - name: make.js - build, test, and package
+        run: |
+          yarn install
+          node make.js all

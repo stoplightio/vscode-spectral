@@ -1,0 +1,15 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "tsBuildInfoFile": "./out/.tsbuildinfo",
+    "outDir": "out",
+    "rootDir": "src"
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

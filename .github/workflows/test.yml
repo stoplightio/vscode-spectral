@@ -6,17 +6,23 @@ on:
 jobs:
   test:
     name: Test
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+        node-version: [^12.13]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@master
+
       - uses: actions/setup-node@v1
         with:
-          node-version: 10
-      - name: yarn - setup & compile
-        run: |
-          yarn
-          yarn run compile
-      - name: Run headless tests
+          node-version: ${{ matrix.node-version }}
+
+      - name: Yarn install
+        run: yarn install
+
+      - name: Build, lint, test and package
+        # Stuck on v1.0  because of https://github.com/GabrielBB/xvfb-action/issues/10
         uses: GabrielBB/xvfb-action@v1.0
         with:
-          run: yarn run test
+          run: node make.js allDev

@@ -1,5 +1,7 @@
-out/
-dev/
+artifacts/
 node_modules/
+out/
+wbpkd/
+.dist/
+.idea/
 .vscode-test/
-*.vsix
