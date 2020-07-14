@@ -133,5 +133,5 @@
     "test:e2e": "cross-env CI=true CHAI_JEST_SNAPSHOT_UPDATE_ALL=false node ./client/out/test/e2e/index.js",
     "watch": "tsc -b -w"
   },
-  "version": "0.2.0"
+  "version": "0.2.1"
 }
