@@ -12,7 +12,7 @@ Spectral is a flexible object linter with out of the box support for [OpenAPI](h
 * Intellisense for custom ruleset editing
 * Support for JSON and YAML input
 
-![screenshot](docs/images/screenshot1.png)
+![screenshot](assets/screenshot1.png)
 
 ## Requirements
 
