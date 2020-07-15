@@ -114,7 +114,18 @@
   "homepage": "https://github.com/stoplightio/vscode-spectral",
   "icon": "icon.png",
   "keywords": [
-    "multi-root ready"
+    "linter",
+    "validator",
+    "OpenAPI",
+    "Swagger",
+    "API",
+    "style guide",
+    "API description",
+    "API specification",
+    "OAS",
+    "OAS2",
+    "OAS3",
+    "AsyncAPI"
   ],
   "license": "Apache-2.0",
   "main": "./client/index.js",
