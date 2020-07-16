@@ -130,6 +130,7 @@
   "license": "Apache-2.0",
   "main": "./client/index.js",
   "name": "spectral",
+  "preview": true,
   "publisher": "stoplight",
   "repository": {
     "type": "git",
