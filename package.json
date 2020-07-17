@@ -67,15 +67,15 @@
       },
       "title": "Spectral",
       "type": "object"
-    }
+    },
+    "commands": [
+      {
+        "title": "Show Output Channel",
+        "category": "Spectral",
+        "command": "spectral.showOutputChannel"
+      }
+    ]
   },
-  "commands": [
-    {
-      "title": "Show Output Channel",
-      "category": "Spectral",
-      "command": "spectral.showOutputChannel"
-    }
-  ],
   "description": "JSON/YAML linter with OpenAPI and custom ruleset support.",
   "devDependencies": {
     "@types/chai": "^4.2.11",
@@ -130,6 +130,7 @@
   "license": "Apache-2.0",
   "main": "./client/index.js",
   "name": "spectral",
+  "preview": true,
   "publisher": "stoplight",
   "repository": {
     "type": "git",
@@ -144,5 +145,5 @@
     "test:e2e": "cross-env CI=true CHAI_JEST_SNAPSHOT_UPDATE_ALL=false node ./client/out/test/e2e/index.js",
     "watch": "tsc -b -w"
   },
-  "version": "0.2.1"
+  "version": "0.2.2"
 }
