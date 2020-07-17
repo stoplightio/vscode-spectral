@@ -20,10 +20,7 @@ jobs:
         run: yarn install
 
       - name: Build, lint, test and package
-        # Stuck on v1.0  because of https://github.com/GabrielBB/xvfb-action/issues/10
-        uses: GabrielBB/xvfb-action@v1.0
-        with:
-          run: node make.js all
+        run: node make.js package
 
       - name: Publish to VSCode extensions store
         run: node make.js publish -- ${{env.VSCE_TOKEN}}

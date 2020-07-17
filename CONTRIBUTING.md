@@ -15,19 +15,16 @@ The top-level build script `make.js` uses [the `shelljs/make` utility](https://g
 # Just checked out, restore packages!
 yarn
 
-# Do a full clean, compile, test and package cycle.
-node make.js all
-
-# Do a full clean, compile, test and package cycle (for local testing only).
+# Full clean, compile, test, package and e2e tests cycle (for local testing only).
+# This will build a dev .vsix file which version will always be greater than the
+# latest published one and can be locally installed for local testing.
 node make.js allDev
 
-# Clean - you'll need to run `yarn` after this.
-node make.js clean
-
-# Prune packages for production and generate the VSIX in the artifacts folder.
+# Clean, compile, test and generate the ready to be published production .vsix
+# file in the artifacts folder.
 node make.js package
 
-# Publish the extension to the marketplace.
+# Publish the extension to the marketplace (requires the .vsix file to already exists).
 node make.js publish -- <pat>
 
 # List all the targets to see what you can do.
