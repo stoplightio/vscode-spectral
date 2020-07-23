@@ -38,7 +38,6 @@ class NoCache implements ICache {
   } = {};
 
   public get(key: string) {
-    this.console.log(`[DBG] Cache.get => ${key}`);
     const d = this._data[key];
 
     if (d) {
@@ -50,8 +49,6 @@ class NoCache implements ICache {
   }
 
   public set(key: string, val: any): void {
-    this.console.log(`[DBG] Cache.set => ${key}`);
-
     this._data[key] = {
       ts: new Date().getTime(),
       val,
@@ -59,12 +56,10 @@ class NoCache implements ICache {
   }
 
   public has(key: string): boolean {
-    this.console.log(`[DBG] Cache.has => ${key}`);
     return key in this._data;
   }
 
   public purge(): void {
-    this.console.log(`[DBG] Cache.purge`);
     this._data = {};
   }
 }
