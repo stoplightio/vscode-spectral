@@ -21,8 +21,12 @@ target.allDev = async () => {
   banner('Target: AllDev');
 
   const backupPath = await patchPackageJsonUpdateVersion();
-  await target.package();
-  await revertToOriginalPackageJson(backupPath);
+
+  try {
+    await target.package();
+  } finally {
+    await revertToOriginalPackageJson(backupPath);
+  }
   e2e();
 };
 
@@ -136,7 +140,7 @@ function run(cl, capture = false) {
     output = ncp.execSync(cl, options);
   } catch (err) {
     console.error(err.output ? err.output.toString() : err.message);
-    process.exit(1);
+    throw err;
   }
 
   return (output || '').toString().trim();
