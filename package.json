@@ -131,6 +131,7 @@
   "main": "./client/index.js",
   "name": "spectral",
   "preview": true,
+  "private": true,
   "publisher": "stoplight",
   "repository": {
     "type": "git",
@@ -140,10 +141,19 @@
     "clean": "rimraf .dist && rimraf \"client/*(out|wbpkd)\" && rimraf \"server/*(out|wbpkd)\"",
     "compile": "tsc -p client && tsc -p server && yarn copyfiles -u 2 \"./client/src/**/*.{json,yaml,snap}\" ./client/out/",
     "lint": "eslint --ext .ts,.js .",
-    "postinstall": "cd client && yarn && cd ../server && yarn && cd ..",
     "test": "mocha -r ts-node/register \"./+(client|server)/test/unit/**/*.test.ts\"",
     "test:e2e": "cross-env CI=true CHAI_JEST_SNAPSHOT_UPDATE_ALL=false node ./client/out/test/e2e/index.js",
     "watch": "tsc -b -w"
   },
-  "version": "0.2.2"
+  "version": "0.2.2",
+  "workspaces": {
+    "packages": [
+      "client",
+      "server"
+    ],
+    "nohoist": [
+      "client/**",
+      "server/**"
+    ]
+  }
 }
