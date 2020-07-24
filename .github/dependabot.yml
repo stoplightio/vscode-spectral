@@ -1,0 +1,18 @@
+# https://docs.github.com/en/github/administering-a-repository/configuration-options-for-dependency-updates
+version: 2
+
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "monthly" # we do not need to check for devDependencies updates on a daily basis
+    versioning-strategy: "increase"
+
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly" # we do not need to check for devDependencies updates on a daily basis
