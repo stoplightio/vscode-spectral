@@ -38,10 +38,10 @@
   dependencies:
     node-fetch "^2.6.0"
 
-"@stoplight/json-ref-resolver@3.0.9":
-  version "3.0.9"
-  resolved "https://registry.yarnpkg.com/@stoplight/json-ref-resolver/-/json-ref-resolver-3.0.9.tgz#47239d69704129fa9682e3451f3a69d6e874c10c"
-  integrity sha512-PawoheQniPbL9gBt5WstwgtU/ex+CrV5JYkSm0xnNtinx76eAAofm+3cCZUQvyaAK4uMfvvIA5fyX33iSlzVJg==
+"@stoplight/json-ref-resolver@3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/json-ref-resolver/-/json-ref-resolver-3.1.0.tgz#50753b49e650840247aede5734fabb7992eda87d"
+  integrity sha512-tEVlRi9sMVektCiPsnint0OD/2zzQOPb7GoWboBznDc3f/99SAjgL6TBWvuFCJXWLwhZP4GA55FggmtsF5OvQg==
   dependencies:
     "@stoplight/json" "^3.4.0"
     "@stoplight/path" "^1.3.1"
@@ -54,10 +54,10 @@
     tslib "^1.13.0"
     urijs "^1.19.2"
 
-"@stoplight/json@3.8.2", "@stoplight/json@^3.4.0":
-  version "3.8.2"
-  resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-3.8.2.tgz#ac498ebb99c9f30ab3bf4a81cbe866d7a1e4c6fe"
-  integrity sha512-ry13SbmiDXzlzNFaGdFdRfx4wacLM0KUaKI10/swkj9wnKQwx69wBZUi8Rc49MkMeplpJWwyNHsgoP58hgxOGw==
+"@stoplight/json@3.8.3", "@stoplight/json@^3.4.0":
+  version "3.8.3"
+  resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-3.8.3.tgz#83b904a643e1b0a56816ad750bc5f36939791b63"
+  integrity sha512-HkW4QsiuAku4PHTML1HxpQV2eRjw8GObn1cfjt5pE5hMZlS3fmW2bwoqzMs1cifTcT+TanyarVX8GGPbch2qog==
   dependencies:
     "@stoplight/ordered-object-literal" "^1.0.1"
     "@stoplight/types" "^11.9.0"
@@ -83,15 +83,15 @@
   resolved "https://registry.yarnpkg.com/@stoplight/path/-/path-1.3.1.tgz#1246c983279af20dcfb806d138add9f81cb1efd2"
   integrity sha512-I6YEfxspGglxt7MbgNbKThHdqh8CJWnDC1x1JUk2rka2D7mCpMSEu5I8IiAp997Dp4YIXDY6Did6gge8OY8KnA==
 
-"@stoplight/spectral@^5.5.0-beta8":
-  version "5.5.0-beta8"
-  resolved "https://registry.yarnpkg.com/@stoplight/spectral/-/spectral-5.5.0-beta8.tgz#fa3bed782d7680e2e4d6b4b0ebf886d778b12192"
-  integrity sha512-YON4sSdzYX0B2EBKHqlw4yuEwDovazvTVInj0TTrD+65niDcfgSq5KTIQhp9KxysbMFMVAGZWz8t5tHjVJPoIw==
+"@stoplight/spectral@^5.5.0-beta9":
+  version "5.5.0-beta9"
+  resolved "https://registry.yarnpkg.com/@stoplight/spectral/-/spectral-5.5.0-beta9.tgz#557523861390c69de24c8479174d7964c5e0d450"
+  integrity sha512-iGB7XvpAPrrWDKIgpHhbElI/1UZ0RCo9w00qc/j6rmjBWWixxnTQxV1DIQfpygSYPQcUS/b61NChkfYmXZ0Msg==
   dependencies:
     "@stoplight/better-ajv-errors" "0.0.0"
-    "@stoplight/json" "3.8.2"
+    "@stoplight/json" "3.8.3"
     "@stoplight/json-ref-readers" "1.2.1"
-    "@stoplight/json-ref-resolver" "3.0.9"
+    "@stoplight/json-ref-resolver" "3.1.0"
     "@stoplight/lifecycle" "2.2.1"
     "@stoplight/path" "1.3.1"
     "@stoplight/types" "^11.9.0"
@@ -104,7 +104,7 @@
     eol "0.9.1"
     fast-glob "3.1.0"
     jsonpath-plus "4.0.0"
-    lodash "4.17.15"
+    lodash "4.17.19"
     nanoid "2.1.11"
     nimma "0.0.0"
     node-fetch "2.6"
@@ -161,9 +161,9 @@
     form-data "^3.0.0"
 
 "@types/node@*":
-  version "14.0.22"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.0.22.tgz#23ea4d88189cec7d58f9e6b66f786b215eb61bdc"
-  integrity sha512-emeGcJvdiZ4Z3ohbmw93E/64jRzUHAItSHt8nF7M4TGgQTiWqFVGB8KNpLGFmUHmHLvjvBgFwVlqNcq+VuGv9g==
+  version "14.0.25"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.0.25.tgz#7ad8b00a1206d6c9e94810e49f3115f0bcc30456"
+  integrity sha512-okMqUHqrMlGOxfDZliX1yFX5MV6qcd5PpRz96XYtjkM0Ws/hwg23FMUqt6pETrVRZS+EKUB5HY19mmo54EuQbA==
 
 "@types/urijs@^1.19.9":
   version "1.19.9"
@@ -688,12 +688,7 @@ locate-path@^5.0.0:
   dependencies:
     p-locate "^4.1.0"
 
-lodash@4.17.15:
-  version "4.17.15"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
-  integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
-
-lodash@^4.17.15:
+lodash@4.17.19, lodash@^4.17.15:
   version "4.17.19"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.19.tgz#e48ddedbe30b3321783c5b4301fbd353bc1e4a4b"
   integrity sha512-JNvd8XER9GQX0v2qJgsaN/mzFCNA5BRe/j8JN9d+tWyGLSodKQHKFicdwNYzWwI3wjRnaKPsGj1XkBjx/F96DQ==

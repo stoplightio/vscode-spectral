@@ -19,51 +19,21 @@ const outputPath = {
 
 target.allDev = async () => {
   banner('Target: AllDev');
+
   const backupPath = await patchPackageJsonVersion();
-  await target.all();
-  await revertToOriginalPackageJson(backupPath);
-};
-
-target.all = async () => {
-  banner('Target: All');
-  target.clean();
-  target.compile();
-  target.test();
   await target.package();
-};
-
-target.clean = () => {
-  banner('Target: Clean');
-  run('yarn clean');
-};
-
-target.compile = () => {
-  banner('Target: Compile');
-  run('yarn');
-  run('yarn lint');
-  run('yarn compile');
+  await revertToOriginalPackageJson(backupPath);
+  e2e();
 };
 
 target.package = async () => {
   banner('Target: Package');
-  try {
-    await fs.access(outputPath.artifacts);
-  } catch (err) {
-    mkdir(outputPath.artifacts);
-  }
 
-  run(`node node_modules/webpack-cli/bin/cli.js --mode production --config ./client/webpack.config.js`);
-
-  preparePackageStructure();
-
-  await generateServerPackagingReports();
+  await buildAll();
 
   pushd(outputPath.dist);
   run(`yarn vsce package -o ${outputPath.artifacts}`);
   popd();
-
-  console.log('Running e2e tests...');
-  run(`yarn test:e2e`);
 };
 
 target.publish = async (args) => {
@@ -77,7 +47,12 @@ target.publish = async (args) => {
     .filter((f) => !f.isDirectory())
     .filter((f) => f.name.endsWith('.vsix'));
   if (!vsixFiles || !vsixFiles.length) {
-    console.log('No .vsix found in the artifacts folder.');
+    console.log(`No .vsix found in the '${outputPath.artifacts}' folder.`);
+    return;
+  }
+
+  if (vsixFiles.length > 1) {
+    console.log(`More than one .vsix found in the '${outputPath.artifacts}' folder.`);
     return;
   }
 
@@ -85,7 +60,47 @@ target.publish = async (args) => {
   run(`yarn vsce publish --packagePath ${path.join(outputPath.artifacts, vsixFiles[0].name)} -p ${token}`);
 };
 
-target.test = () => {
+const buildAll = async () => {
+  banner('Target: BuildAll');
+  clean();
+  compile();
+  test();
+  await prepublish();
+};
+
+const clean = () => {
+  banner('Target: Clean');
+  run('yarn clean');
+};
+
+const compile = () => {
+  banner('Target: Compile');
+  run('yarn');
+  run('yarn lint');
+  run('yarn compile');
+};
+
+const prepublish = async () => {
+  banner('Target: PrePublish');
+  try {
+    await fs.access(outputPath.artifacts);
+  } catch (err) {
+    mkdir(outputPath.artifacts);
+  }
+
+  run(`node node_modules/webpack-cli/bin/cli.js --mode production --config ./client/webpack.config.js`);
+
+  preparePackageStructure();
+
+  await generateServerPackagingReports();
+};
+
+const e2e = () => {
+  banner('Target: e2e tests');
+  run(`yarn test:e2e`);
+};
+
+const test = () => {
   banner('Target: Test');
   run('yarn test');
 };

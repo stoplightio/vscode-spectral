@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { runTests } from 'vscode-test';
+import { runTests, downloadAndUnzipVSCode } from 'vscode-test';
 import { randomBytes } from 'crypto';
 
 // The folder containing the Extension Manifest package.json
@@ -25,7 +25,11 @@ interface TestCase {
   ];
 
   try {
+    const vscodeExecutablePath = await downloadAndUnzipVSCode('1.46.1');
+
     for (const tc of testCases) {
+      console.info(`Using VSCode from '${vscodeExecutablePath}'`,);
+
       tc.testRunner = path.resolve(__dirname, tc.testRunner);
       console.info(`Using test runner from '${tc.testRunner}'`,);
 
@@ -47,6 +51,7 @@ interface TestCase {
 
       // Download VS Code, unzip it and run the integration test
       await runTests({
+        vscodeExecutablePath,
         extensionDevelopmentPath,
         extensionTestsPath: tc.testRunner,
         launchArgs,

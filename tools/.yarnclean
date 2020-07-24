@@ -92,6 +92,10 @@ coverage/
 .github/
 
 # DefaultExtensions
+#
+# $ cd .dist/server/node_modules
+# $ find . -type f -name '*.*' | sed 's|.*\.||' | sort -u
+
 *.markdown
 *.md
 *.mkd
@@ -101,6 +105,12 @@ coverage/
 *.coffee
 *.tgz
 *.swp
+*.eot
+*.woff
+*.ttf
+*.flow
+*.tsbuildInfo
+*.sh
 
 ####################
 
