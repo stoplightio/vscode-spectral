@@ -12,57 +12,11 @@ import {
 import { DEFAULT_REQUEST_OPTIONS } from '@stoplight/spectral/dist/request';
 import { IRuleset } from '@stoplight/spectral/dist/types/ruleset';
 import { URI } from 'vscode-uri';
-import { Resolver } from '@stoplight/json-ref-resolver';
 import { createResolveHttp, resolveFile } from '@stoplight/json-ref-readers';
 import { ICache } from '@stoplight/json-ref-resolver/types';
+import { Resolver, Cache } from '@stoplight/json-ref-resolver';
 import { RemoteConsole, TextDocuments } from 'vscode-languageserver';
 import * as URIjs from 'urijs';
-
-class NoCache implements ICache {
-  constructor(private readonly console: RemoteConsole) { }
-
-  private _stats: {
-    hits: number;
-    misses: number;
-  } = { hits: 0, misses: 0 };
-
-  public get stats() {
-    return this._stats;
-  }
-
-  private _data: {
-    [key: string]: {
-      ts: number;
-      val: any;
-    };
-  } = {};
-
-  public get(key: string) {
-    const d = this._data[key];
-
-    if (d) {
-      this._stats.hits += 1;
-      return d.val;
-    }
-
-    this._stats.misses += 1;
-  }
-
-  public set(key: string, val: any): void {
-    this._data[key] = {
-      ts: new Date().getTime(),
-      val,
-    };
-  }
-
-  public has(key: string): boolean {
-    return key in this._data;
-  }
-
-  public purge(): void {
-    this._data = {};
-  }
-}
 
 const buildFileResolver = (documents: TextDocuments<TextDocument>, console: RemoteConsole) => {
   return (ref: URIjs): Promise<unknown> => {
@@ -133,10 +87,10 @@ export class Linter {
   static builtInRulesets = KNOWN_RULESETS;
 
   private readonly spectral: Spectral;
-  private readonly cache: NoCache;
+  private readonly cache: ICache;
 
   constructor(documents: TextDocuments<TextDocument>, console: RemoteConsole) {
-    this.cache = new NoCache(console);
+    this.cache = new Cache();
     this.spectral = buildSpectralInstance(documents, this.cache, console);
   }
 

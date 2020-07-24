@@ -24,7 +24,7 @@ suite('No workspace, no ruleset', () => {
   suite('Output channel', () => {
     test('Contains Spectral version', async () => {
       const content = await readFromOutputChannelId(outputChannelId);
-      expect(content).to.contain('Spectral v5.5.0-beta8[useNimma=true] server running (Node.js v12.');
+      expect(content).to.contain('Spectral v5.5.0-beta9[useNimma=true] server running (Node.js v12.');
     });
   });
 
