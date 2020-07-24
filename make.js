@@ -20,7 +20,7 @@ const outputPath = {
 target.allDev = async () => {
   banner('Target: AllDev');
 
-  const backupPath = await patchPackageJsonVersion();
+  const backupPath = await patchPackageJsonUpdateVersion();
   await target.package();
   await revertToOriginalPackageJson(backupPath);
   e2e();
@@ -90,7 +90,7 @@ const prepublish = async () => {
 
   run(`node node_modules/webpack-cli/bin/cli.js --mode production --config ./client/webpack.config.js`);
 
-  preparePackageStructure();
+  await preparePackageStructure();
 
   await generateServerPackagingReports();
 };
@@ -150,8 +150,10 @@ async function generateServerPackagingReports() {
   // This seems related: https://github.com/MikeMcl/decimal.js/issues/59"
   run('yarn rimraf server/node_modules/decimal.js/decimal.mjs');
 
+  console.log('Using webpack to identify the list of modules used by the server.');
   run(`node node_modules/webpack-cli/bin/cli.js --config ./server/webpack.config.js --profile --json > ${outputPath.artifacts}/server-modules.json`);
-  console.log('Generating the list of modules used by the server.');
+
+  console.log('Extracting the list of modules used by the server.');
   const serverModules = require(`${outputPath.artifacts}/server-modules.json`);
   const names = jsonpath
     .query(serverModules, '$..name')
@@ -180,7 +182,7 @@ async function generateServerPackagingReports() {
  * Temporarily patches the package.json version
  * in order to make local integration testing easier
  */
-async function patchPackageJsonVersion() {
+async function patchPackageJsonUpdateVersion() {
   const now = Math.floor(Date.now() / 1000);
 
   const backupPath = `${packageJsonPath}.${now}`;
@@ -217,9 +219,26 @@ async function revertToOriginalPackageJson(backupPath) {
 }
 
 /**
+ * Remove the workspaces property from the top package.json file
+ * so that /server ends up with a sub 'node_modules' folder on install
+ * @param {string} path - The path to the root "package.json" file.
+ */
+async function patchPackageJsonRemoveWorkspaces(path) {
+  console.log(`Removing workspaces from "${path}"`);
+
+  const packageJsonContent = await fs.readFile(path, { encoding: 'utf8' });
+  const jsonPackage = JSON.parse(packageJsonContent);
+
+  delete jsonPackage.workspaces;
+  delete jsonPackage.private; // required to exist and to equal "false" for workspaces
+
+  await fs.writeFile(path, JSON.stringify(jsonPackage, undefined, 2));
+}
+
+/**
  * Prepare package structure
  */
-function preparePackageStructure() {
+async function preparePackageStructure() {
   console.log(`Generating package tree structure in "${outputPath.dist}"`);
 
   mkdir(outputPath.dist);
@@ -227,9 +246,14 @@ function preparePackageStructure() {
   cp(path.join(__dirname, 'tools', '.vscodeignore'), outputPath.dist);
 
   cp(path.join(__dirname, 'package.json'), outputPath.dist);
+  cp(path.join(__dirname, 'yarn.lock'), outputPath.dist);
+
+  const distPackage = path.join(outputPath.dist, 'package.json');
+
+  await patchPackageJsonRemoveWorkspaces(distPackage);
 
   pushd(outputPath.dist);
-  run('yarn install --no-lockfile --ignore-scripts');
+  run('yarn install');
   popd();
 
   const distClient = path.join(outputPath.dist, 'client');
@@ -245,12 +269,12 @@ function preparePackageStructure() {
   cp(path.join(__dirname, 'client', 'wbpkd', 'index.js'), distClient);
   cp(path.join(__dirname, 'server', 'out', '*.js'), distServer);
   cp(path.join(__dirname, 'server', 'package.json'), distServer);
-  cp(path.join(__dirname, 'server', 'yarn.lock'), distServer);
+  cp(path.join(__dirname, 'yarn.lock'), distServer);
 
   // Install the server node_modules, filtering as much as possible all the useless cruft
   cp(path.join(__dirname, 'tools', '.yarnclean'), distServer);
   pushd(distServer);
-  run('yarn --frozen-lockfile --offline --production');
+  run('yarn --offline --production');
   rm(path.join(distServer, '.yarnclean'));
   rm(path.join(distServer, 'node_modules', '.yarn-integrity'));
   rm(path.join(distServer, 'yarn.lock'));
