@@ -6,7 +6,7 @@
   "description": "JSON/YAML linter with OpenAPI and custom ruleset support.",
   "displayName": "Spectral",
   "engines": {
-    "vscode": "^1.46.1",
+    "vscode": "^1.48.0",
     "node": "^12.13"
   },
   "license": "Apache-2.0",

@@ -25,7 +25,7 @@ interface TestCase {
   ];
 
   try {
-    const vscodeExecutablePath = await downloadAndUnzipVSCode('1.46.1');
+    const vscodeExecutablePath = await downloadAndUnzipVSCode('1.48.0');
 
     for (const tc of testCases) {
       console.info(`Using VSCode from '${vscodeExecutablePath}'`,);
