@@ -1,7 +1,7 @@
 {
   "author": "Stoplight <support@stoplight.io>",
   "dependencies": {
-    "@stoplight/spectral": "^5.5.0-beta9",
+    "@stoplight/spectral": "^5.5.0-beta10",
     "minimatch": "^3.0.4",
     "vscode-languageserver": "^6.1.1",
     "vscode-languageserver-textdocument": "^1.0.1",
