@@ -1,8 +1,8 @@
 /* eslint-disable require-jsdoc */
 import { expect } from 'chai';
 
-import { IRuleResult } from '@stoplight/spectral';
-import { DiagnosticSeverity as SpectralDiagnosticSeverity } from '@stoplight/types/dist/diagnostics';
+import type { IRuleResult } from '@stoplight/spectral-core';
+import { DiagnosticSeverity as SpectralDiagnosticSeverity } from '@stoplight/types';
 import { makeDiagnostic, makePublishDiagnosticsParams } from '../../src/util';
 import { DiagnosticSeverity as VSCodeDiagnosticSeverity } from 'vscode-languageserver';
 

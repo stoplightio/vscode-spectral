@@ -81,7 +81,7 @@ function sendFileChangeNotification(uri: string, type: FileChangeType): void {
  * @param {ExtensionContext} context - Information about the extension runtime that can be used during activation.
  */
 export function activate(context: ExtensionContext): void {
-  const serverModule = context.asAbsolutePath(path.join('server', 'server.js'));
+  const serverModule = context.asAbsolutePath(path.join('server', 'index.js'));
 
   // Debug will listen on port 6262 in Node Inspector mode so VS Code can
   // attach. That needs to match .vscode/launch.json settings in this workspace.

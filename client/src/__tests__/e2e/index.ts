@@ -4,7 +4,7 @@ import { randomBytes } from 'crypto';
 
 // The folder containing the Extension Manifest package.json
 // Passed to `--extensionDevelopmentPath`
-const extensionDevelopmentPath = path.resolve(__dirname, '../../../../.dist');
+const extensionDevelopmentPath = path.resolve(__dirname, '../../../../dist');
 console.info(`Loading extension from '${extensionDevelopmentPath}'`,);
 
 interface TestCase {

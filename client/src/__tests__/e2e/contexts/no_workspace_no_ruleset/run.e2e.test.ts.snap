@@ -4,7 +4,7 @@ exports[`No workspace, no ruleset Invalid files trigger generation of diagnostic
 Array [
   Object {
     "code": "oas3-api-servers",
-    "message": "OpenAPI \`servers\` must be present and non-empty array.",
+    "message": "OpenAPI \\"servers\\" must be present and non-empty array.",
     "range": Array [
       Object {
         "character": 0,
@@ -19,8 +19,8 @@ Array [
     "source": "spectral",
   },
   Object {
-    "code": "openapi-tags",
-    "message": "OpenAPI object should have non-empty \`tags\` array.",
+    "code": "oas3-schema",
+    "message": "Object must have required property \\"paths\\".",
     "range": Array [
       Object {
         "character": 0,
@@ -31,12 +31,12 @@ Array [
         "line": 2,
       },
     ],
-    "severity": "Warning",
+    "severity": "Error",
     "source": "spectral",
   },
   Object {
     "code": "info-contact",
-    "message": "Info object should contain \`contact\` object.",
+    "message": "Info object must have \\"contact\\" object.",
     "range": Array [
       Object {
         "character": 10,
@@ -52,7 +52,7 @@ Array [
   },
   Object {
     "code": "info-description",
-    "message": "OpenAPI object info \`description\` must be present and non-empty string.",
+    "message": "Info \\"description\\" must be present and non-empty string.",
     "range": Array [
       Object {
         "character": 10,
@@ -68,7 +68,7 @@ Array [
   },
   Object {
     "code": "oas3-schema",
-    "message": "\`info\` property type should be object.",
+    "message": "\\"info\\" property type must be object.",
     "range": Array [
       Object {
         "character": 10,
@@ -89,7 +89,7 @@ exports[`No workspace, no ruleset Invalid files trigger generation of diagnostic
 Array [
   Object {
     "code": "oas3-api-servers",
-    "message": "OpenAPI \`servers\` must be present and non-empty array.",
+    "message": "OpenAPI \\"servers\\" must be present and non-empty array.",
     "range": Array [
       Object {
         "character": 0,
@@ -104,8 +104,8 @@ Array [
     "source": "spectral",
   },
   Object {
-    "code": "openapi-tags",
-    "message": "OpenAPI object should have non-empty \`tags\` array.",
+    "code": "oas3-schema",
+    "message": "Object must have required property \\"paths\\".",
     "range": Array [
       Object {
         "character": 0,
@@ -116,12 +116,12 @@ Array [
         "line": 2,
       },
     ],
-    "severity": "Warning",
+    "severity": "Error",
     "source": "spectral",
   },
   Object {
     "code": "info-contact",
-    "message": "Info object should contain \`contact\` object.",
+    "message": "Info object must have \\"contact\\" object.",
     "range": Array [
       Object {
         "character": 6,
@@ -137,7 +137,7 @@ Array [
   },
   Object {
     "code": "info-description",
-    "message": "OpenAPI object info \`description\` must be present and non-empty string.",
+    "message": "Info \\"description\\" must be present and non-empty string.",
     "range": Array [
       Object {
         "character": 6,
@@ -153,7 +153,7 @@ Array [
   },
   Object {
     "code": "oas3-schema",
-    "message": "\`info\` property type should be object.",
+    "message": "\\"info\\" property type must be object.",
     "range": Array [
       Object {
         "character": 6,

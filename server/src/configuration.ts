@@ -9,7 +9,7 @@
 // across the client and server components.
 
 import { WorkspaceFolder } from 'vscode-languageserver';
-import { IRuleset } from '@stoplight/spectral/dist/types/ruleset';
+import type { Ruleset } from '@stoplight/spectral-core';
 
 /**
  * Possible configuration values for when the Spectral linter runs.
@@ -80,5 +80,5 @@ export interface TextDocumentSettings {
   /**
    * The ruleset to use to validate the document.
    */
-  ruleset: IRuleset | undefined;
+  ruleset: Ruleset | undefined;
 }

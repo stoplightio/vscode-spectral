@@ -1,0 +1,15 @@
+diff --git a/node_modules/@stoplight/spectral-ruleset-bundler/package.json b/node_modules/@stoplight/spectral-ruleset-bundler/package.json
+index 933d44b..2e8295c 100644
+--- a/node_modules/@stoplight/spectral-ruleset-bundler/package.json
++++ b/node_modules/@stoplight/spectral-ruleset-bundler/package.json
+@@ -19,9 +19,7 @@
+       "default": "./dist/index.js"
+     },
+     "./with-loader": {
+-      "default": "./dist/loader/node.js",
+-      "node": "./dist/loader/node.js",
+-      "browser": "./dist/loader/browser.js"
++      "default": "./dist/loader/browser.js"
+     },
+     "./presets/*": {
+       "default": "./dist/presets/*.js"

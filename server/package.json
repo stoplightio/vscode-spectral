@@ -1,7 +1,11 @@
 {
   "author": "Stoplight <support@stoplight.io>",
   "dependencies": {
-    "@stoplight/spectral": "^5.8.0",
+    "@stoplight/spectral-cli": "^6.3.0",
+    "@stoplight/spectral-core": "^1.11.0",
+    "@stoplight/spectral-ruleset-bundler": "^1.2.1",
+    "@stoplight/spectral-ruleset-migrator": "^1.7.3",
+    "@stoplight/spectral-rulesets": "^1.7.0",
     "minimatch": "^3.0.4",
     "vscode-languageserver": "^6.1.1",
     "vscode-languageserver-textdocument": "^1.0.1",
@@ -9,10 +13,11 @@
   },
   "devDependencies": {
     "@types/minimatch": "^3.0.3",
-    "@types/node-fetch": "^2.5.5"
+    "@types/node-fetch": "^2.5.5",
+    "patch-package": "^6.4.7"
   },
   "engines": {
-    "node": "^12.13"
+    "node": "^12.20 || >=14.13"
   },
   "license": "Apache-2.0",
   "name": "server",
@@ -21,5 +26,8 @@
     "type": "git",
     "url": "https://github.com/stoplightio/vscode-spectral"
   },
-  "version": "0.0.1"
+  "version": "0.0.1",
+  "scripts": {
+    "postinstall": "patch-package"
+  }
 }

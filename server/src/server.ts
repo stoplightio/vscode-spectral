@@ -17,8 +17,11 @@ import { string as isString } from 'vscode-languageserver/lib/utils/is';
 import { WorkDoneProgress } from 'vscode-languageserver/lib/progress';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { URI } from 'vscode-uri';
-import { getDefaultRulesetFile } from '@stoplight/spectral/dist/rulesets/loader';
-import { readRuleset } from '@stoplight/spectral/dist/rulesets/reader';
+import { Ruleset } from '@stoplight/spectral-core';
+import { asyncapi, oas } from '@stoplight/spectral-rulesets';
+import { fetch } from '@stoplight/spectral-runtime';
+import { bundleAndLoadRuleset } from '@stoplight/spectral-ruleset-bundler/with-loader';
+import { builtins } from '@stoplight/spectral-ruleset-bundler/plugins/builtins';
 import {
   ExtensionSettings,
   TextDocumentSettings,
@@ -30,14 +33,12 @@ import {
 } from './notifications';
 import { BufferedMessageQueue } from './queue';
 import { makePublishDiagnosticsParams } from './util';
-import { IRuleset } from '@stoplight/spectral/dist/types/ruleset';
 
 /**
  * The connection on which communication between the extension (client) and the
  * language server occurs.
  */
 const connection = createConnection(ProposedFeatures.all);
-connection.console.info(`Spectral v${Linter.version} server running (Node.js ${process.version})`);
 
 /**
  * Cache of lint-related settings per document.
@@ -106,6 +107,26 @@ function getDocumentPath(documentOrUri: string | TextDocument | URI | undefined)
 }
 
 /**
+ * Determines the default Spectral ruleset, which is assumed to be in the workspace folder.
+ * @param {string | undefined} dirpath - The location of the workspace for which the path should be determined.
+ * @return {Promise<string|undefined>} A string value with the folder path if it can be determined; or undefined if not.
+ */
+async function getDefaultRulesetFile(dirpath: string | undefined): Promise<string | undefined> {
+  if (!dirpath) return;
+  const workspaceFolderFs = getDocumentPath(dirpath);
+  if (!workspaceFolderFs) return;
+  try {
+    for (const filename of await fs.promises.readdir(workspaceFolderFs)) {
+      if (Ruleset.isDefaultRulesetFile(filename)) {
+        return path.join(workspaceFolderFs, filename);
+      }
+    }
+  } catch {
+    return;
+  }
+}
+
+/**
  * Determines the set of validation configuration settings for a given document
  * and updates the settings cache.
  * @param {TextDocument} document - The document for which configuration settings should be determined.
@@ -157,7 +178,7 @@ function resolveSettings(document: TextDocument): Thenable<TextDocumentSettings>
         return settings;
       }
 
-      let rulesetFile: string | null;
+      let rulesetFile: string | null = null;
 
       // Probing logic:
       //  Workspace mode:
@@ -178,8 +199,8 @@ function resolveSettings(document: TextDocument): Thenable<TextDocumentSettings>
           rulesetFile = configuration.rulesetFile;
         }
       } else {
-        // Nothing configured, load the default (.spectral.yml in the same folder as the doc).
-        rulesetFile = await getDefaultRulesetFile(path.dirname(docPath));
+        // Nothing configured, load the default (.spectral.yml in the same folder as the workspace).
+        rulesetFile = (await getDefaultRulesetFile(configuration.workspaceFolder?.uri)) ?? null;
       }
 
       if (rulesetFile && fs.existsSync(rulesetFile)) {
@@ -194,13 +215,15 @@ function resolveSettings(document: TextDocument): Thenable<TextDocumentSettings>
 
         connection.sendNotification(StartWatcherNotification.type, { path: rulesetFile });
         try {
-          settings.ruleset = await readRuleset(rulesetFile);
+          settings.ruleset = await bundleAndLoadRuleset(rulesetFile, { fs, fetch }, [builtins()]);
         } catch (err) {
-          showErrorMessage(docPath, `Unable to read ruleset at ${rulesetFile}.`);
+          showErrorMessage(docPath, `Unable to read ruleset at ${rulesetFile}. ${err}`);
         }
       } else {
         // If there's no ruleset available, default to built-in rulesets.
-        settings.ruleset = await readRuleset(Linter.builtInRulesets);
+        settings.ruleset = new Ruleset({
+          extends: [oas, asyncapi],
+        });
       }
 
       return settings;
@@ -290,7 +313,7 @@ const findRoot = (document: TextDocument): TextDocument => {
   return rootDocument;
 };
 
-async function lintDocumentOrRoot(document: TextDocument, ruleset: IRuleset | undefined, currentDependencies: Map<string, string>): Promise<[PublishDiagnosticsParams[], [string, string][]]> {
+async function lintDocumentOrRoot(document: TextDocument, ruleset: Ruleset | undefined, currentDependencies: Map<string, string>): Promise<[PublishDiagnosticsParams[], [string, string][]]> {
   const rootDocument = findRoot(document);
 
   const results = await linter.lint(rootDocument, ruleset);

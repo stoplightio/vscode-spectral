@@ -1,6 +1,5 @@
 'use strict';
 
-const path = require('path');
 const merge = require('merge-options');
 
 module.exports = function withDefaults(extConfig) {
@@ -11,18 +10,25 @@ module.exports = function withDefaults(extConfig) {
       __dirname: false,
     },
     resolve: {
-      mainFields: ['module', 'main'],
-      extensions: ['.js'],
+      extensions: ['.ts', '.js', '.json'],
     },
     externals: {
-      'vscode': 'commonjs vscode',
+      'vscode': 'commonjs2 vscode',
     },
     output: {
       filename: '[name].js',
-      path: path.join(extConfig.context, 'wbpkd'),
-      libraryTarget: 'commonjs',
+      libraryTarget: 'commonjs2',
     },
-    devtool: 'source-map',
+    module: {
+      rules: [
+        {
+          test: /\.ts$/,
+          use: 'ts-loader',
+          exclude: /node_modules/,
+        },
+      ],
+    },
+    devtool: false,
   };
 
   return merge(defaultConfig, extConfig);

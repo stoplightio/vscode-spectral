@@ -8,10 +8,12 @@ const path = require('path');
 module.exports = withDefaults({
   context: path.join(__dirname),
   entry: {
-    extension: './out/extension.js',
+    index: './src/extension.ts',
+  },
+  resolve: {
+    mainFields: ['browser', 'module', 'main'],
   },
   output: {
-    filename: './index.js',
-    path: path.join(__dirname, 'wbpkd'),
+    path: path.join(__dirname, 'dist'),
   },
 });
