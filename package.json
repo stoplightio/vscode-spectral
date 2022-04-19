@@ -1,6 +1,6 @@
 {
   "activationEvents": [
-    "*"
+    "onStartupFinished"
   ],
   "author": "Stoplight <support@stoplight.io>",
   "bugs": {
