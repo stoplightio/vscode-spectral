@@ -1,0 +1,147 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Workspace, basic ruleset Invalid files trigger generation of diagnostics simple.json 1`] = `
+Array [
+  Object {
+    "code": "oas3-api-servers",
+    "message": "OpenAPI \\"servers\\" must be present and non-empty array.",
+    "range": Array [
+      Object {
+        "character": 0,
+        "line": 0,
+      },
+      Object {
+        "character": 12,
+        "line": 2,
+      },
+    ],
+    "severity": "Warning",
+    "source": "spectral",
+  },
+  Object {
+    "code": "oas3-schema",
+    "message": "Object must have required property \\"paths\\".",
+    "range": Array [
+      Object {
+        "character": 0,
+        "line": 0,
+      },
+      Object {
+        "character": 12,
+        "line": 2,
+      },
+    ],
+    "severity": "Hint",
+    "source": "spectral",
+  },
+  Object {
+    "code": "info-description",
+    "message": "Info \\"description\\" must be present and non-empty string.",
+    "range": Array [
+      Object {
+        "character": 10,
+        "line": 2,
+      },
+      Object {
+        "character": 12,
+        "line": 2,
+      },
+    ],
+    "severity": "Warning",
+    "source": "spectral",
+  },
+  Object {
+    "code": "oas3-schema",
+    "message": "\\"info\\" property type must be object.",
+    "range": Array [
+      Object {
+        "character": 10,
+        "line": 2,
+      },
+      Object {
+        "character": 12,
+        "line": 2,
+      },
+    ],
+    "severity": "Hint",
+    "source": "spectral",
+  },
+]
+`;
+
+exports[`Workspace, basic ruleset Invalid files trigger generation of diagnostics simple.yaml 1`] = `
+Array [
+  Object {
+    "code": "oas3-api-servers",
+    "message": "OpenAPI \\"servers\\" must be present and non-empty array.",
+    "range": Array [
+      Object {
+        "character": 0,
+        "line": 0,
+      },
+      Object {
+        "character": 8,
+        "line": 2,
+      },
+    ],
+    "severity": "Warning",
+    "source": "spectral",
+  },
+  Object {
+    "code": "oas3-schema",
+    "message": "Object must have required property \\"paths\\".",
+    "range": Array [
+      Object {
+        "character": 0,
+        "line": 0,
+      },
+      Object {
+        "character": 8,
+        "line": 2,
+      },
+    ],
+    "severity": "Hint",
+    "source": "spectral",
+  },
+  Object {
+    "code": "info-description",
+    "message": "Info \\"description\\" must be present and non-empty string.",
+    "range": Array [
+      Object {
+        "character": 6,
+        "line": 2,
+      },
+      Object {
+        "character": 8,
+        "line": 2,
+      },
+    ],
+    "severity": "Warning",
+    "source": "spectral",
+  },
+  Object {
+    "code": "oas3-schema",
+    "message": "\\"info\\" property type must be object.",
+    "range": Array [
+      Object {
+        "character": 6,
+        "line": 2,
+      },
+      Object {
+        "character": 8,
+        "line": 2,
+      },
+    ],
+    "severity": "Hint",
+    "source": "spectral",
+  },
+]
+`;
+
+exports[`Workspace, basic ruleset No diagnostics for empty files empty.json 1`] = `Array []`;
+
+exports[`Workspace, basic ruleset No diagnostics for empty files empty.yaml 1`] = `Array []`;
+
+exports[`Workspace, basic ruleset No diagnostics for valid files simple.json 1`] = `Array []`;
+
+exports[`Workspace, basic ruleset No diagnostics for valid files simple.yaml 1`] = `Array []`;

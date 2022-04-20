@@ -18,10 +18,14 @@ interface TestCase {
       testRunner: './contexts/no_workspace_no_ruleset/configuration',
       workspace: undefined,
     },
-    // {
-    //   testRunner: './one_workspace_no_ruleset/configuration',
-    //   workspace: '../../src/__e2e_tests__/one_workspace_no_ruleset/fixtures/',
-    // },
+    {
+      testRunner: './contexts/workspace_basic_ruleset/configuration',
+      workspace: './workspaces/basic_ruleset/',
+    },
+    {
+      testRunner: './contexts/workspace_basic_ruleset_with_functions/configuration',
+      workspace: './workspaces/basic_ruleset_with_functions/',
+    },
   ];
 
   try {

@@ -145,6 +145,13 @@ export class Linter {
       treeshake: false,
       watch: false,
       perf: false,
+      onwarn(e, fn) {
+        if (e.code === 'MISSING_NAME_OPTION_FOR_IIFE_EXPORT') {
+          return;
+        }
+
+        fn(e);
+      },
     });
 
     const outputChunk = (await bundle.generate({ format: 'iife', exports: 'auto' })).output[0];

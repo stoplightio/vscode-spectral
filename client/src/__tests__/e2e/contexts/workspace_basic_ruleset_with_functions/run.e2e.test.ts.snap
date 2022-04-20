@@ -1,0 +1,83 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Workspace, basic ruleset with functions Invalid files trigger generation of diagnostics simple.json 1`] = `
+Array [
+  Object {
+    "code": "demand-newest-oas3",
+    "message": "3.0.0 must match 3.1.0",
+    "range": Array [
+      Object {
+        "character": 13,
+        "line": 1,
+      },
+      Object {
+        "character": 20,
+        "line": 1,
+      },
+    ],
+    "severity": "Warning",
+    "source": "spectral",
+  },
+  Object {
+    "code": "valid-document-version",
+    "message": "1.0.0 must match 2.0.0",
+    "range": Array [
+      Object {
+        "character": 15,
+        "line": 3,
+      },
+      Object {
+        "character": 22,
+        "line": 3,
+      },
+    ],
+    "severity": "Warning",
+    "source": "spectral",
+  },
+]
+`;
+
+exports[`Workspace, basic ruleset with functions Invalid files trigger generation of diagnostics simple.yaml 1`] = `
+Array [
+  Object {
+    "code": "demand-newest-oas3",
+    "message": "3.0.0 must match 3.1.0",
+    "range": Array [
+      Object {
+        "character": 9,
+        "line": 0,
+      },
+      Object {
+        "character": 14,
+        "line": 0,
+      },
+    ],
+    "severity": "Warning",
+    "source": "spectral",
+  },
+  Object {
+    "code": "valid-document-version",
+    "message": "1.0.0 must match 2.0.0",
+    "range": Array [
+      Object {
+        "character": 11,
+        "line": 2,
+      },
+      Object {
+        "character": 16,
+        "line": 2,
+      },
+    ],
+    "severity": "Warning",
+    "source": "spectral",
+  },
+]
+`;
+
+exports[`Workspace, basic ruleset with functions No diagnostics for empty files empty.json 1`] = `Array []`;
+
+exports[`Workspace, basic ruleset with functions No diagnostics for empty files empty.yaml 1`] = `Array []`;
+
+exports[`Workspace, basic ruleset with functions No diagnostics for valid files simple.json 1`] = `Array []`;
+
+exports[`Workspace, basic ruleset with functions No diagnostics for valid files simple.yaml 1`] = `Array []`;
