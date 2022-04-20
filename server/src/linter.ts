@@ -11,8 +11,15 @@ import * as Parsers from '@stoplight/spectral-parsers';
 import { createResolveHttp, resolveFile } from '@stoplight/json-ref-readers';
 import { ICache } from '@stoplight/json-ref-resolver/types';
 import { Resolver, Cache } from '@stoplight/json-ref-resolver';
+import { runtime } from '@stoplight/spectral-ruleset-bundler/presets/runtime';
+import { commonjs } from '@stoplight/spectral-ruleset-bundler/plugins/commonjs';
+import { stdin } from '@stoplight/spectral-ruleset-bundler/plugins/stdin';
+import type { IO } from '@stoplight/spectral-ruleset-bundler';
+import { migrateRuleset } from '@stoplight/spectral-ruleset-migrator';
+import * as path from '@stoplight/path';
 import { RemoteConsole, TextDocuments } from 'vscode-languageserver';
 import * as URIjs from 'urijs';
+import { Plugin, rollup } from 'rollup';
 
 const buildFileResolver = (documents: TextDocuments<TextDocument>, console: RemoteConsole) => {
   return (ref: URIjs): Promise<unknown> => {
@@ -121,5 +128,33 @@ export class Linter {
 
     this.cache.purge();
     return this.spectral.run(doc, { ignoreUnknownFormat: true });
+  }
+
+  static async loadRuleset(filepath: string, io: IO): Promise<{ dependencies: string[]; ruleset: Ruleset }> {
+    let rulesetFile = filepath;
+    const plugins: Plugin[] = [...runtime(io), commonjs()];
+
+    if (/\.(json|ya?ml)$/.test(path.extname(filepath))) {
+      rulesetFile = path.join(path.dirname(rulesetFile), '.spectral.js');
+      plugins.unshift(stdin(await migrateRuleset(filepath, { format: 'esm', ...io }), rulesetFile));
+    }
+
+    const bundle = await rollup({
+      input: rulesetFile,
+      plugins,
+      treeshake: false,
+      watch: false,
+      perf: false,
+    });
+
+    const outputChunk = (await bundle.generate({ format: 'iife', exports: 'auto' })).output[0];
+
+    return {
+      dependencies: Object.keys(outputChunk.modules).filter((m) => path.isAbsolute(m) && !path.isURL(m)),
+      ruleset: new Ruleset(Function(`return ${outputChunk.code}`)(), {
+        severity: 'recommended',
+        source: rulesetFile,
+      }),
+    };
   }
 }

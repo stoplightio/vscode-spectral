@@ -139,7 +139,6 @@
     "url": "https://github.com/stoplightio/vscode-spectral"
   },
   "scripts": {
-    "postinstall": "yarn workspace server postinstall",
     "clean": "rimraf dist && rimraf \"{server,client}/dist\"",
     "lint": "eslint --ext .ts,.js .",
     "test": "mocha -r ts-node/register \"./+(client|server)/__tests__/unit/**/*.test.ts\"",

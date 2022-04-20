@@ -20,8 +20,6 @@ import { URI } from 'vscode-uri';
 import { Ruleset } from '@stoplight/spectral-core';
 import { asyncapi, oas } from '@stoplight/spectral-rulesets';
 import { fetch } from '@stoplight/spectral-runtime';
-import { bundleAndLoadRuleset } from '@stoplight/spectral-ruleset-bundler/with-loader';
-import { commonjs } from '@stoplight/spectral-ruleset-bundler/plugins/commonjs';
 import {
   ExtensionSettings,
   TextDocumentSettings,
@@ -215,7 +213,12 @@ function resolveSettings(document: TextDocument): Thenable<TextDocumentSettings>
 
         connection.sendNotification(StartWatcherNotification.type, { path: rulesetFile });
         try {
-          settings.ruleset = await bundleAndLoadRuleset(rulesetFile, { fs, fetch }, [commonjs()]);
+          const { ruleset, dependencies } = await Linter.loadRuleset(rulesetFile, { fs, fetch });
+          for (const dependency of dependencies) {
+            connection.sendNotification(StartWatcherNotification.type, { path: dependency });
+          }
+
+          settings.ruleset = ruleset;
         } catch (err) {
           showErrorMessage(docPath, `Unable to read ruleset at ${rulesetFile}. ${err}`);
         }

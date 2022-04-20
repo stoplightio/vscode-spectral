@@ -180,7 +180,7 @@ export function activate(context: ExtensionContext): void {
       // don't use the built-in synchronization setup because the set of
       // monitored files can differ.
       if (!watchers.has(params.path)) {
-        client.info(`Watching ruleset: ${params.path}`);
+        client.info(`Watching: ${params.path}`);
         const watcher = createFileSystemWatcher(params.path);
         watchers.set(params.path, watcher);
       }
