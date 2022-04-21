@@ -7,9 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.0] - 2022-04-21
 
-### Features
+### Added
 
-- Updated to the latest version of Spectral 
+- Update to Spectral v6.x
 - Changes made to custom functions are now recognized by the extension, and the ruleset is updated automatically
 
 ## [0.2.5] - 2021-02-01
