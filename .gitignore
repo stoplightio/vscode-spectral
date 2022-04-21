@@ -1,7 +1,5 @@
 artifacts/
 node_modules/
-out/
-wbpkd/
-.dist/
+dist/
 .idea/
 .vscode-test/

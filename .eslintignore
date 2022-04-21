@@ -1,4 +1,2 @@
-node_modules
-**/out/
-**/wbpkd/
-.dist/
+node_modules/
+dist/

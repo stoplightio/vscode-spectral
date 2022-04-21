@@ -6,12 +6,12 @@ import {
   PublishDiagnosticsParams,
 } from 'vscode-languageserver';
 import { URI } from 'vscode-uri';
-import { IRuleResult } from '@stoplight/spectral';
-import { DiagnosticSeverity as SpectralDiagnosticSeverity } from '@stoplight/types/dist/diagnostics';
+import type { ISpectralDiagnostic } from '@stoplight/spectral-core';
+import { DiagnosticSeverity as SpectralDiagnosticSeverity } from '@stoplight/types';
 
 /**
  * Converts a Spectral rule violation severity into a VS Code diagnostic severity.
- * @param {SpectralDiagnosticSeverity} severity - The Spectral diagnostic severity to convert.
+ * @param {DiagnosticSeverity} severity - The Spectral diagnostic severity to convert.
  * @return {DiagnosticSeverity} The converted severity for a VS Code diagnostic.
  */
 function convertSeverity(severity: SpectralDiagnosticSeverity): DiagnosticSeverity {
@@ -31,10 +31,10 @@ function convertSeverity(severity: SpectralDiagnosticSeverity): DiagnosticSeveri
 
 /**
  * Converts a Spectral rule violation to a VS Code diagnostic.
- * @param {IRuleResult} problem - The Spectral rule result to convert to a VS Code diagnostic message.
- * @return {IDiagnostic} The converted VS Code diagnostic to send to the client.
+ * @param {ISpectralDiagnostic} problem - The Spectral rule result to convert to a VS Code diagnostic message.
+ * @return {Diagnostic} The converted VS Code diagnostic to send to the client.
  */
-export function makeDiagnostic(problem: IRuleResult): Diagnostic {
+export function makeDiagnostic(problem: ISpectralDiagnostic): Diagnostic {
   return {
     range: {
       start: {
@@ -53,8 +53,8 @@ export function makeDiagnostic(problem: IRuleResult): Diagnostic {
   };
 }
 
-export function makePublishDiagnosticsParams(rootDocumentUri: string, knownDependencieUris: string[], problems: IRuleResult[]): PublishDiagnosticsParams[] {
-  const grouped = problems.reduce<Record<string, IRuleResult[]>>((grouped, problem) => {
+export function makePublishDiagnosticsParams(rootDocumentUri: string, knownDependencieUris: string[], problems: ISpectralDiagnostic[]): PublishDiagnosticsParams[] {
+  const grouped = problems.reduce<Record<string, ISpectralDiagnostic[]>>((grouped, problem) => {
     if (problem.source === undefined) {
       return grouped;
     }

@@ -16,7 +16,7 @@ export function testRunnerBuilder(testsRoot: string): Promise<void> {
   mocha.timeout(10 * 1000);
 
   return new Promise((resolve, reject) => {
-    glob('**/**.e2e.test.js', { cwd: testsRoot }, (err, files) => {
+    glob('**/**.e2e.test.{ts,js}', { cwd: testsRoot }, (err, files) => {
       if (err) {
         reject(err);
       }

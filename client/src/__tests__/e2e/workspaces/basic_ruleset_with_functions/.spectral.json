@@ -1,0 +1,23 @@
+{
+  "functions": ["equalsCjs", "equalsEsm"],
+  "rules": {
+    "demand-newest-oas3": {
+      "given": "$.openapi",
+      "then": {
+        "function": "equalsCjs",
+        "functionOptions": {
+          "value": "3.1.0"
+        }
+      }
+    },
+    "valid-document-version": {
+      "given": "$.info.version",
+      "then": {
+        "function": "equalsEsm",
+        "functionOptions": {
+          "value": "2.0.0"
+        }
+      }
+    }
+  }
+}

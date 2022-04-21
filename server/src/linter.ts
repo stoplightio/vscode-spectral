@@ -3,20 +3,23 @@ import { TextDocument } from 'vscode-languageserver-textdocument';
 import {
   IRuleResult,
   Spectral,
-  Parsers,
   Document as SpectralDocument,
-  KNOWN_FORMATS,
-  KNOWN_RULESETS,
-  SPECTRAL_PKG_VERSION,
-} from '@stoplight/spectral';
-import { DEFAULT_REQUEST_OPTIONS } from '@stoplight/spectral/dist/request';
-import { IRuleset } from '@stoplight/spectral/dist/types/ruleset';
+  Ruleset,
+} from '@stoplight/spectral-core';
 import { URI } from 'vscode-uri';
+import * as Parsers from '@stoplight/spectral-parsers';
 import { createResolveHttp, resolveFile } from '@stoplight/json-ref-readers';
 import { ICache } from '@stoplight/json-ref-resolver/types';
 import { Resolver, Cache } from '@stoplight/json-ref-resolver';
+import { runtime } from '@stoplight/spectral-ruleset-bundler/presets/runtime';
+import { commonjs } from '@stoplight/spectral-ruleset-bundler/plugins/commonjs';
+import { stdin } from '@stoplight/spectral-ruleset-bundler/plugins/stdin';
+import type { IO } from '@stoplight/spectral-ruleset-bundler';
+import { migrateRuleset } from '@stoplight/spectral-ruleset-migrator';
+import * as path from '@stoplight/path';
 import { RemoteConsole, TextDocuments } from 'vscode-languageserver';
 import * as URIjs from 'urijs';
+import { Plugin, rollup } from 'rollup';
 
 const buildFileResolver = (documents: TextDocuments<TextDocument>, console: RemoteConsole) => {
   return (ref: URIjs): Promise<unknown> => {
@@ -50,7 +53,7 @@ export function createHttpAndFileResolver(
   uriCache: ICache,
   console: RemoteConsole
 ): Resolver {
-  const resolveHttp = createResolveHttp({ ...DEFAULT_REQUEST_OPTIONS });
+  const resolveHttp = createResolveHttp();
 
   return new Resolver({
     resolvers: {
@@ -62,18 +65,11 @@ export function createHttpAndFileResolver(
   });
 }
 
-const useNimma = true;
-
 const buildSpectralInstance = (documents: TextDocuments<TextDocument>, uriCache: ICache, console: RemoteConsole): Spectral => {
   const spectral = new Spectral({
     resolver: createHttpAndFileResolver(documents, uriCache, console),
-    useNimma,
   });
 
-  for (const [format, lookup] of KNOWN_FORMATS) {
-    // Each document type that Spectral can lint gets registered with detectors.
-    spectral.registerFormat(format, (document) => lookup(document));
-  }
 
   return spectral;
 };
@@ -83,9 +79,6 @@ const buildSpectralInstance = (documents: TextDocuments<TextDocument>, uriCache:
  * content in a manner similar to the Spectral CLI.
  */
 export class Linter {
-  static version = `${SPECTRAL_PKG_VERSION}[useNimma=${useNimma}]`;
-  static builtInRulesets = KNOWN_RULESETS;
-
   private readonly spectral: Spectral;
   private readonly cache: ICache;
 
@@ -100,7 +93,7 @@ export class Linter {
    * @param {IRuleset|undefined} ruleset - The ruleset to use during validation, if any.
    * @return {Promise<IRuleResult[]>} The set of rule violations found. If no violations are found, this will be empty.
    */
-  public async lint(document: TextDocument, ruleset: IRuleset | undefined): Promise<IRuleResult[]> {
+  public async lint(document: TextDocument, ruleset: Ruleset | undefined): Promise<IRuleResult[]> {
     // Unclear if we may have issues changing the ruleset on the shared Spectral
     // instance here. If so, we may need to store a Spectral instance per
     // document rather than using a single shared one via Linter.
@@ -109,9 +102,7 @@ export class Linter {
     } else {
       // No ruleset, so clear everything out.
       this.spectral.setRuleset({
-        functions: {},
         rules: {},
-        exceptions: {},
       });
     }
 
@@ -136,6 +127,41 @@ export class Linter {
     );
 
     this.cache.purge();
-    return this.spectral.run(doc, { ignoreUnknownFormat: true, resolve: { documentUri: file } });
+    return this.spectral.run(doc, { ignoreUnknownFormat: true });
+  }
+
+  static async loadRuleset(filepath: string, io: IO): Promise<{ dependencies: string[]; ruleset: Ruleset }> {
+    let rulesetFile = filepath;
+    const plugins: Plugin[] = [...runtime(io), commonjs()];
+
+    if (/\.(json|ya?ml)$/.test(path.extname(filepath))) {
+      rulesetFile = path.join(path.dirname(rulesetFile), '.spectral.js');
+      plugins.unshift(stdin(await migrateRuleset(filepath, { format: 'esm', ...io }), rulesetFile));
+    }
+
+    const bundle = await rollup({
+      input: rulesetFile,
+      plugins,
+      treeshake: false,
+      watch: false,
+      perf: false,
+      onwarn(e, fn) {
+        if (e.code === 'MISSING_NAME_OPTION_FOR_IIFE_EXPORT') {
+          return;
+        }
+
+        fn(e);
+      },
+    });
+
+    const outputChunk = (await bundle.generate({ format: 'iife', exports: 'auto' })).output[0];
+
+    return {
+      dependencies: Object.keys(outputChunk.modules).filter((m) => path.isAbsolute(m) && !path.isURL(m)),
+      ruleset: new Ruleset(Function(`return ${outputChunk.code}`)(), {
+        severity: 'recommended',
+        source: rulesetFile,
+      }),
+    };
   }
 }

@@ -18,7 +18,7 @@ Spectral is a flexible object linter with out of the box support for [OpenAPI](h
 
 ## Requirements
 
-- Node.js 12.13 or higher
+- Node.js ^12.21 or >=14.13
 - Visual Studio Code version 1.48 or higher.
 
 ## Installation

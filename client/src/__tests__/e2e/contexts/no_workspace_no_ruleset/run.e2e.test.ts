@@ -5,14 +5,11 @@ import * as chaiJestSnapshot from 'chai-jest-snapshot';
 import * as vscode from 'vscode';
 import * as path from 'path';
 
-import { openFile, activate, retrieveOutputChannelId, readFromOutputChannelId } from '../../helper';
-
-let outputChannelId: vscode.Uri;
+import { openFile, activate } from '../../helper';
 
 suiteSetup(async () => {
   chaiJestSnapshot.resetSnapshotRegistry();
   await activate();
-  outputChannelId = await (retrieveOutputChannelId());
 });
 
 setup(function() {
@@ -21,13 +18,6 @@ setup(function() {
 });
 
 suite('No workspace, no ruleset', () => {
-  suite('Output channel', () => {
-    test('Contains Spectral version', async () => {
-      const content = await readFromOutputChannelId(outputChannelId);
-      expect(content).to.contain('Spectral v5.5.0[useNimma=true] server running (Node.js v12.');
-    });
-  });
-
   suite('No diagnostics for empty files', () => {
     ['empty.yaml', 'empty.json'].forEach((fixture) => {
       test(`${fixture}`, async () => {
