@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@asyncapi/specs@^2.13.0":
-  version "2.13.2"
-  resolved "https://registry.yarnpkg.com/@asyncapi/specs/-/specs-2.13.2.tgz#5272ce0d6f17cca05bd0d3f66fd4648a7f85233e"
-  integrity sha512-ly15ErFjfF3F3PIcI1PYTI5LHBrwFw5RVFNDUYwZfP0zVJRWwyuxuoR5ZPjC0+kIREran4pfCNZeCPVG6/cCFA==
+"@asyncapi/specs@^2.14.0":
+  version "2.14.0"
+  resolved "https://registry.yarnpkg.com/@asyncapi/specs/-/specs-2.14.0.tgz#a4535fedde931181f20d41356ed1906d0fb73d48"
+  integrity sha512-hHsYF6XsYNIKb1P2rXaooF4H+uKKQ4b/Ljxrk3rZ3riEDiSxMshMEfb1fUlw9Yj4V4OmJhjXwkNvw8W59AXv1A==
 
 "@babel/code-frame@^7.0.0":
   version "7.10.4"
@@ -212,10 +212,10 @@
     simple-eval "1.0.0"
     tslib "^2.3.0"
 
-"@stoplight/spectral-formats@>=1", "@stoplight/spectral-formats@^1.0.0", "@stoplight/spectral-formats@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/spectral-formats/-/spectral-formats-1.1.0.tgz#f985fcceec5352b25d120f7ba17a2b95b33b876c"
-  integrity sha512-ZpEHNkS30qfPbxHJAf3OwZ7g0LkSG2UZXhl3/Jsf6WGivVcuQUY+ZK4c1ZJqBNct1JF1ujP3FgF26xDdTrOtDw==
+"@stoplight/spectral-formats@>=1", "@stoplight/spectral-formats@^1.0.0", "@stoplight/spectral-formats@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/spectral-formats/-/spectral-formats-1.2.0.tgz#7f87345ea7449819b2fad66c88cbdac75d9dc8a6"
+  integrity sha512-idvn7r8fvQjY/KeJpKgXQ5eJhce6N6/KoKWMPSh5yyvYDpn+bkU4pxAD79jOJaDnIyKJd1jjTPEJWnxbS0jj6A==
   dependencies:
     "@stoplight/json" "^3.17.0"
     "@stoplight/spectral-core" "^1.8.0"
@@ -303,19 +303,19 @@
     tslib "^2.3.1"
     validate-npm-package-name "3.0.0"
 
-"@stoplight/spectral-rulesets@>=1", "@stoplight/spectral-rulesets@^1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/spectral-rulesets/-/spectral-rulesets-1.7.0.tgz#13ebb61a98ef67111fb3a4b4bb0dc2ca6aad51d3"
-  integrity sha512-QXnidFatoBQVBv4iHtJyg46zjEeyooTVOgfmsc+UHwAPu0u0YNF7DW52wZCwBU0RMknExDRbopc/QGvO7srmCg==
+"@stoplight/spectral-rulesets@>=1", "@stoplight/spectral-rulesets@^1.11.0":
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/spectral-rulesets/-/spectral-rulesets-1.11.0.tgz#0264c450d755553112c3fa149c4678256abd88eb"
+  integrity sha512-0zFbxIuoWmGrkl2txOuaEDF8o6aoKDpMAYOG2oDfmmX9FhXX3c3ivIy80hyb2tMKkIYuqqx/zwIiOuww5S8iUA==
   dependencies:
-    "@asyncapi/specs" "^2.13.0"
+    "@asyncapi/specs" "^2.14.0"
     "@stoplight/better-ajv-errors" "1.0.1"
     "@stoplight/json" "^3.17.0"
     "@stoplight/spectral-core" "^1.8.1"
-    "@stoplight/spectral-formats" "^1.1.0"
+    "@stoplight/spectral-formats" "^1.2.0"
     "@stoplight/spectral-functions" "^1.5.1"
     "@stoplight/spectral-runtime" "^1.1.1"
-    "@stoplight/types" "^12.3.0"
+    "@stoplight/types" "^12.5.0"
     "@types/json-schema" "^7.0.7"
     ajv "^8.8.2"
     ajv-formats "~2.1.0"
@@ -344,7 +344,7 @@
     "@types/json-schema" "^7.0.4"
     utility-types "^3.10.0"
 
-"@stoplight/types@^12.0.0", "@stoplight/types@^12.3.0":
+"@stoplight/types@^12.0.0", "@stoplight/types@^12.3.0", "@stoplight/types@^12.5.0":
   version "12.5.0"
   resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-12.5.0.tgz#ebbeeb8c874de30e4cd9a1a2a6c8d6062c155da0"
   integrity sha512-dwqYcDrGmEyUv5TWrDam5TGOxU72ufyQ7hnOIIDdmW5ezOwZaBFoR5XQ9AsH49w7wgvOqB2Bmo799pJPWnpCbg==
