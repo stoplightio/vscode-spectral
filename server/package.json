@@ -7,7 +7,7 @@
     "@stoplight/spectral-ruleset-migrator": "^1.7.3",
     "@stoplight/spectral-rulesets": "^1.7.0",
     "minimatch": "^3.0.4",
-    "rollup": "~2.67.0",
+    "rollup": "~2.75.7",
     "vscode-languageserver": "^6.1.1",
     "vscode-languageserver-textdocument": "^1.0.1",
     "vscode-uri": "^2.1.2"
