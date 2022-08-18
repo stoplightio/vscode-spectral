@@ -10,7 +10,7 @@ Spectral is a flexible object linter with out of the box support for [OpenAPI](h
 
 - Lint-on-save
 - Lint-on-type
-- Custom ruleset support (`.spectral.json`, `.spectral.yaml` or `.spectral.yml`)
+- Custom ruleset support (`.spectral.json`, `.spectral.yaml`, `.spectral.yml` or `.spectral.js`)
 - Intellisense for custom ruleset editing
 - Support for JSON and YAML input
 
