@@ -26,6 +26,18 @@ interface TestCase {
       testRunner: './contexts/workspace_basic_ruleset_with_functions/configuration',
       workspace: './workspaces/basic_ruleset_with_functions/',
     },
+    {
+      testRunner: './contexts/workspace_remote_ruleset_json/configuration',
+      workspace: './workspaces/remote_ruleset/',
+    },
+    {
+      testRunner: './contexts/workspace_remote_ruleset_yaml/configuration',
+      workspace: './workspaces/remote_ruleset/',
+    },
+    {
+      testRunner: './contexts/workspace_remote_ruleset_js/configuration',
+      workspace: './workspaces/remote_ruleset/',
+    },
   ];
 
   try {

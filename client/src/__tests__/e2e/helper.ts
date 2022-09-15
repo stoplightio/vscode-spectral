@@ -14,6 +14,15 @@ export const activate = async (): Promise<void> => {
   console.info(`Extension '${ext.id}' v${ext.packageJSON.version} has been successfully activated.`);
 };
 
+export const setRulesetFile = (rulesetFile: string): void => {
+  try {
+    vscode.workspace.getConfiguration('spectral')
+      .update('rulesetFile', rulesetFile, true, false);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 async function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }

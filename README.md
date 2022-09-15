@@ -31,7 +31,7 @@ Spectral is a flexible object linter with out of the box support for [OpenAPI](h
 This extension contributes the following settings:
 
 - `spectral.enable`: Controls whether or not Spectral is enabled.
-- `spectral.rulesetFile`: Location of the ruleset file to use when validating. If omitted, the default is a `.spectral.(json|yaml|yml)` in the same folder as the document being validated. Paths are relative to the workspace.
+- `spectral.rulesetFile`: Location of the ruleset file to use when validating. If omitted, the default is a `.spectral.(json|yaml|yml)` in the same folder as the document being validated. Paths are relative to the workspace. This can also be a remote url.
 - `spectral.run`: Run the linter on save (`onSave`) or as you type (`onType`).
 - `spectral.validateFiles`: An array of file globs (e.g., `**/*.yaml`) which should be validated by Spectral. If language identifiers are also specified, the file must match both in order to be validated.
 - `spectral.validateLanguages`: An array of language IDs (e.g., `yaml`, `json`) which should be validated by Spectral. If file globs are also specified, the file must match both in order to be validated.
