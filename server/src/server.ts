@@ -198,11 +198,9 @@ function resolveSettings(document: TextDocument): Thenable<TextDocumentSettings>
         if (configuration.workspaceFolder && !rulesetFileIsUrl) {
           // A ruleset was specified, use that if it exists (relative to workspace).
           // Calculate the absolute path to the ruleset.
-          // rulesetFile = path.resolve(getDocumentPath(configuration.workspaceFolder.uri) ?? '', actualRulesetFile);
           rulesetFile = path.resolve(getDocumentPath(configuration.workspaceFolder.uri) ?? '', configuration.rulesetFile);
         } else {
           // Somehow(?) there's no workspace path (maybe it's just an open file?) so... do our best.
-          // rulesetFile = actualRulesetFile;
           rulesetFile = configuration.rulesetFile;
         }
       } else {
