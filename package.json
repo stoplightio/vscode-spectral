@@ -19,7 +19,7 @@
           "type": "boolean"
         },
         "spectral.rulesetFile": {
-          "description": "Location of the ruleset file to use when validating. If omitted, the default is a .spectral.yml/.spectral.json in the same folder as the document being validated. Paths are relative to the workspace.",
+          "description": "Location of the ruleset file to use when validating. If omitted, the default is a .spectral.yml/.spectral.json in the same folder as the document being validated. Paths are relative to the workspace. This can also be a remote HTTP url.",
           "scope": "resource",
           "type": "string"
         },
@@ -93,6 +93,7 @@
     "eslint": "^7.8.1",
     "eslint-config-google": "^0.14.0",
     "glob": "^8.0.3",
+    "http-test-servers": "^2.0.0",
     "jsonpath": "^1.1.1",
     "merge-options": "^3.0.0",
     "mocha": "^8.1.3",
