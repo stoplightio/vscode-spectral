@@ -15,12 +15,8 @@ export const activate = async (): Promise<void> => {
 };
 
 export const setRulesetFile = (rulesetFile: string): void => {
-  try {
-    vscode.workspace.getConfiguration('spectral')
-      .update('rulesetFile', rulesetFile, true, false);
-  } catch (error) {
-    console.log(error);
-  }
+  vscode.workspace.getConfiguration('spectral')
+    .update('rulesetFile', rulesetFile, true, false);
 };
 
 async function sleep(ms: number) {

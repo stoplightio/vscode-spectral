@@ -223,10 +223,8 @@ function resolveSettings(document: TextDocument): Thenable<TextDocumentSettings>
         }
         try {
           const { ruleset, dependencies } = await Linter.loadRuleset(rulesetFile, { fs, fetch });
-          if (!rulesetFileIsUrl) {
-            for (const dependency of dependencies) {
-              connection.sendNotification(StartWatcherNotification.type, { path: dependency });
-            }
+          for (const dependency of dependencies) {
+            connection.sendNotification(StartWatcherNotification.type, { path: dependency });
           }
 
           settings.ruleset = ruleset;
