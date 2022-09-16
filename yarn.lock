@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@asyncapi/specs@^2.13.0":
-  version "2.13.2"
-  resolved "https://registry.yarnpkg.com/@asyncapi/specs/-/specs-2.13.2.tgz#5272ce0d6f17cca05bd0d3f66fd4648a7f85233e"
-  integrity sha512-ly15ErFjfF3F3PIcI1PYTI5LHBrwFw5RVFNDUYwZfP0zVJRWwyuxuoR5ZPjC0+kIREran4pfCNZeCPVG6/cCFA==
+"@asyncapi/specs@^2.14.0":
+  version "2.14.0"
+  resolved "https://registry.yarnpkg.com/@asyncapi/specs/-/specs-2.14.0.tgz#a4535fedde931181f20d41356ed1906d0fb73d48"
+  integrity sha512-hHsYF6XsYNIKb1P2rXaooF4H+uKKQ4b/Ljxrk3rZ3riEDiSxMshMEfb1fUlw9Yj4V4OmJhjXwkNvw8W59AXv1A==
 
 "@babel/code-frame@^7.0.0":
   version "7.10.4"
@@ -106,6 +106,14 @@
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@stoplight/better-ajv-errors/-/better-ajv-errors-1.0.1.tgz#b2756fabc951e85fc6e047edbcae2e72d900d4cb"
   integrity sha512-rgxT+ZMeZbYRiOLNk6Oy6e/Ig1iQKo0IL8v/Y9E/0FewzgtkGs/p5dMeUpIFZXWj3RZaEPmfL9yh0oUEmNXZjg==
+  dependencies:
+    jsonpointer "^5.0.0"
+    leven "^3.1.0"
+
+"@stoplight/better-ajv-errors@1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@stoplight/better-ajv-errors/-/better-ajv-errors-1.0.3.tgz#d74a5c4da5d786c17188d7f4edec505f089885fa"
+  integrity sha512-0p9uXkuB22qGdNfy3VeEhxkU5uwvp/KrBTAbrLBURv6ilxIVwanKwjMc41lQfIVgPGcOkmLbTolfFrSsueu7zA==
   dependencies:
     jsonpointer "^5.0.0"
     leven "^3.1.0"
@@ -212,10 +220,10 @@
     simple-eval "1.0.0"
     tslib "^2.3.0"
 
-"@stoplight/spectral-formats@>=1", "@stoplight/spectral-formats@^1.0.0", "@stoplight/spectral-formats@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/spectral-formats/-/spectral-formats-1.1.0.tgz#f985fcceec5352b25d120f7ba17a2b95b33b876c"
-  integrity sha512-ZpEHNkS30qfPbxHJAf3OwZ7g0LkSG2UZXhl3/Jsf6WGivVcuQUY+ZK4c1ZJqBNct1JF1ujP3FgF26xDdTrOtDw==
+"@stoplight/spectral-formats@>=1", "@stoplight/spectral-formats@^1.0.0", "@stoplight/spectral-formats@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/spectral-formats/-/spectral-formats-1.2.0.tgz#7f87345ea7449819b2fad66c88cbdac75d9dc8a6"
+  integrity sha512-idvn7r8fvQjY/KeJpKgXQ5eJhce6N6/KoKWMPSh5yyvYDpn+bkU4pxAD79jOJaDnIyKJd1jjTPEJWnxbS0jj6A==
   dependencies:
     "@stoplight/json" "^3.17.0"
     "@stoplight/spectral-core" "^1.8.0"
@@ -303,19 +311,19 @@
     tslib "^2.3.1"
     validate-npm-package-name "3.0.0"
 
-"@stoplight/spectral-rulesets@>=1", "@stoplight/spectral-rulesets@^1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/spectral-rulesets/-/spectral-rulesets-1.7.0.tgz#13ebb61a98ef67111fb3a4b4bb0dc2ca6aad51d3"
-  integrity sha512-QXnidFatoBQVBv4iHtJyg46zjEeyooTVOgfmsc+UHwAPu0u0YNF7DW52wZCwBU0RMknExDRbopc/QGvO7srmCg==
+"@stoplight/spectral-rulesets@>=1", "@stoplight/spectral-rulesets@^1.12.0":
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/spectral-rulesets/-/spectral-rulesets-1.12.0.tgz#fd3a868356d4baf973a5c6a187fe53796d302ab1"
+  integrity sha512-ktSO5YPzYzscnGTQffyKJwrzsR2i5cpPUC4yBp0isc6mOeiVec4r9sjMUN1mJt0RVnXi509vd0+YlMthFIZYnw==
   dependencies:
-    "@asyncapi/specs" "^2.13.0"
-    "@stoplight/better-ajv-errors" "1.0.1"
+    "@asyncapi/specs" "^2.14.0"
+    "@stoplight/better-ajv-errors" "1.0.3"
     "@stoplight/json" "^3.17.0"
     "@stoplight/spectral-core" "^1.8.1"
-    "@stoplight/spectral-formats" "^1.1.0"
+    "@stoplight/spectral-formats" "^1.2.0"
     "@stoplight/spectral-functions" "^1.5.1"
     "@stoplight/spectral-runtime" "^1.1.1"
-    "@stoplight/types" "^12.3.0"
+    "@stoplight/types" "^13.6.0"
     "@types/json-schema" "^7.0.7"
     ajv "^8.8.2"
     ajv-formats "~2.1.0"
@@ -352,10 +360,10 @@
     "@types/json-schema" "^7.0.4"
     utility-types "^3.10.0"
 
-"@stoplight/types@^13.0.0":
-  version "13.0.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-13.0.0.tgz#69a22d57d3a67f623a01929b10e25401c9635154"
-  integrity sha512-9OTVMiSUz2NlEW14OL6NKOuMTj3dtVVsugRwe3qbq0QnUpx/VLxOuO83n47rXZUTHvk69arOlFrDmRyZMw2DUg==
+"@stoplight/types@^13.0.0", "@stoplight/types@^13.6.0":
+  version "13.6.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-13.6.0.tgz#96c6aaae05858b36f589821cd52c95aa9b205ce7"
+  integrity sha512-dzyuzvUjv3m1wmhPfq82lCVYGcXG0xUYgqnWfCq3PCVR4BKFhjdkHrnJ+jIDoMKvXb05AZP/ObQF6+NpDo29IQ==
   dependencies:
     "@types/json-schema" "^7.0.4"
     utility-types "^3.10.0"
