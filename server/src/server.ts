@@ -168,12 +168,30 @@ function resolveSettings(document: TextDocument): Thenable<TextDocumentSettings>
       }
 
       // If the document does not match one of the configured file globs, set validate=false and done.
-      if (configuration.validateFiles &&
-        configuration.validateFiles.length > 0 &&
-        !configuration.validateFiles.some((value: string) => new Minimatch(value, { matchBase: true }).match(docPath))) {
-        connection.console.log(`File ${document.uri} doesn't match any of the specified file globs; skipping.`);
-        settings.validate = false;
-        return settings;
+      if (configuration.validateFiles && configuration.validateFiles.length > 0) {
+        const positiveGlobs = [];
+        const negativeGlobs = [];
+        for (const globEntry of configuration.validateFiles) {
+          const miniMatch = new Minimatch(globEntry, { matchBase: true });
+          if (miniMatch.negate) {
+            miniMatch.options.flipNegate = true;
+            negativeGlobs.push(miniMatch);
+          } else {
+            positiveGlobs.push(miniMatch);
+          }
+        }
+
+        if (positiveGlobs.length > 0 && !positiveGlobs.some((glob) => glob.match(docPath))) {
+          connection.console.log(`File ${document.uri} doesn't match any of the specified positive file globs; skipping.`);
+          settings.validate = false;
+          return settings;
+        }
+        // ignore if any negative globs match
+        if (negativeGlobs.some((glob) => glob.match(docPath))) {
+          connection.console.log(`File ${document.uri} matches a specified negative file glob; skipping.`);
+          settings.validate = false;
+          return settings;
+        }
       }
 
       let rulesetFile: string | null = null;

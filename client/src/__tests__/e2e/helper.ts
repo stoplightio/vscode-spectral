@@ -19,6 +19,11 @@ export const setRulesetFile = (rulesetFile: string): void => {
     .update('rulesetFile', rulesetFile, true, false);
 };
 
+export const setValidateFiles = (validateFiles: string[]): void => {
+  vscode.workspace.getConfiguration('spectral')
+    .update('validateFiles', validateFiles, true, false);
+};
+
 async function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }

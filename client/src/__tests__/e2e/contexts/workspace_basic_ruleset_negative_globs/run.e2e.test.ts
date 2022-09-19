@@ -6,11 +6,16 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 
 import { openFile, activate, setRulesetFile, setValidateFiles } from '../../helper';
+import { workspace } from 'vscode';
 
 suiteSetup(async () => {
   chaiJestSnapshot.resetSnapshotRegistry();
   setRulesetFile('');
-  setValidateFiles([]);
+  setValidateFiles([
+    '**/*.yaml',
+    '!**/package.json',
+    '!**/template.cfn.yaml'
+  ]);
   await activate();
 });
 
@@ -19,27 +24,9 @@ setup(function() {
   chaiJestSnapshot.configureUsingMochaContext(this);
 });
 
-suite('No workspace, no ruleset', () => {
-  suite('No diagnostics for empty files', () => {
-    ['empty.yaml', 'empty.json'].forEach((fixture) => {
-      test(`${fixture}`, async () => {
-        const diags = await lint(['empty', fixture]);
-        expect(diags).to.matchSnapshot();
-      });
-    });
-  });
-
-  suite('No diagnostics for valid files', () => {
-    ['simple.yaml', 'simple.json'].forEach((fixture) => {
-      test(`${fixture}`, async () => {
-        const diags = await lint(['valid', fixture]);
-        expect(diags).to.matchSnapshot();
-      });
-    });
-  });
-
-  suite('Invalid files trigger generation of diagnostics', () => {
-    ['simple.yaml', 'simple.json'].forEach((fixture) => {
+suite('Workspace, basic ruleset negative globs', () => {
+  suite('Invalid files trigger generation of diagnostics but only if not ignored', () => {
+    ['simple.yaml', 'simple.json', 'package.json', 'template.cfn.yaml'].forEach((fixture) => {
       test(`${fixture}`, async () => {
         const diags = await lint(['invalid', fixture]);
 
@@ -48,10 +35,8 @@ suite('No workspace, no ruleset', () => {
     });
   });
 
-  const pathToFixtures = '../../fixtures';
-
   const lint = async (pathSegments: string[]) => {
-    const docPath = path.resolve(__dirname, pathToFixtures, ...pathSegments);
+    const docPath = path.resolve(workspace.rootPath as string, ...pathSegments);
 
     const docUri = vscode.Uri.file(docPath);
     await openFile(docUri);

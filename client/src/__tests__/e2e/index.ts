@@ -23,6 +23,10 @@ interface TestCase {
       workspace: './workspaces/basic_ruleset/',
     },
     {
+      testRunner: './contexts/workspace_basic_ruleset_negative_globs/configuration',
+      workspace: './workspaces/basic_ruleset_negative_globs/',
+    },
+    {
       testRunner: './contexts/workspace_basic_ruleset_with_functions/configuration',
       workspace: './workspaces/basic_ruleset_with_functions/',
     },
