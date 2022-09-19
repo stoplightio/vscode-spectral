@@ -14,7 +14,7 @@ suiteSetup(async () => {
   setValidateFiles([
     '**/*.yaml',
     '!**/package.json',
-    '!**/template.cfn.yaml'
+    '!**/template.cfn.yaml',
   ]);
   await activate();
 });
