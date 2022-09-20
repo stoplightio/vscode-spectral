@@ -2,7 +2,7 @@
 
 [![Marketplace Version](https://vsmarketplacebadge.apphb.com/version/stoplight.spectral.svg "Current Release")](https://marketplace.visualstudio.com/items?itemName=stoplight.spectral)
 
-The Spectral VS Code Extension brings the power of [Spectral](https://stoplight.io/open-source/spectral?utm_source=referral&utm_medium=marketplace&utm_campaign=vscode_extension) to your favorite editor.
+The Spectral VS Code Extension brings the power of [Spectral](https://stoplight.io/open-source/spectral?utm_source=github.com&utm_medium=referral&utm_campaign=github_repo_vs_code_spectral) to your favorite editor.
 
 Spectral is a flexible object linter with out of the box support for [OpenAPI](https://openapis.org/) v2 and v3, JSON Schema, and AsyncAPI.
 
