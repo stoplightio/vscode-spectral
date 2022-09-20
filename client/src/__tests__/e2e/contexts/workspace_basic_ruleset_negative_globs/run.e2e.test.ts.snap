@@ -73,4 +73,6 @@ Array [
 ]
 `;
 
+exports[`Workspace, basic ruleset negative globs Invalid files trigger generation of diagnostics but only if not ignored simple-ignore.yaml 1`] = `Array []`;
+
 exports[`Workspace, basic ruleset negative globs Invalid files trigger generation of diagnostics but only if not ignored template.cfn.yaml 1`] = `Array []`;

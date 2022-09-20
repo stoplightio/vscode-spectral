@@ -13,6 +13,7 @@ suiteSetup(async () => {
   setRulesetFile('');
   setValidateFiles([
     '**/*.yaml',
+    '!**/simple-ignore.yaml',
     '!**/package.json',
     '!**/template.cfn.yaml',
   ]);
@@ -26,7 +27,7 @@ setup(function() {
 
 suite('Workspace, basic ruleset negative globs', () => {
   suite('Invalid files trigger generation of diagnostics but only if not ignored', () => {
-    ['simple.yaml', 'simple.json', 'package.json', 'template.cfn.yaml'].forEach((fixture) => {
+    ['simple.yaml', 'simple.json', 'package.json', 'template.cfn.yaml', 'simple-ignore.yaml'].forEach((fixture) => {
       test(`${fixture}`, async () => {
         const diags = await lint(['invalid', fixture]);
 
