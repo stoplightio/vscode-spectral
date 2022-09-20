@@ -5,12 +5,13 @@ import * as chaiJestSnapshot from 'chai-jest-snapshot';
 import * as vscode from 'vscode';
 import * as path from 'path';
 
-import { openFile, activate, setRulesetFile } from '../../helper';
+import { openFile, activate, setRulesetFile, setValidateFiles } from '../../helper';
 import { workspace } from 'vscode';
 
 suiteSetup(async () => {
   chaiJestSnapshot.resetSnapshotRegistry();
   setRulesetFile('');
+  setValidateFiles([]);
   await activate();
 });
 

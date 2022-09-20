@@ -5,7 +5,7 @@ import * as chaiJestSnapshot from 'chai-jest-snapshot';
 import * as vscode from 'vscode';
 import * as path from 'path';
 
-import { openFile, activate, setRulesetFile } from '../../helper';
+import { openFile, activate, setRulesetFile, setValidateFiles } from '../../helper';
 import { workspace } from 'vscode';
 
 import * as httpTestServers from 'http-test-servers';
@@ -42,6 +42,7 @@ suiteSetup(async () => {
   });
   chaiJestSnapshot.resetSnapshotRegistry();
   setRulesetFile('http://localhost:3006/spectral.json');
+  setValidateFiles([]);
 
   await activate();
 });
