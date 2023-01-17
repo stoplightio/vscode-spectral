@@ -2,11 +2,6 @@
 # yarn lockfile v1
 
 
-"@asyncapi/specs@^2.14.0":
-  version "2.14.0"
-  resolved "https://registry.npmjs.org/@asyncapi/specs/-/specs-2.14.0.tgz"
-  integrity sha512-hHsYF6XsYNIKb1P2rXaooF4H+uKKQ4b/Ljxrk3rZ3riEDiSxMshMEfb1fUlw9Yj4V4OmJhjXwkNvw8W59AXv1A==
-
 "@asyncapi/specs@^3.2.0":
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/@asyncapi/specs/-/specs-3.2.1.tgz#b0dfe054154d3a6bb89f2ba23ea6379a754875d0"
@@ -210,15 +205,10 @@
     lodash "^4.17.21"
     safe-stable-stringify "^1.1"
 
-"@stoplight/ordered-object-literal@^1.0.1", "@stoplight/ordered-object-literal@^1.0.3", "@stoplight/ordered-object-literal@~1.0.4":
+"@stoplight/ordered-object-literal@^1.0.1", "@stoplight/ordered-object-literal@^1.0.2", "@stoplight/ordered-object-literal@^1.0.3", "@stoplight/ordered-object-literal@~1.0.4":
   version "1.0.4"
   resolved "https://registry.npmjs.org/@stoplight/ordered-object-literal/-/ordered-object-literal-1.0.4.tgz"
   integrity sha512-OF8uib1jjDs5/cCU+iOVy+GJjU3X7vk/qJIkIJFqwmlJKrrtijFmqwbu8XToXrwTYLQTP+Hebws5gtZEmk9jag==
-
-"@stoplight/ordered-object-literal@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.npmjs.org/@stoplight/ordered-object-literal/-/ordered-object-literal-1.0.2.tgz"
-  integrity sha512-0ZMS/9sNU3kVo/6RF3eAv7MK9DY8WLjiVJB/tVyfF2lhr2R4kqh534jZ0PlrFB9CRXrdndzn1DbX6ihKZXft2w==
 
 "@stoplight/path@1.3.2", "@stoplight/path@^1.3.2":
   version "1.3.2"
@@ -252,17 +242,7 @@
     simple-eval "1.0.0"
     tslib "^2.3.0"
 
-"@stoplight/spectral-formats@>=1", "@stoplight/spectral-formats@^1.0.0", "@stoplight/spectral-formats@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.npmjs.org/@stoplight/spectral-formats/-/spectral-formats-1.2.0.tgz"
-  integrity sha512-idvn7r8fvQjY/KeJpKgXQ5eJhce6N6/KoKWMPSh5yyvYDpn+bkU4pxAD79jOJaDnIyKJd1jjTPEJWnxbS0jj6A==
-  dependencies:
-    "@stoplight/json" "^3.17.0"
-    "@stoplight/spectral-core" "^1.8.0"
-    "@types/json-schema" "^7.0.7"
-    tslib "^2.3.1"
-
-"@stoplight/spectral-formats@^1.4.0":
+"@stoplight/spectral-formats@>=1", "@stoplight/spectral-formats@^1.0.0", "@stoplight/spectral-formats@^1.4.0":
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@stoplight/spectral-formats/-/spectral-formats-1.4.0.tgz#104e49f305914f1645496fe7ea3848a416fec5b3"
   integrity sha512-j9VQukDzgqDSi26rK9LqsbXrqtkeIsPSPgEf5/sxRsmeF2bwWUhSjYXgYin4flSZ7owFZjZWQ3o0Qq3iApi2JQ==
@@ -353,27 +333,7 @@
     tslib "^2.3.1"
     validate-npm-package-name "3.0.0"
 
-"@stoplight/spectral-rulesets@>=1":
-  version "1.12.0"
-  resolved "https://registry.npmjs.org/@stoplight/spectral-rulesets/-/spectral-rulesets-1.12.0.tgz"
-  integrity sha512-ktSO5YPzYzscnGTQffyKJwrzsR2i5cpPUC4yBp0isc6mOeiVec4r9sjMUN1mJt0RVnXi509vd0+YlMthFIZYnw==
-  dependencies:
-    "@asyncapi/specs" "^2.14.0"
-    "@stoplight/better-ajv-errors" "1.0.3"
-    "@stoplight/json" "^3.17.0"
-    "@stoplight/spectral-core" "^1.8.1"
-    "@stoplight/spectral-formats" "^1.2.0"
-    "@stoplight/spectral-functions" "^1.5.1"
-    "@stoplight/spectral-runtime" "^1.1.1"
-    "@stoplight/types" "^13.6.0"
-    "@types/json-schema" "^7.0.7"
-    ajv "^8.8.2"
-    ajv-formats "~2.1.0"
-    json-schema-traverse "^1.0.0"
-    lodash "~4.17.21"
-    tslib "^2.3.0"
-
-"@stoplight/spectral-rulesets@^1.14.1":
+"@stoplight/spectral-rulesets@>=1", "@stoplight/spectral-rulesets@^1.14.1":
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/@stoplight/spectral-rulesets/-/spectral-rulesets-1.14.1.tgz#46f56be71f129c46d307b8b2fde08a8e5f5937b4"
   integrity sha512-tn6a5fYPFDwEY+/YyK/hcq2gcR5nSIBt7l+JGELb/2RdTzD5ikj2mfl2ua3uxbqOZytftFoOX5ewGZ0qQNrudw==
@@ -1516,7 +1476,7 @@ deep-extend@^0.6.0:
   resolved "https://registry.npmjs.org/deep-extend/-/deep-extend-0.6.0.tgz"
   integrity sha512-LOHxIOaPYdHlJRtCQfDIVZtfw/ufM8+rVj649RIHzcm/vGwQRXFt6OPqIFWsm2XEMrNIEtWR64sY1LEKD2vAOA==
 
-deep-is@^0.1.3, deep-is@~0.1.3:
+deep-is@^0.1.3:
   version "0.1.3"
   resolved "https://registry.npmjs.org/deep-is/-/deep-is-0.1.3.tgz"
   integrity sha1-s2nW+128E+7PUk+RsHD+7cNXzzQ=
@@ -1794,18 +1754,6 @@ escape-string-regexp@^1.0.5:
   resolved "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz"
   integrity sha1-G2HAViGQqN/2rjuyzwIAyhMLhtQ=
 
-escodegen@^1.8.1:
-  version "1.14.3"
-  resolved "https://registry.npmjs.org/escodegen/-/escodegen-1.14.3.tgz"
-  integrity sha512-qFcX0XJkdg+PB3xjZZG/wKSuT1PnQWx57+TVSjIMmILd2yC/6ByYElPwJnslDsuWuSAp4AwJGumarAAmJch5Kw==
-  dependencies:
-    esprima "^4.0.1"
-    estraverse "^4.2.0"
-    esutils "^2.0.2"
-    optionator "^0.8.1"
-  optionalDependencies:
-    source-map "~0.6.1"
-
 eslint-config-google@^0.14.0:
   version "0.14.0"
   resolved "https://registry.npmjs.org/eslint-config-google/-/eslint-config-google-0.14.0.tgz"
@@ -1895,12 +1843,7 @@ espree@^7.3.0:
     acorn-jsx "^5.2.0"
     eslint-visitor-keys "^1.3.0"
 
-esprima@1.2.2:
-  version "1.2.2"
-  resolved "https://registry.npmjs.org/esprima/-/esprima-1.2.2.tgz"
-  integrity sha1-dqD9Zvz+FU/SkmZ9wmQBl1CxZXs=
-
-esprima@^4.0.0, esprima@^4.0.1:
+esprima@^4.0.0:
   version "4.0.1"
   resolved "https://registry.npmjs.org/esprima/-/esprima-4.0.1.tgz"
   integrity sha512-eGuFFw7Upda+g4p+QHvnW0RyTX/SVeJBDM/gCtMARO0cLuT2HcEKnTPvhjV6aGeqrCB/sbNop0Kszm0jsaWU4A==
@@ -1919,7 +1862,7 @@ esrecurse@^4.3.0:
   dependencies:
     estraverse "^5.2.0"
 
-estraverse@^4.1.1, estraverse@^4.2.0:
+estraverse@^4.1.1:
   version "4.3.0"
   resolved "https://registry.npmjs.org/estraverse/-/estraverse-4.3.0.tgz"
   integrity sha512-39nnKffWz8xN1BU/2c79n9nB9HDzo0niYUqx6xyqUnyoAnQyyWpOTdZEeiCch8BBu515t4wp9ZmgVfVhn9EBpw==
@@ -2048,7 +1991,7 @@ fast-json-stable-stringify@^2.0.0:
   resolved "https://registry.npmjs.org/fast-json-stable-stringify/-/fast-json-stable-stringify-2.1.0.tgz"
   integrity sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw==
 
-fast-levenshtein@^2.0.6, fast-levenshtein@~2.0.6:
+fast-levenshtein@^2.0.6:
   version "2.0.6"
   resolved "https://registry.npmjs.org/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz"
   integrity sha1-PYpcZog6FqMMqGQ+hR8Zuqd5eRc=
@@ -2909,15 +2852,6 @@ jsonpath-plus@^6.0.1:
   resolved "https://registry.npmjs.org/jsonpath-plus/-/jsonpath-plus-6.0.1.tgz"
   integrity sha512-EvGovdvau6FyLexFH2OeXfIITlgIbgZoAZe3usiySeaIDm5QS+A10DKNpaPBBqqRSZr2HN6HVNXxtwUAr2apEw==
 
-jsonpath@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.npmjs.org/jsonpath/-/jsonpath-1.1.1.tgz"
-  integrity sha512-l6Cg7jRpixfbgoWgkrl77dgEj8RPvND0wMH6TwQmi9Qs4TFfS9u5cUFnbeKTwj5ga5Y3BTGGNI28k117LJ009w==
-  dependencies:
-    esprima "1.2.2"
-    static-eval "2.0.2"
-    underscore "1.12.1"
-
 jsonpointer@^5.0.0:
   version "5.0.1"
   resolved "https://registry.npmjs.org/jsonpointer/-/jsonpointer-5.0.1.tgz"
@@ -2948,14 +2882,6 @@ levn@^0.4.1:
   dependencies:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
-
-levn@~0.3.0:
-  version "0.3.0"
-  resolved "https://registry.npmjs.org/levn/-/levn-0.3.0.tgz"
-  integrity sha1-OwmSTt+fCDwEkP3UwLxEIeBHZO4=
-  dependencies:
-    prelude-ls "~1.1.2"
-    type-check "~0.3.2"
 
 linkify-it@^2.0.0:
   version "2.2.0"
@@ -3392,18 +3318,6 @@ onetime@^5.1.2:
   dependencies:
     mimic-fn "^2.1.0"
 
-optionator@^0.8.1:
-  version "0.8.3"
-  resolved "https://registry.npmjs.org/optionator/-/optionator-0.8.3.tgz"
-  integrity sha512-+IW9pACdk3XWmmTXG8m3upGUJst5XRGzxMRjXzAuJ1XnIFNvfhjjIuYkDvysnPQ7qzqVzLt78BCruntqRhWQbA==
-  dependencies:
-    deep-is "~0.1.3"
-    fast-levenshtein "~2.0.6"
-    levn "~0.3.0"
-    prelude-ls "~1.1.2"
-    type-check "~0.3.2"
-    word-wrap "~1.2.3"
-
 optionator@^0.9.1:
   version "0.9.1"
   resolved "https://registry.npmjs.org/optionator/-/optionator-0.9.1.tgz"
@@ -3595,11 +3509,6 @@ prelude-ls@^1.2.1:
   version "1.2.1"
   resolved "https://registry.npmjs.org/prelude-ls/-/prelude-ls-1.2.1.tgz"
   integrity sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==
-
-prelude-ls@~1.1.2:
-  version "1.1.2"
-  resolved "https://registry.npmjs.org/prelude-ls/-/prelude-ls-1.1.2.tgz"
-  integrity sha1-IZMqVJ9eUv/ZqCf1cOBL5iqX2lQ=
 
 pretty-format@^21.2.1:
   version "21.2.1"
@@ -4051,7 +3960,7 @@ source-map-support@^0.5.17, source-map-support@~0.5.20:
     buffer-from "^1.0.0"
     source-map "^0.6.0"
 
-source-map@^0.6.0, source-map@^0.6.1, source-map@~0.6.1:
+source-map@^0.6.0, source-map@^0.6.1:
   version "0.6.1"
   resolved "https://registry.npmjs.org/source-map/-/source-map-0.6.1.tgz"
   integrity sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==
@@ -4065,13 +3974,6 @@ sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.npmjs.org/sprintf-js/-/sprintf-js-1.0.3.tgz"
   integrity sha1-BOaSb2YolTVPPdAVIDYzuFcpfiw=
-
-static-eval@2.0.2:
-  version "2.0.2"
-  resolved "https://registry.npmjs.org/static-eval/-/static-eval-2.0.2.tgz"
-  integrity sha512-N/D219Hcr2bPjLxPiV+TQE++Tsmrady7TqAJugLy7Xk1EumfDWS/f5dtBbkRCGE7wKKXuYockQoj8Rm2/pVKyg==
-  dependencies:
-    escodegen "^1.8.1"
 
 statuses@2.0.1:
   version "2.0.1"
@@ -4387,13 +4289,6 @@ type-check@^0.4.0, type-check@~0.4.0:
   dependencies:
     prelude-ls "^1.2.1"
 
-type-check@~0.3.2:
-  version "0.3.2"
-  resolved "https://registry.npmjs.org/type-check/-/type-check-0.3.2.tgz"
-  integrity sha1-WITKtRLPHTVeP7eE8wgEsrUg23I=
-  dependencies:
-    prelude-ls "~1.1.2"
-
 type-detect@^4.0.0, type-detect@^4.0.5:
   version "4.0.8"
   resolved "https://registry.npmjs.org/type-detect/-/type-detect-4.0.8.tgz"
@@ -4449,11 +4344,6 @@ unbox-primitive@^1.0.2:
     has-bigints "^1.0.2"
     has-symbols "^1.0.3"
     which-boxed-primitive "^1.0.2"
-
-underscore@1.12.1:
-  version "1.12.1"
-  resolved "https://registry.npmjs.org/underscore/-/underscore-1.12.1.tgz"
-  integrity sha512-hEQt0+ZLDVUMhebKxL4x1BTtDY7bavVofhZ9KZ4aI26X9SRaE+Y3m83XUL1UP2jn8ynjndwCCpEHdUG+9pP1Tw==
 
 underscore@^1.12.1:
   version "1.13.2"
@@ -4758,7 +4648,7 @@ wildcard@^2.0.0:
   resolved "https://registry.npmjs.org/wildcard/-/wildcard-2.0.0.tgz"
   integrity sha512-JcKqAHLPxcdb9KM49dufGXn2x3ssnfjbcaQdLlfZsL9rH9wgDQjUtDxbo8NE0F6SFvydeu1VhZe7hZuHsB2/pw==
 
-word-wrap@^1.2.3, word-wrap@~1.2.3:
+word-wrap@^1.2.3:
   version "1.2.3"
   resolved "https://registry.npmjs.org/word-wrap/-/word-wrap-1.2.3.tgz"
   integrity sha512-Hz/mrNwitNRh/HUAtM/VT/5VH+ygD6DV7mYKZAtHOrbs8U7lvPS6xf7EJKMF0uW1KJCl0H701g3ZGus+muE5vQ==
