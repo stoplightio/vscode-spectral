@@ -94,7 +94,6 @@
     "eslint-config-google": "^0.14.0",
     "glob": "^8.0.3",
     "http-test-servers": "^2.0.0",
-    "jsonpath": "^1.1.1",
     "merge-options": "^3.0.0",
     "mocha": "^8.1.3",
     "rimraf": "^3.0.2",
@@ -145,7 +144,7 @@
     "test": "mocha -r ts-node/register \"./+(client|server)/__tests__/unit/**/*.test.ts\"",
     "test:e2e": "cross-env CI=true CHAI_JEST_SNAPSHOT_UPDATE_ALL=false ts-node ./client/src/__tests__/e2e/index.ts"
   },
-  "version": "1.1.0",
+  "version": "1.1.1",
   "workspaces": {
     "packages": [
       "client",
