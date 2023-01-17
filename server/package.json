@@ -10,7 +10,7 @@
     "rollup": "~2.67.0",
     "vscode-languageserver": "^6.1.1",
     "vscode-languageserver-textdocument": "^1.0.1",
-    "vscode-uri": "^2.1.2"
+    "vscode-uri": "^3.0.7"
   },
   "devDependencies": {
     "@types/minimatch": "^3.0.3",
