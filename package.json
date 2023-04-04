@@ -145,7 +145,7 @@
     "test": "mocha -r ts-node/register \"./+(client|server)/__tests__/unit/**/*.test.ts\"",
     "test:e2e": "cross-env CI=true CHAI_JEST_SNAPSHOT_UPDATE_ALL=false ts-node ./client/src/__tests__/e2e/index.ts"
   },
-  "version": "1.1.1",
+  "version": "1.1.2",
   "workspaces": {
     "packages": [
       "client",
