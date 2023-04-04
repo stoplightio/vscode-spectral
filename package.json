@@ -128,7 +128,7 @@
     "OAS3",
     "AsyncAPI",
     "json",
-    "yaml
+    "yaml"
   ],
   "license": "Apache-2.0",
   "main": "./client/index.js",
