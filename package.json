@@ -126,12 +126,13 @@
     "OAS",
     "OAS2",
     "OAS3",
-    "AsyncAPI"
+    "AsyncAPI",
+    "json",
+    "yaml
   ],
   "license": "Apache-2.0",
   "main": "./client/index.js",
   "name": "spectral",
-  "preview": true,
   "private": true,
   "publisher": "stoplight",
   "repository": {
