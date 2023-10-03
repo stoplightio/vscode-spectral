@@ -3,8 +3,8 @@
   "dependencies": {
     "@stoplight/path": "^1.3.2",
     "@stoplight/spectral-core": "^1.16.0",
-    "@stoplight/spectral-ruleset-bundler": "^1.5.0",
-    "@stoplight/spectral-ruleset-migrator": "^1.9.1",
+    "@stoplight/spectral-ruleset-bundler": "^1.5.2",
+    "@stoplight/spectral-ruleset-migrator": "^1.9.5",
     "@stoplight/spectral-rulesets": "^1.14.1",
     "minimatch": "^3.0.4",
     "rollup": "~2.79.0",

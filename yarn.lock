@@ -205,6 +205,18 @@
     lodash "^4.17.21"
     safe-stable-stringify "^1.1"
 
+"@stoplight/json@~3.21.0":
+  version "3.21.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-3.21.0.tgz#c0dff9c478f3365d7946cb6e34c17cc2fa84250b"
+  integrity sha512-5O0apqJ/t4sIevXCO3SBN9AHCEKKR/Zb4gaj7wYe5863jme9g02Q0n/GhM7ZCALkL+vGPTe4ZzTETP8TFtsw3g==
+  dependencies:
+    "@stoplight/ordered-object-literal" "^1.0.3"
+    "@stoplight/path" "^1.3.2"
+    "@stoplight/types" "^13.6.0"
+    jsonc-parser "~2.2.1"
+    lodash "^4.17.21"
+    safe-stable-stringify "^1.1"
+
 "@stoplight/ordered-object-literal@^1.0.1", "@stoplight/ordered-object-literal@^1.0.2", "@stoplight/ordered-object-literal@^1.0.3", "@stoplight/ordered-object-literal@~1.0.4":
   version "1.0.4"
   resolved "https://registry.npmjs.org/@stoplight/ordered-object-literal/-/ordered-object-literal-1.0.4.tgz"
@@ -291,10 +303,10 @@
     dependency-graph "0.11.0"
     tslib "^2.3.1"
 
-"@stoplight/spectral-ruleset-bundler@^1.5.0":
-  version "1.5.0"
-  resolved "https://registry.npmjs.org/@stoplight/spectral-ruleset-bundler/-/spectral-ruleset-bundler-1.5.0.tgz"
-  integrity sha512-I1ZbhnJtRTi0lG6oXA1r8J6KLxoZKkNB3aSdrNJJTHoo/AccMSMhV4ey8zbLsYNsJ/9ywR5ttkBAbyGuo3Jtxg==
+"@stoplight/spectral-ruleset-bundler@^1.5.2":
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/@stoplight/spectral-ruleset-bundler/-/spectral-ruleset-bundler-1.5.2.tgz#dbe69ced8e7740c39ef23982fd008c9ae2e96e68"
+  integrity sha512-4QUVUFAU+S7IQ9XeCu+0TQMYxKFpKnkOAfa9unRQ1iPL2cviaipEN6witpbAptdHJD3UUjx4OnwlX8WwmXSq9w==
   dependencies:
     "@rollup/plugin-commonjs" "~22.0.2"
     "@stoplight/path" "1.3.2"
@@ -313,12 +325,32 @@
     tslib "^2.3.1"
     validate-npm-package-name "3.0.0"
 
-"@stoplight/spectral-ruleset-migrator@^1.7.4", "@stoplight/spectral-ruleset-migrator@^1.9.1":
+"@stoplight/spectral-ruleset-migrator@^1.7.4":
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/@stoplight/spectral-ruleset-migrator/-/spectral-ruleset-migrator-1.9.1.tgz#3a927b77e37a075978756b42e14e4af8f0945939"
   integrity sha512-TiH7UZIuHX+yb6EsWA9Z2ou455Wtki3z7SCkVRgd7WdzkD7O13R8ywqKoCUJ44UP7iuo1Ejnog18Rw4qJJE/fg==
   dependencies:
     "@stoplight/json" "~3.20.1"
+    "@stoplight/ordered-object-literal" "~1.0.4"
+    "@stoplight/path" "1.3.2"
+    "@stoplight/spectral-functions" "^1.0.0"
+    "@stoplight/spectral-runtime" "^1.1.0"
+    "@stoplight/types" "^13.6.0"
+    "@stoplight/yaml" "~4.2.3"
+    "@types/node" "*"
+    ajv "^8.6.0"
+    ast-types "0.14.2"
+    astring "^1.7.5"
+    reserved "0.1.2"
+    tslib "^2.3.1"
+    validate-npm-package-name "3.0.0"
+
+"@stoplight/spectral-ruleset-migrator@^1.9.5":
+  version "1.9.5"
+  resolved "https://registry.yarnpkg.com/@stoplight/spectral-ruleset-migrator/-/spectral-ruleset-migrator-1.9.5.tgz#20631f3e83655f41b9ac4c9788e32b30fa8271dd"
+  integrity sha512-76n/HETr3UinVl/xLNldrH9p0JNoD8Gz4K75J6E4OHp4xD0P+BA2e8+W30HjIvqm1LJdLU2BNma0ioy+q3B9RA==
+  dependencies:
+    "@stoplight/json" "~3.21.0"
     "@stoplight/ordered-object-literal" "~1.0.4"
     "@stoplight/path" "1.3.2"
     "@stoplight/spectral-functions" "^1.0.0"
