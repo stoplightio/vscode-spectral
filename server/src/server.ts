@@ -299,9 +299,9 @@ function setupDocumentListener(): void {
   documents.onDidClose((event) => {
     resolveSettings(event.document).then((settings) => {
       const uri = event.document.uri;
-      documentSettings.delete(uri);
-      seenDependencies.delete(uri);
       if (settings.validate) {
+        documentSettings.delete(uri);
+        seenDependencies.delete(uri);
         // Clear any diagnostics associated with the document that closed.
         connection.sendDiagnostics({ uri: uri, diagnostics: [] });
       }
