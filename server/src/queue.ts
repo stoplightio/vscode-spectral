@@ -2,7 +2,7 @@
 // extension licensed under the MIT license.
 // https://github.com/microsoft/vscode-eslint/blob/d40b96d4a2f0d085770b2bdce87b985bdd198bec/server/src/eslintServer.ts#L828
 import {
-  IConnection,
+  Connection,
   NotificationHandler,
   NotificationType,
 } from 'vscode-languageserver';
@@ -38,7 +38,7 @@ export class BufferedMessageQueue {
    * Initializes a new queue.
    * @param {IConnection} connection - The connection for communicating with clients.
    */
-  constructor(private connection: IConnection) {
+  constructor(private connection: Connection) {
     this.queue = [];
     this.notificationHandlers = new Map();
   }
@@ -52,11 +52,11 @@ export class BufferedMessageQueue {
 
   /**
    * Registers a notification and handler at the same time.
-   * @param {NotificationType<P, RO>} type - The type of notification to process.
+   * @param {NotificationType<P>} type - The type of notification to process.
    * @param {NotificationHandler<P>} handler - The handler for the notification.
    * @param {queue~versionProvider} versionProvider - A provider that gives the document version.
    */
-  public registerNotification<P, RO>(type: NotificationType<P, RO>, handler: NotificationHandler<P>, versionProvider?: (params: P) => number): void {
+  public registerNotification<P>(type: NotificationType<P>, handler: NotificationHandler<P>, versionProvider?: (params: P) => number): void {
     this.connection.onNotification(type, (params) => {
       this.queue.push({
         method: type.method,
@@ -70,11 +70,11 @@ export class BufferedMessageQueue {
 
   /**
    * Adds a message to the queue and kicks off processing.
-   * @param {NotificationType<P, RO>} type - The type of notification to add to the queue.
+   * @param {NotificationType<P>} type - The type of notification to add to the queue.
    * @param {P} params - The subject of the notification.
    * @param {number} version - The document version associated with the notification.
    */
-  public addNotificationMessage<P, RO>(type: NotificationType<P, RO>, params: P, version: number): void {
+  public addNotificationMessage<P>(type: NotificationType<P>, params: P, version: number): void {
     this.queue.push({
       method: type.method,
       params,
@@ -85,11 +85,11 @@ export class BufferedMessageQueue {
 
   /**
    * Registers a handler for a notification.
-   * @param {NotificationType<P, RO>} type - The type of notification to process.
+   * @param {NotificationType<P>} type - The type of notification to process.
    * @param {NotificationHandler<P>} handler - The handler for the notification.
    * @param {queue~versionProvider} versionProvider - A provider that gives the document version.
    */
-  public onNotification<P, RO>(type: NotificationType<P, RO>, handler: NotificationHandler<P>, versionProvider?: (params: P) => number): void {
+  public onNotification<P>(type: NotificationType<P>, handler: NotificationHandler<P>, versionProvider?: (params: P) => number): void {
     this.notificationHandlers.set(type.method, { handler, versionProvider });
   }
 
