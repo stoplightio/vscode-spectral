@@ -364,7 +364,7 @@ async function lintDocumentOrRoot(document: TextDocument, ruleset: Ruleset | und
 
   connection.console.log(`[DBG] lintDocumentOrRoot. knownDeps=${JSON.stringify([...knownDeps])}`);
 
-  const pdps = makePublishDiagnosticsParams(rootDocument.uri, [...knownDeps], results);
+  const pdps = makePublishDiagnosticsParams(rootDocument.uri, [...knownDeps], results, ruleset);
   const deps = pdps.filter((e) => e.uri !== rootDocument.uri).map<[string, string]>((e) => [e.uri, rootDocument.uri]);
 
   return [pdps, deps];
