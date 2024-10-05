@@ -14,7 +14,7 @@ jobs:
 
       - uses: actions/setup-node@v3.5.1
         with:
-          node-version: ^14.21
+          node-version: 16.20
 
       - name: Yarn install
         run: yarn install
