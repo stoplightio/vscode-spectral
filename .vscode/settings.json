@@ -1,23 +1,16 @@
 {
   "eslint.enable": true,
-  "eslint.workingDirectories": [
-    "./client",
-    "./server"
-  ],
+  "eslint.workingDirectories": ["./client", "./server"],
   "javascript.format.insertSpaceAfterFunctionKeywordForAnonymousFunctions": false,
   "typescript.format.insertSpaceAfterFunctionKeywordForAnonymousFunctions": false,
   "typescript.tsc.autoDetect": "off",
   "typescript.tsdk": "./node_modules/typescript/lib",
   "typescript.tsserver.log": "off",
   "typescript.tsserver.trace": "off",
-  "eslint.probe": [
-    "typescript"
-  ],
-  "eslint.validate": [
-    "typescript"
-  ],
+  "eslint.probe": ["typescript"],
+  "eslint.validate": ["typescript"],
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-  },
+    "source.fixAll.eslint": "explicit"
+  }
 }

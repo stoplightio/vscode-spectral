@@ -20,7 +20,7 @@ Array [
   },
   Object {
     "code": "oas3-schema",
-    "message": "Object must have required property \\"paths\\".",
+    "message": "must have required property \\"paths\\".",
     "range": Array [
       Object {
         "character": 0,
@@ -68,7 +68,7 @@ Array [
   },
   Object {
     "code": "oas3-schema",
-    "message": "\\"info\\" property type must be object.",
+    "message": "\\"info\\" property must be object.",
     "range": Array [
       Object {
         "character": 10,
@@ -105,7 +105,7 @@ Array [
   },
   Object {
     "code": "oas3-schema",
-    "message": "Object must have required property \\"paths\\".",
+    "message": "must have required property \\"paths\\".",
     "range": Array [
       Object {
         "character": 0,
@@ -153,7 +153,7 @@ Array [
   },
   Object {
     "code": "oas3-schema",
-    "message": "\\"info\\" property type must be object.",
+    "message": "\\"info\\" property must be object.",
     "range": Array [
       Object {
         "character": 6,
