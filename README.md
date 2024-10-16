@@ -2,7 +2,7 @@
 
 The Spectral VS Code Extension brings the power of [Spectral](https://stoplight.io/open-source/spectral?utm_source=github.com&utm_medium=referral&utm_campaign=github_repo_vs_code_spectral) to your favorite editor.
 
-Spectral is a flexible object linter with out of the box support for [OpenAPI](https://openapis.org/) v2 and v3, JSON Schema, and AsyncAPI.
+Spectral is a flexible object linter with out of the box support for [OpenAPI](https://openapis.org/) v2 and v3, [Arazzo](https://www.openapis.org/arazzo), [JSON Schema](https://json-schema.org/), and [AsyncAPI](https://www.asyncapi.com/).
 
 ## Features
 

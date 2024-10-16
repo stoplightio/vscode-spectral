@@ -10,12 +10,12 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
-        node-version: [^12.13]
+        node-version: [18.x]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v3.5.1
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
 
