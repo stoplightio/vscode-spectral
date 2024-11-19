@@ -108,7 +108,7 @@
     "webpack-cli": "^4.9.2"
   },
   "resolutions": {
-    "@stoplight/spectral-core": "^1.19.3"
+    "@stoplight/spectral-core": "^1.19.4"
   },
   "displayName": "Spectral",
   "engines": {
