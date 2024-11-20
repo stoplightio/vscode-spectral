@@ -16,7 +16,7 @@ export namespace StartWatcherNotification {
   /**
    * Notification type indicating a FileSystemWatcher should be started in the client.
    */
-  export const type = new NotificationType<StartWatcherParams, void>('spectral/startWatcher');
+  export const type = new NotificationType<StartWatcherParams>('spectral/startWatcher');
 }
 
 export interface StartWatcherParams {
@@ -31,5 +31,5 @@ export namespace ValidateNotification {
   /**
    * Notification type indicating a validation/linting operation should take place.
    */
-  export const type: NotificationType<TextDocument, void> = new NotificationType<TextDocument, void>('spectral/validate');
+  export const type: NotificationType<TextDocument> = new NotificationType<TextDocument>('spectral/validate');
 }

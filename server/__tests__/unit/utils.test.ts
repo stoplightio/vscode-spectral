@@ -1,9 +1,10 @@
 /* eslint-disable require-jsdoc */
 import { expect } from 'chai';
 
-import type { IRuleResult } from '@stoplight/spectral-core';
+import { IRuleResult, Ruleset } from '@stoplight/spectral-core';
+import { truthy, falsy } from '@stoplight/spectral-functions';
 import { DiagnosticSeverity as SpectralDiagnosticSeverity } from '@stoplight/types';
-import { makeDiagnostic, makePublishDiagnosticsParams } from '../../src/util';
+import { getRuleDocumentationUrl, makeDiagnostic, makePublishDiagnosticsParams } from '../../src/util';
 import { DiagnosticSeverity as VSCodeDiagnosticSeverity } from 'vscode-languageserver';
 
 function createResult(source?: string): IRuleResult {
@@ -28,10 +29,33 @@ function createResult(source?: string): IRuleResult {
   };
 }
 
+function createRuleset(rulesetDoc: string | undefined): Ruleset {
+  return new Ruleset({
+    documentationUrl: rulesetDoc,
+    rules: {
+      'with-direct-doc': {
+        documentationUrl: 'https://example.com/direct',
+        given: '$',
+        severity: 'error',
+        then: {
+          function: truthy,
+        },
+      },
+      'without-direct-doc': {
+        given: '$',
+        severity: 'error',
+        then: {
+          function: falsy,
+        },
+      },
+    },
+  });
+}
+
 describe('makeDiagnostic', () => {
   it('sets the source to spectral', () => {
     const result = createResult();
-    const actual = makeDiagnostic(result);
+    const actual = makeDiagnostic(result, undefined);
     expect(actual.source).to.eql('spectral');
   });
 
@@ -47,12 +71,11 @@ describe('makeDiagnostic', () => {
       const result = createResult();
       result.severity = input;
 
-      const actual = makeDiagnostic(result);
+      const actual = makeDiagnostic(result, undefined);
       expect(actual.severity).to.eql(expected);
     });
   });
 });
-
 
 describe('makePublishDiagnosticsParams', () => {
   const sources: string[] = [
@@ -63,7 +86,7 @@ describe('makePublishDiagnosticsParams', () => {
   describe('returns an empty array of diagnostics for the root file being analyzed even when it has no issues', () => {
     sources.forEach((sourceUri) => {
       it(sourceUri, () => {
-        const actual = makePublishDiagnosticsParams(sourceUri, [], []);
+        const actual = makePublishDiagnosticsParams(sourceUri, [], [], undefined);
 
         expect(actual).to.have.length(1);
         expect(actual[0].uri).to.eql(sourceUri);
@@ -76,7 +99,7 @@ describe('makePublishDiagnosticsParams', () => {
     sources.forEach((sourceUri) => {
       it(sourceUri, () => {
         const fakeRoot = 'file:///different/root';
-        const actual = makePublishDiagnosticsParams(fakeRoot, [sourceUri], []);
+        const actual = makePublishDiagnosticsParams(fakeRoot, [sourceUri], [], undefined);
 
         expect(actual).to.have.length(2);
 
@@ -118,7 +141,7 @@ describe('makePublishDiagnosticsParams', () => {
       createResult('four'),
     ];
 
-    const actual = makePublishDiagnosticsParams('file:///one', [], problems);
+    const actual = makePublishDiagnosticsParams('file:///one', [], problems, undefined);
 
     expect(actual).to.have.length(5);
 
@@ -147,6 +170,29 @@ describe('makePublishDiagnosticsParams', () => {
         default:
           throw new Error(`Unexpected uri '${pdp.uri}'`);
       }
+    });
+  });
+
+  describe('getRuleDocumentationUrl', () => {
+    it('uses the rule\'s documentation if it exists', () => {
+      const ruleset = createRuleset(undefined);
+      const documentationUrl = getRuleDocumentationUrl(ruleset, 'with-direct-doc');
+      expect(documentationUrl).to.eql('https://example.com/direct');
+    });
+    it('uses the rule\'s documentation if it exists, even if the ruleset has its own', () => {
+      const ruleset = createRuleset('https://example.com');
+      const documentationUrl = getRuleDocumentationUrl(ruleset, 'with-direct-doc');
+      expect(documentationUrl).to.eql('https://example.com/direct');
+    });
+    it('uses the ruleset\'s documentation and #code if the rule has no direct doc and the ruleset has one', () => {
+      const ruleset = createRuleset('https://example.com');
+      const documentationUrl = getRuleDocumentationUrl(ruleset, 'without-direct-doc');
+      expect(documentationUrl).to.eql('https://example.com#without-direct-doc');
+    });
+    it('returns undefined if neither the rule or ruleset has a documentation', () => {
+      const ruleset = createRuleset(undefined);
+      const documentationUrl = getRuleDocumentationUrl(ruleset, 'without-direct-doc');
+      expect(documentationUrl).to.be.undefined;
     });
   });
 });

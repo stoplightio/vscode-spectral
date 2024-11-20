@@ -16,7 +16,7 @@ import {
   TransportKind,
   FileChangeType,
   Disposable,
-} from 'vscode-languageclient';
+} from 'vscode-languageclient/node';
 import { ExtensionSettings } from './configuration';
 import { StartWatcherNotification, StartWatcherParams } from './notifications';
 
@@ -152,13 +152,13 @@ export function activate(context: ExtensionContext): void {
           }
           return result;
         },
-        didChangeConfiguration: (event, next): void => {
+        didChangeConfiguration: async (sections, next): Promise<void> => {
           environmentChange();
-          next(event);
+          await next(sections);
         },
-        didChangeWorkspaceFolders: (event, next): void => {
+        didChangeWorkspaceFolders: async (sections, next): Promise<void> => {
           environmentChange();
-          next(event);
+          await next(sections);
         },
       },
     },
@@ -173,7 +173,7 @@ export function activate(context: ExtensionContext): void {
     return;
   }
 
-  client.onReady().then(() => {
+  client.start().then(() => {
     client.onNotification(StartWatcherNotification.type, (params: StartWatcherParams) => {
       // The language server lets us know which ruleset files to watch since
       // it's configurable and depends on the file/location being validated. We
@@ -186,8 +186,6 @@ export function activate(context: ExtensionContext): void {
       }
     });
   });
-
-  client.start();
 
   commands = [Commands.registerCommand('spectral.showOutputChannel', () => {
     client.outputChannel.show();
