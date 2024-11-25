@@ -8,6 +8,18 @@ import * as chaiJestSnapshot from 'chai-jest-snapshot';
 
 chai.use(chaiJestSnapshot);
 
+/** Custom URI serializer to have simpler snpashots */
+const customVsCodeUriSerializer = {
+  test(value) {
+    return value instanceof vscode.Uri;
+  },
+  print(uri: vscode.Uri) {
+    return '"' + uri.toString() + '"';
+  },
+};
+
+chaiJestSnapshot.addSerializer(customVsCodeUriSerializer);
+
 export function testRunnerBuilder(testsRoot: string): Promise<void> {
   const mocha = new Mocha({
     ui: 'tdd',
