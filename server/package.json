@@ -8,7 +8,7 @@
     "@stoplight/spectral-rulesets": "^1.21.3",
     "minimatch": "^3.0.4",
     "rollup": "~2.79.2",
-    "vscode-languageserver": "^6.1.1",
+    "vscode-languageserver": "^9.0.1",
     "vscode-languageserver-textdocument": "^1.0.1",
     "vscode-uri": "^3.0.7"
   },

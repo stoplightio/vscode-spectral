@@ -15,7 +15,7 @@ export namespace StartWatcherNotification {
   /**
    * Notification type indicating a FileSystemWatcher should be started in the client.
    */
-  export const type = new NotificationType<StartWatcherParams, void>('spectral/startWatcher');
+  export const type = new NotificationType<StartWatcherParams>('spectral/startWatcher');
 }
 
 export interface StartWatcherParams {

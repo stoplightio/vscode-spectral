@@ -1,7 +1,7 @@
 {
   "author": "Stoplight <support@stoplight.io>",
   "dependencies": {
-    "vscode-languageclient": "^6.1.3"
+    "vscode-languageclient": "^9.0.1"
   },
   "description": "JSON/YAML linter with OpenAPI and custom ruleset support.",
   "displayName": "Spectral",
