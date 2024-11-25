@@ -6,14 +6,14 @@
     "@stoplight/spectral-ruleset-bundler": "^1.6.1",
     "@stoplight/spectral-ruleset-migrator": "^1.11.1",
     "@stoplight/spectral-rulesets": "^1.21.3",
-    "minimatch": "^3.0.4",
+    "minimatch": "^3.0.5",
     "rollup": "~2.79.2",
     "vscode-languageserver": "^6.1.1",
     "vscode-languageserver-textdocument": "^1.0.1",
     "vscode-uri": "^3.0.7"
   },
   "devDependencies": {
-    "@types/minimatch": "^3.0.3",
+    "@types/minimatch": "^3.0.5",
     "@types/node-fetch": "^2.5.5"
   },
   "engines": {
