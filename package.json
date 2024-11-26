@@ -83,7 +83,7 @@
     "@types/glob": "^7.2.0",
     "@types/mocha": "^9.1.0",
     "@types/node": "^18.11.18",
-    "@types/vscode": "^1.48.0",
+    "@types/vscode": "^1.95.0",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.1.0",
     "chai": "^4.2.0",
@@ -102,8 +102,8 @@
     "ts-loader": "^9.5.1",
     "ts-node": "^8.10.2",
     "typescript": "beta",
-    "vsce": "^1.103.1",
-    "vscode-test": "^1.5.0",
+    "@vscode/vsce": "^2.32.0",
+    "@vscode/test-electron": "^2.4.1",
     "webpack": "^5.96.1",
     "webpack-cli": "^4.9.2"
   },
@@ -112,7 +112,7 @@
   },
   "displayName": "Spectral",
   "engines": {
-    "vscode": "^1.48.0",
+    "vscode": "^1.95.0",
     "node": "^12.20 || >= 14.13"
   },
   "homepage": "https://github.com/stoplightio/vscode-spectral",
@@ -150,7 +150,7 @@
     "test": "mocha -r ts-node/register \"./+(client|server)/__tests__/unit/**/*.test.ts\"",
     "test:e2e": "cross-env CI=true CHAI_JEST_SNAPSHOT_UPDATE_ALL=false ts-node ./client/src/__tests__/e2e/index.ts"
   },
-  "version": "1.1.4",
+  "version": "1.1.1732551058-dev.1",
   "workspaces": {
     "packages": [
       "client",
