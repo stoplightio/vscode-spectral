@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { runTests, downloadAndUnzipVSCode } from 'vscode-test';
+import { runTests, downloadAndUnzipVSCode } from '@vscode/test-electron';
 import { randomBytes } from 'crypto';
 
 // The folder containing the Extension Manifest package.json
@@ -45,7 +45,7 @@ interface TestCase {
   ];
 
   try {
-    const vscodeExecutablePath = await downloadAndUnzipVSCode('1.48.0');
+    const vscodeExecutablePath = await downloadAndUnzipVSCode('1.95.0');
 
     for (const tc of testCases) {
       console.info(`Using VSCode from '${vscodeExecutablePath}'`,);

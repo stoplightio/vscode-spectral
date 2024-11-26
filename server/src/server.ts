@@ -12,9 +12,9 @@ import {
   TextDocuments,
   createConnection,
   PublishDiagnosticsParams,
-} from 'vscode-languageserver';
-import { string as isString } from 'vscode-languageserver/lib/utils/is';
-import { WorkDoneProgress } from 'vscode-languageserver/lib/progress';
+} from 'vscode-languageserver/node';
+import { string as isString } from 'vscode-languageserver/lib/common/utils/is';
+import { WorkDoneProgressReporter } from 'vscode-languageserver/lib/common/progress';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { URI } from 'vscode-uri';
 import { Ruleset } from '@stoplight/spectral-core';
@@ -364,7 +364,7 @@ async function lintDocumentOrRoot(document: TextDocument, ruleset: Ruleset | und
 
   connection.console.log(`[DBG] lintDocumentOrRoot. knownDeps=${JSON.stringify([...knownDeps])}`);
 
-  const pdps = makePublishDiagnosticsParams(rootDocument.uri, [...knownDeps], results);
+  const pdps = makePublishDiagnosticsParams(rootDocument.uri, [...knownDeps], results, ruleset);
   const deps = pdps.filter((e) => e.uri !== rootDocument.uri).map<[string, string]>((e) => [e.uri, rootDocument.uri]);
 
   return [pdps, deps];
@@ -462,7 +462,7 @@ messageQueue.registerNotification(DidChangeWatchedFilesNotification.type, (_para
   environmentChanged();
 });
 
-connection.onInitialize((_params: InitializeParams, _cancel, progress: WorkDoneProgress) => {
+connection.onInitialize((_params: InitializeParams, _cancel, progress: WorkDoneProgressReporter) => {
   progress.begin('Initializing Spectral Server');
   documents = new TextDocuments(TextDocument);
   linter = new Linter(documents, connection.console);

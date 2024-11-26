@@ -7,7 +7,10 @@ exports[`Workspace, basic ruleset negative globs Invalid files trigger generatio
 exports[`Workspace, basic ruleset negative globs Invalid files trigger generation of diagnostics but only if not ignored simple.yaml 1`] = `
 Array [
   Object {
-    "code": "oas3-api-servers",
+    "code": Object {
+      "target": "https://meta.stoplight.io/docs/spectral/docs/reference/openapi-rules.md#oas3-api-servers",
+      "value": "oas3-api-servers",
+    },
     "message": "OpenAPI \\"servers\\" must be present and non-empty array.",
     "range": Array [
       Object {
@@ -23,7 +26,10 @@ Array [
     "source": "spectral",
   },
   Object {
-    "code": "oas3-schema",
+    "code": Object {
+      "target": "https://meta.stoplight.io/docs/spectral/docs/reference/openapi-rules.md#oas3-schema",
+      "value": "oas3-schema",
+    },
     "message": "must have required property \\"paths\\".",
     "range": Array [
       Object {
@@ -39,7 +45,10 @@ Array [
     "source": "spectral",
   },
   Object {
-    "code": "info-description",
+    "code": Object {
+      "target": "https://meta.stoplight.io/docs/spectral/docs/reference/openapi-rules.md#info-description",
+      "value": "info-description",
+    },
     "message": "Info \\"description\\" must be present and non-empty string.",
     "range": Array [
       Object {
@@ -55,7 +64,10 @@ Array [
     "source": "spectral",
   },
   Object {
-    "code": "oas3-schema",
+    "code": Object {
+      "target": "https://meta.stoplight.io/docs/spectral/docs/reference/openapi-rules.md#oas3-schema",
+      "value": "oas3-schema",
+    },
     "message": "\\"info\\" property must be object.",
     "range": Array [
       Object {

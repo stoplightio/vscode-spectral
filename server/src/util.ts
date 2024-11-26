@@ -6,7 +6,7 @@ import {
   PublishDiagnosticsParams,
 } from 'vscode-languageserver';
 import { URI } from 'vscode-uri';
-import type { ISpectralDiagnostic } from '@stoplight/spectral-core';
+import type { ISpectralDiagnostic, Ruleset } from '@stoplight/spectral-core';
 import { DiagnosticSeverity as SpectralDiagnosticSeverity } from '@stoplight/types';
 
 /**
@@ -32,10 +32,11 @@ function convertSeverity(severity: SpectralDiagnosticSeverity): DiagnosticSeveri
 /**
  * Converts a Spectral rule violation to a VS Code diagnostic.
  * @param {ISpectralDiagnostic} problem - The Spectral rule result to convert to a VS Code diagnostic message.
+ * @param {Ruleset | undefined} ruleset - The ruleset that was used to validate the document.
  * @return {Diagnostic} The converted VS Code diagnostic to send to the client.
  */
-export function makeDiagnostic(problem: ISpectralDiagnostic): Diagnostic {
-  return {
+export function makeDiagnostic(problem: ISpectralDiagnostic, ruleset: Ruleset | undefined): Diagnostic {
+  const diagnostic: Diagnostic = {
     range: {
       start: {
         line: problem.range.start.line,
@@ -51,9 +52,40 @@ export function makeDiagnostic(problem: ISpectralDiagnostic): Diagnostic {
     source: 'spectral',
     message: problem.message,
   };
+
+  const documentationUrl = getRuleDocumentationUrl(ruleset, problem.code);
+  if (documentationUrl) {
+    diagnostic.codeDescription = {
+      href: documentationUrl,
+    };
+  }
+
+  return diagnostic;
 }
 
-export function makePublishDiagnosticsParams(rootDocumentUri: string, knownDependencieUris: string[], problems: ISpectralDiagnostic[]): PublishDiagnosticsParams[] {
+/**
+ * Extract and construct the rule's documentation URL.
+ * @param {Ruleset | undefined} ruleset - The ruleset that was used to validate the document.
+ * @param {string | number} ruleCode - The code of the rule to find the documentation URL for.
+ * @return {string | undefined} The documentation URL for the rule, or undefined if not found.
+ */
+export function getRuleDocumentationUrl(ruleset: Ruleset | undefined, ruleCode: string | number): string | undefined {
+  if (!ruleset) {
+    return undefined;
+  }
+
+  const rule = ruleset.rules[ruleCode];
+  const ruleDocumentationUrl = rule?.documentationUrl;
+  const rulesetDocumentationUrl = rule?.owner?.definition.documentationUrl; // allow to find documentation from extended rulesets
+
+  if (!ruleDocumentationUrl && !rulesetDocumentationUrl) {
+    return undefined;
+  }
+
+  return ruleDocumentationUrl ?? rulesetDocumentationUrl + '#' + ruleCode;
+}
+
+export function makePublishDiagnosticsParams(rootDocumentUri: string, knownDependencieUris: string[], problems: ISpectralDiagnostic[], ruleset: Ruleset | undefined): PublishDiagnosticsParams[] {
   const grouped = problems.reduce<Record<string, ISpectralDiagnostic[]>>((grouped, problem) => {
     if (problem.source === undefined) {
       return grouped;
@@ -80,7 +112,7 @@ export function makePublishDiagnosticsParams(rootDocumentUri: string, knownDepen
   return Object.entries(grouped).map(([source, problems]) => {
     return {
       uri: source,
-      diagnostics: problems.map((p) => makeDiagnostic(p)),
+      diagnostics: problems.map((p) => makeDiagnostic(p, ruleset)),
     };
   });
 }
