@@ -92,7 +92,7 @@
     "cross-env": "^7.0.3",
     "eslint": "^7.8.1",
     "eslint-config-google": "^0.14.0",
-    "glob": "^8.0.3",
+    "glob": "^11.0.0",
     "http-test-servers": "^2.0.0",
     "merge-options": "^3.0.0",
     "mocha": "^8.1.3",
