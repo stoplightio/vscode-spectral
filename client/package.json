@@ -3,7 +3,7 @@
   "dependencies": {
     "vscode-languageclient": "^6.1.3"
   },
-  "description": "JSON/YAML linter with OpenAPI and custom ruleset support.",
+  "description": "JSON/YAML linter with OpenAPI, Arazzo, AsyncAPI, and custom ruleset support",
   "displayName": "Spectral",
   "engines": {
     "vscode": "^1.48.0",
